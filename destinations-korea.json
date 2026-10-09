@@ -1,0 +1,986 @@
+[
+  {
+    "n": "Istana Gyeongbokgung",
+    "h": "경복궁",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah",
+      "budaya"
+    ],
+    "fee": 3000,
+    "fn": "Tutup Selasa · percuma jika berhanbok",
+    "s": "Apr · Okt–Nov",
+    "d": "Istana utama Dinasti Joseon yang dibina pada 1395 di kaki Gunung Bugak, dengan 330 bangunan tradisional dan tasik Gyeonghoeru. Upacara pertukaran pengawal setiap jam (10pagi–2petang) adalah antara pertunjukan paling meriah di Seoul.",
+    "t": "Masuk percuma jika memakai hanbok; tutup setiap Selasa."
+  },
+  {
+    "n": "Istana Changdeokgung &amp; Huwon",
+    "h": "창덕궁",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah",
+      "budaya"
+    ],
+    "fee": 3000,
+    "fn": "Taman Huwon +₩8,000 · tutup Isnin",
+    "s": "Apr–Nov",
+    "d": "Istana Joseon kedua yang tersenarai UNESCO kerana padanannya dengan alam semula jadi. Taman Huwon (Taman Rahsia) mengekalkan kolam purba dan pokok berusia lebih 300 tahun.",
+    "t": "Tempah slot Huwon seawal mungkin — tiket cepat habis."
+  },
+  {
+    "n": "Balairung Jongmyo",
+    "h": "종묘",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 1000,
+    "fn": "Percuma untuk pelajar? semak kaunter",
+    "s": "Mei",
+    "d": "Kuil rohajaan raja-raja Dinasti Joseon yang tersenarai UNESCO, dengan koridor kayu Jeongjeon terpanjang dunia. Upacara Jongmyo Daeje pada Mei setahun sekali membawa penuh protokol diraja.",
+    "t": "Slot tertentu hanya boleh masuk bersama lawatan berpandu."
+  },
+  {
+    "n": "Istana Deoksugung",
+    "h": "덕수궁",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 1000,
+    "fn": "Tutup Isnin",
+    "s": "Okt–Nov",
+    "d": "Istana yang menjadi kediaman Raja Gojong selepas Joseon dibuka ke dunia — satu-satunya yang bercampur bangunan barat moden. Jalan beratap platanus di sebelahnya menjadi laluan berjalan paling romantik di Seoul.",
+    "t": "Jalan Deoksugung Doldam-gil paling indah pada musim luruh."
+  },
+  {
+    "n": "Kampung Bukchon Hanok",
+    "h": "북촌한옥마을",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Kampung hanok berusia 600 tahun dengan lorong berbukit dan bumbung melengkung tradisional, masih didiami penduduk sehingga hari ini. Puncak Bukchonro 11-gil menawarkan panorama bumbung hanok dengan Menara N Seoul di latar belakang.",
+    "t": "Kawasan kediaman sebenar — berjalan senyap dan hormati penduduk."
+  },
+  {
+    "n": "Insadong",
+    "h": "인사동",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "budaya",
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Jalan seni dan kraf tradisional Korea — kedai seramik, kertas hanji, teh dan lukisan kaligrafi. Rumah teh bertingkat di lorong kecil menyimpan suasana Joseon yang tenang.",
+    "t": "SSamziegil adalah kompleks kraf spiral yang wajib dilawati."
+  },
+  {
+    "n": "Kuil Jogyesa",
+    "h": "조계사",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Mei",
+    "d": "Kuil induk Buddhisme Jogye Korea yang terletak di tengah bandar, diapit pokok pinus putih berusia ratusan tahun. Pada Pesta Lampion Lotus bulan Mei, seluruh halaman dipenuhi ribuan lampion berwarna.",
+    "t": "Percuma dan terbuka hingga malam; program templestay tersedia."
+  },
+  {
+    "n": "Pasar Gwangjang",
+    "h": "광장시장",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Pasar bertutup tertua Korea (1905) dan syurga jajanan: mayak gimbap, bindaetteok, yukhoe dan kalguksu disajikan gerai demi gerai. Lorong makanan kedainya terkenal dalam banyak dokumentari makanan dunia.",
+    "t": "Datang sebelum 11pagi untuk elak barisan panjang."
+  },
+  {
+    "n": "Pasar Namdaemun",
+    "h": "남대문시장",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "makanan",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Pasar tradisional terbesar Korea dengan lebih 10,000 gerai yang dibuka sejak 1414. Alley kalguksu di dalamnya terkenal dengan mi buatan tangan yang disajikan sejak generasi.",
+    "t": "Tempat terbaik untuk cenderamata murah dan snek pagi."
+  },
+  {
+    "n": "Myeongdong",
+    "h": "명동",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar",
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Pusat beli-belah dan kosmetik paling sibuk di Korea yang bertukar menjadi jalan jajanan gergasi selepas matahari tenggelam. Tteokbokki keju, corndog gigitan dan bingsu menjadi makanan wajib di sini.",
+    "t": "Jalan jajanan paling meriah selepas pukul 6 petang."
+  },
+  {
+    "n": "Cheonggyecheon",
+    "h": "청계천",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar",
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Nov",
+    "d": "Sungai sepanjang 5.8km yang dipulihkan daripada jalan raya bertutup pada 2005, kini menjadi koridor rehat di tengah bandar. Laluan pejalan kaki sejuk dan penuh lampu pada waktu malam.",
+    "t": "Pesta Lampion Nov–Dis adalah kemuncak tahunan."
+  },
+  {
+    "n": "Menara N Seoul",
+    "h": "N서울타워",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar"
+    ],
+    "fee": 21000,
+    "fn": "Kereta kabel ±₩15,000 ulang-alik",
+    "s": "Sepanjang tahun",
+    "d": "Menara di puncak Bukit Namsan (236m) yang menawarkan panorama 360° Seoul — antara titik paling ikonik ibu kota. Ribuan gembok cinta di pagar dek menjadi tanda pertunangan popular pelancong.",
+    "t": "Naik kereta kabel atau bas pengangkut Namsan 01A/05B."
+  },
+  {
+    "n": "Hongdae",
+    "h": "홍대",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Zon seni jalanan di sekitar Universiti Hongik — busking, mural, kedai vinil dan kehidupan malam paling muda di Seoul. Setiap Sabtu, Pasar Free Market menjual kraf buatan tangan pelajar seni.",
+    "t": "Persembahan tarian jalanan bermula pukul 8 malam di luar stesen."
+  },
+  {
+    "n": "Seongsu-dong",
+    "h": "성수동",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Dijuluki \"Brooklyn Seoul\" — kilang kasut lama disulam menjadi kafe designer, pop-up store dan studio. Taman Seoul Forest di sebelahnya menawarkan ruang hijau dan rusa liar.",
+    "t": "Datang pagi untuk kafe sebelum hujung minggu menjadi padat."
+  },
+  {
+    "n": "Perpustakaan Starfield COEX",
+    "h": "별마당도서관",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar",
+      "keluarga"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Perpustakaan awam raksasa di tengah pusat beli-belah COEX dengan rak buku setinggi 13 meter — antara ruang membaca paling digemari di dunia. Dinding kaca menumpahkan cahaya ke galeri dua tingkat.",
+    "t": "Gabungkan dengan Kuil Bongeunsa yang bersebelahan."
+  },
+  {
+    "n": "Muzium Perang Korea",
+    "h": "전쟁기념관",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah",
+      "keluarga"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Muzium ketenteraan terbesar di Asia yang merakamkan Perang Korea 1950–53 dan sejarah pertahanan negara. Padang luar memaparkan lebih 160 pesawat, kereta kebal dan kapal sebenar.",
+    "t": "Percuma; pameran luar sangat sesuai untuk kanak-kanak."
+  },
+  {
+    "n": "Muzium Negara Korea",
+    "h": "국립중앙박물관",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah",
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Muzium terbesar Korea dengan lebih 420,000 artifak — mahkota emas Silla dan porselin celadon Goryeo menjadi kemuncaknya. Bangunan barunya direka menyerap seni bina istana tradisional.",
+    "t": "Percuma; jadualkan 2–3 jam untuk galeri utama."
+  },
+  {
+    "n": "Taman Han River",
+    "h": "한강공원",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "keluarga",
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "Sewa tikar piknik ±₩3,000",
+    "s": "Apr–Okt",
+    "d": "Sistem taman pinggir sungai sepanjang 40km yang menjadi halaman belakang warga Seoul — piknik, layang-layang, berbasikal dan mi segera dari mesin ramyeon tepi sungai. Air pancut Banpo Moonlight Rainbow di Jembatan Banpo menyala setiap malam Apr–Okt.",
+    "t": "Guna aplikasi \"Congcafe\" untuk tempahan khemah piknik."
+  },
+  {
+    "n": "Lotte World",
+    "h": "롯데월드",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "keluarga"
+    ],
+    "fee": 55000,
+    "fn": "Lebih murah dalam talian",
+    "s": "Sepanjang tahun",
+    "d": "Taman tema dalam bangunan terbesar dunia yang berada di dalam kompleks beli-belah Lotte World Mall, dengan pulau luar Magic Island yang menampilkan coaster Gyro Drop. Ais terapung, parada dan pertunjukan laser berlangsung sepanjang hari.",
+    "t": "Muat turun aplikasi Magic Pass untuk kurangi masa beratur."
+  },
+  {
+    "n": "Seoul Grand Park &amp; Zoo",
+    "h": "서울대공원",
+    "c": "Gwacheon",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "keluarga",
+      "alam"
+    ],
+    "fee": 5000,
+    "fn": "Kereta kabel +₩4,000",
+    "s": "Apr–Okt",
+    "d": "Kompleks zoo dan taman tema terbesar Korea di lembah Gwacheon, dengan kereta kabel dan lebih 3,000 haiwan. Muzium Seni Moden (MMCA) cawangan Gwacheon berada di sebelahnya.",
+    "t": "Gabungkan zoo dan MMCA untuk satu hari penuh keluarga."
+  },
+  {
+    "n": "Aquarium COEX",
+    "h": "코엑스아쿠아리움",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "keluarga"
+    ],
+    "fee": 31000,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Akuarium dengan 183 tangki dan terowong kaca bergerak — jerung, ikan pari dan penguin menjadi bintang utama. Terletak dalam kompleks COEX bersebelahan Perpustakaan Starfield.",
+    "t": "Jadual suapan jerung dan papan pameran penyelam adalah kemuncak."
+  },
+  {
+    "n": "Zon Bebas Tentera (DMZ)",
+    "h": "비무장지대",
+    "c": "Paju",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 80000,
+    "fn": "Pakej tur ±₩50,000–90,000 · pasport wajib",
+    "s": "Apr–Jun · Sep–Okt",
+    "d": "Sempadan paling terkawal di dunia yang membahagikan Semenanjung Korea sejak 1953 — Imjingak, Terowong Penembusan Ketiga, Dora Observatory dan Stesen Dorasan membuka kisah perang dingin yang masih berterusan. Hanya boleh dilawati melalui tur berpandu berlesen.",
+    "t": "Bawa pasport sebenar; tempah 3–7 hari awal, jangan pakaian berlubang."
+  },
+  {
+    "n": "Kuil Haedong Yonggungsa",
+    "h": "해동용궁사",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "budaya",
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Apr · Okt",
+    "d": "Kuil Buddha yang jarang kerana dibina di atas batu karang tepi laut timur Busan, bukannya di pergunungan. Patung Goddess of Mercy menghadap laut terbit dan jembatan 108 tangga menjadi mercu tandanya.",
+    "t": "Datang sebelum 9pagi — parkir dan lorong cepat penuh."
+  },
+  {
+    "n": "Pantai Haeundae",
+    "h": "해운대",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "bandar",
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Jun–Sep",
+    "d": "Pantai paling ikonik Korea dengan lengkungan pasir sepanjang 1.5km yang dipenuhi 8–10 juta pelancong setiap musim panas. Menara hotel sepanjang tepian bertukar menjadi panorama cahaya pada waktu malam.",
+    "t": "Sebelah timur pantai (Dongbaekseom) lebih tenang untuk sunrise."
+  },
+  {
+    "n": "Pulau Dongbaekseom",
+    "h": "동백섬",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Pulau kecil berhutan pain yang bersambung ke Pantai Haeundae melalui laluan papan kayu, dengan Rumah Persidangan APEC dan mercu suar Nurimaru. Laluan 30 minitnya menawarkan pemandangan laut terbaik Busan.",
+    "t": "Sunrise dan pemandangan jambatan Gwangan dari hujungnya."
+  },
+  {
+    "n": "Kampung Budaya Gamcheon",
+    "h": "감천문화마을",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "budaya",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Kampung berbukit dihuni pelarian perang yang kini penuh dengan mural, arca dan lorong warna-warni — dijuluki \"Machu Picchu Korea\". Rumah-rumah bertingkat membentuk labirin paling difoto di Busan.",
+    "t": "Ambil peta setem di pusat pelawat; berjalan senyap di lorong kediaman."
+  },
+  {
+    "n": "Pasar Jagalchi",
+    "h": "자갈치시장",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Pasar hasil laut terbesar Korea yang dikendalikan generasi demi generasi wanita Jagalchi. Pilih ikan hidup di tingkat bawah dan minta dimasak di restoran tingkat atas — hwej (sashimi) segar terus dari tangki.",
+    "t": "Tawar-menawar lembut adalah sebahagian pengalaman."
+  },
+  {
+    "n": "BIFF Square &amp; Nampo-dong",
+    "h": "비프광장",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "makanan",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Jalan perayaan filem antarabangsa Busan yang kini menjadi pusat jajanan: hotteok berbijian (ssiat hotteok) dan sup babi dwaeji gukbap menjadi juaranya. Bintang pengarah filem dunia tertanam di sepanjang jalan.",
+    "t": "Barisan panjang di hotteok berbijian bergerak pantas — berbaloi."
+  },
+  {
+    "n": "Pantai Gwangalli",
+    "h": "광안리",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Jun–Sep",
+    "d": "Pantai dengan pemandangan paling dramatik di Busan — Jambatan Gwangandaegyo menyala berwarna-warni setiap malam di hadapan barisan kafe tepi laut. Pertunjukan drone besar diadakan setiap Sabtu malam.",
+    "t": "Pilih kafe tingkat atas untuk panorama jambatan bercahaya."
+  },
+  {
+    "n": "Taejongdae",
+    "h": "태종대",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "Kereta api Danubi ±₩4,000",
+    "s": "Apr–Nov",
+    "d": "Taman tebing laut di hujung Pulau Yeongdo yang dinamakan sempena Raja Taejong — tebing curam, mercu suar dan Batu Sinseon yang dipercayai tempat dewa bermain. Laluan tepi tebing menawarkan pemandangan Selat Korea.",
+    "t": "Naiki kereta api Danubi untuk jimat masa berjalan."
+  },
+  {
+    "n": "Kereta Kabel Songdo",
+    "h": "송도해상케이블카",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "keluarga",
+      "bandar"
+    ],
+    "fee": 15000,
+    "fn": "±₩20,000 ulang-alik · kabin kristal +",
+    "s": "Sepanjang tahun",
+    "d": "Kereta kabel yang merentasi laut dari Pantai Songdo ke Pulau Dongseom — antara pengalaman udara terbaik di Busan. Kabin \"crystal\" berlantai kaca memberi pandangan telanjang ke bawah laut.",
+    "t": "Laluan berpapan kayu di pulau hujungnya berbaloi dijelajah."
+  },
+  {
+    "n": "Kuil Beomeosa",
+    "h": "범어사",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Apr–Nov",
+    "d": "Kuil agung abad ke-7 di kaki Gunung Geumjeong, salah satu tiga kuil utama Busan. Gerbang Iljumun berlapis dan halaman batu purba memberikan suasana tenang yang jauh dari bandar raya.",
+    "t": "Gabungkan dengan laluan mendaki benteng Geumjeongsan."
+  },
+  {
+    "n": "SEA LIFE Busan",
+    "h": "씨라이프부산",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "keluarga"
+    ],
+    "fee": 31000,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Akuarium tepi Pantai Haeundae dengan terowong kaca 80 meter — jerung bakar, ikan pari raksasa dan penguin Humboldt menjadi kegemaran kanak-kanak. Ruang interaktif membolehkan sentuhan bintang laut.",
+    "t": "Semak jadual suapan pada papan tiket masuk."
+  },
+  {
+    "n": "Seongsan Ilchulbong",
+    "h": "성산일출봉",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "alam"
+    ],
+    "fee": 5000,
+    "fn": "Tutup ketika angin kencang",
+    "s": "Sepanjang tahun",
+    "d": "Kawah tuff gunung berapi setinggi 182m yang tersenarai UNESCO — \"Puncak Matahari Terbit\" Jeju yang memerlukan pendakian 30–45 minit. Puncaknya menampilkan kawah raksasa berbentuk mangkuk menghadap laut.",
+    "t": "Naik sebelum 7pagi untuk matahari terbit dan elak jerebu orang."
+  },
+  {
+    "n": "Gunung Hallasan",
+    "h": "한라산",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "Tempah laluan dalam talian",
+    "s": "Apr–Jun · Sep–Okt",
+    "d": "Gunung tertinggi Korea Selatan (1,947m) di tengah pulau — seluruh Jeju sebenarnya gunung berapi ini. Kawah puncak Baengnokdam dan hutan azalea membentuk laluan mendaki terbaik negara.",
+    "t": "Tempah slot laluan Gwaneumsa awal; bawa jaket — cuaca berubah cepat."
+  },
+  {
+    "n": "Pulau Udo",
+    "h": "우도",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "alam",
+      "keluarga"
+    ],
+    "fee": 5000,
+    "fn": "Feri ulang-alik",
+    "s": "Apr–Okt",
+    "d": "Pulau kecil berbentuk lelaki berbaring di timur laut Jeju — 15 minit feri dari Seongsan. Laluan pantai berbasikal, lembu liar dan perisa kacang tanah menjadi identitinya.",
+    "t": "Ais krim dan burger kacang tanah Udo wajib dicuba."
+  },
+  {
+    "n": "Gua Lava Manjanggul",
+    "h": "만장굴",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "alam"
+    ],
+    "fee": 2000,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Terowong lava sepanjang 7.4km — antara yang terpanjang di dunia dan tersenarai UNESCO bersama sebahagian Geopark Jeju. Tongkol lava gergasi dan stalaktit lava membentuk galeri geologi sejuk sepanjang tahun.",
+    "t": "Suhu dalam gua sekitar 11–13°C — bawa jaket ringan."
+  },
+  {
+    "n": "Air Terjun Cheonjiyeon",
+    "h": "천지연폭포",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "alam"
+    ],
+    "fee": 2000,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Air terjun setinggi 22m yang turun terus ke kolam air payau bernama \"kolam langit dan bumi\". Ikan mullet dan udang gergasi kolamnya boleh dilihat jelas dari jambatan batu.",
+    "t": "Paling indah selepas hujan; lampu malam menyala hingga 10 malam."
+  },
+  {
+    "n": "Pasar Dongmun",
+    "h": "동문시장",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Pasar tertua Jeju yang dibuka pada 1945 — hasil laut, black pork dan jajanan pulau dijual bersebelahan dengan gerai makan malam. Lorong black pork di sebelahnya menjadi destinasi sendiri.",
+    "t": "Datang malam: pasar rakyat bertukar menjadi jalan makanan."
+  },
+  {
+    "n": "Aqua Planet Jeju",
+    "h": "아쿠아플래닛제주",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "keluarga"
+    ],
+    "fee": 33000,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Akuarium terbesar Korea di timur laut pulau dengan tangki utama tiga tingkat yang menempatkan 50,000 haiwan laut. Pertunjukan penyelam dan pengumpulan plankton epaulette menjadi hantaran paling diminati.",
+    "t": "Gabungkan dengan Seongsan Ilchulbong yang berdekatan."
+  },
+  {
+    "n": "Ladang Teh O&#39;sulloc",
+    "h": "오설록",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "makanan",
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Ladang teh hijau berbukit di barat Jeju dengan muzium teh pertama Korea. Pemandangan barisan teh berkeliling seperti gelombang hijau menjadi latar kafe paling difoto di pulau ini.",
+    "t": "Roll cake teh hijau dan latte wajib; percuma masuk."
+  },
+  {
+    "n": "Kuil Bulguksa",
+    "h": "불국사",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah",
+      "budaya"
+    ],
+    "fee": 5000,
+    "fn": "",
+    "s": "Apr–Nov",
+    "d": "Kuil agung kerajaan Silla abad ke-8 yang tersenarai UNESCO — tangga Cheongungyo, pagoda batu Dabotap dan Seokgatap menjadi ikon seni bina Buddha Korea. Nama bermaksud \"Kuil Tanah Buddha\".",
+    "t": "Bas 12 dari kuil menuju Seokguram di puncak bukit."
+  },
+  {
+    "n": "Gua Seokguram",
+    "h": "석굴암",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 4000,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Grotto Buddha abad ke-8 di puncak Gunung Tohamsan — arca Buddha Sakyamuni setinggi 3.5m menghadap laut timur, direka supaya cahaya matahari terbit jatuh ke wajahnya. Tersenarai UNESCO bersama Bulguksa.",
+    "t": "Pagi sejuk; sunrise dari pintu gua adalah detik paling magis."
+  },
+  {
+    "n": "Taman Daereungwon",
+    "h": "대릉원",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 3000,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Taman berisi 23 gundukan makam diraja Silla yang membentuk siluet bukit hijau di tengah bandar Gyeongju. Makam Cheonmachong dibuka untuk pengunjung melihat pengebumian kereta kuda emas.",
+    "t": "Sewa basikal untuk jelajah laluan makam yang lebih luas."
+  },
+  {
+    "n": "Menara Cheomseongdae",
+    "h": "첨성대",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Observatorium batu tertua di Asia Timur (abad ke-7) yang dibina dalam 365 blok batu mewakili hari setahun. Struktur berbentuk botol ini kekal tegak selama 1,400 tahun.",
+    "t": "Kolam Donggung &amp; Wolji hanya beberapa langkah — lihat keduanya."
+  },
+  {
+    "n": "Donggung &amp; Kolam Wolji",
+    "h": "동궁과월지",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 2000,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Kompleks istana sampingan Silla tepi kolam yang digunakan untuk jamuan kerajaan. Pada waktu malam, bangunan yang dibina semula berpantulan dalam air kolam — pemandangan paling difoto di Gyeongju.",
+    "t": "Datang selepas gelap untuk pantulan lampu yang sebenar."
+  },
+  {
+    "n": "Muzium Negara Gyeongju",
+    "h": "경주국립박물관",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah",
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Rumah kepada mahkota emas Silla, barangan makam Cheonmachong dan lonceng gangsa Emille seberat 18 tan yang bertonang legenda. Bangunan utamanya mengadap tapak makam purba.",
+    "t": "Percuma; 1–2 jam mencukupi untuk galeri utama."
+  },
+  {
+    "n": "Jalan Hwangnidan-gil",
+    "h": "황리단길",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "makanan",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Jalan aliran muda Gyeongju — kedai hanok lama bertukar menjadi kafe artistik, restoran moden-Korea dan kedai kraftangan. Donat kkwabaegi dan ais krim menjadi jajanan wajib di sini.",
+    "t": "Paling hidup pada petang hujung minggu; parkir sukar."
+  },
+  {
+    "n": "Kampung Hanok Jeonju",
+    "h": "전주한옥마을",
+    "c": "Jeonju",
+    "r": "Jeolla",
+    "cat": [
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Kampung hanok terbesar Korea dengan lebih 800 rumah tradisional di tengah bandar — pusat budaya dan makanan Joseon. Sewa hanbok, teh di rumah hanok dan Jeonju bibimbap menjadi tiga pengalaman wajib.",
+    "t": "Naik ke bukit Omokdae untuk panorama bumbung hanok waktu senja."
+  },
+  {
+    "n": "Balairung Gyeonggijeon",
+    "h": "경기전",
+    "c": "Jeonju",
+    "r": "Jeolla",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 3000,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Balairung yang menyimpan potret pengasas Dinasti Joseon, Raja Taejo Yi Seong-gye — Jeonju adalah kampung halaman keturunannya. Halaman pain tua dan pintu berlapis membentuk bingkai sejarah yang tenang.",
+    "t": "Lorong mural Jaman berada di belakangnya."
+  },
+  {
+    "n": "Pasar Nambu",
+    "h": "남부시장",
+    "c": "Jeonju",
+    "r": "Jeolla",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "Pasar malam Jum–Sab",
+    "s": "Sepanjang tahun",
+    "d": "Pasar rakyat Jeonju sejak 1920-an yang menjadi \"pasar ibu-ibu\" — bahan segar dan makanan tepi jalan dijual bersama. Pasar malamnya menjadikan lorong penuh dengan kkwabaegi, sup taugeh kongnamul gukbap dan jajanan moden.",
+    "t": "Pasar malam hanya aktif Jumaat dan Sabtu malam."
+  },
+  {
+    "n": "Kedai PNB Bakery",
+    "h": "전주피에네베",
+    "c": "Jeonju",
+    "r": "Jeolla",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Kedai choco pie legenda Jeonju yang menjadi suvenir wajib bandar ini — kek pisang berlapis krim dipenuhi krim marshmallow. Barisan panjang menandakan reputasinya yang berusia beberapa dekad.",
+    "t": "Beli kotak besar sebagai buah tangan; cepat habis petang."
+  },
+  {
+    "n": "Chinatown Incheon",
+    "h": "인천차이나타운",
+    "c": "Incheon",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "makanan",
+      "sejarah"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Kampung Cina tertua Korea yang lahir dengan pembukaan pelabuhan Incheon pada 1883 — asal-usul jajangmyeon Korea di sini. Muzium jajangmyeon, gerbang besar China dan Taman Kebebasan Jayu membentuk laluan berbukitnya.",
+    "t": "Makan jjajangmyeon di jalan lahirnya, diapit Taman Jayu."
+  },
+  {
+    "n": "Songdo Central Park",
+    "h": "송도센트럴파크",
+    "c": "Incheon",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "bandar",
+      "keluarga"
+    ],
+    "fee": 0,
+    "fn": "Bot kanal ±₩12,000",
+    "s": "Apr–Okt",
+    "d": "Taman air laut di tengah bandar pintar Songdo — kanal yang dilayari bot pedalaman diapit menara moden. Reka bentuknya mengambil inspirasi dari Central Park New York versi Korea.",
+    "t": "Naik ke menara observasi G-Tower yang berdekatan."
+  },
+  {
+    "n": "Kubu Hwaseong Suwon",
+    "h": "수원화성",
+    "c": "Suwon",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 2000,
+    "fn": "",
+    "s": "Apr–Nov",
+    "d": "Benteng Joseon sepanjang 5.7km yang melingkari Suwon (1796) — karya seni bina ketenterakan UNESCO dengan empat gerbang besar dan menara meriam. Dokumen rekanya tersimpan dalam Warisan Ingatan Dunia UNESCO.",
+    "t": "Naiki kereta api naga ke Istana Haenggung; sunset di Hwahongmun."
+  },
+  {
+    "n": "Everland",
+    "h": "에버랜드",
+    "c": "Yongin",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "keluarga"
+    ],
+    "fee": 59000,
+    "fn": "±₩39,000 dibeli dalam talian",
+    "s": "Sepanjang tahun",
+    "d": "Taman tema terbesar Korea dengan Safari World, Taman Bunga Tulip dan coaster kayu T-Express yang antara paling curam di dunia. Musimannya bertukar — tulip, carnival, Halloween dan Festival Cahaya musim sejuk.",
+    "t": "Beli tiket dalam talian; guna aplikasi Q-Pass untuk kurangi beratur."
+  },
+  {
+    "n": "Kampung Folk Korea",
+    "h": "한국민속촌",
+    "c": "Yongin",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "keluarga",
+      "budaya"
+    ],
+    "fee": 25000,
+    "fn": "±",
+    "s": "Sepanjang tahun",
+    "d": "Kampung Joseon yang dibina semula secara autentik — rumah daerah, pasaran lama, tarian petani, perkahwinan tradisional dan perlumbaan pengayung dijadikan pertunjukan tetap. Berada bersebelahan Everland.",
+    "t": "Semak jadual pertunjukan di pintu masuk; musim sejuk ada Festival Cahaya."
+  },
+  {
+    "n": "Taman Negara Seoraksan",
+    "h": "설악산국립공원",
+    "c": "Sokcho",
+    "r": "Gangwon",
+    "cat": [
+      "alam"
+    ],
+    "fee": 9000,
+    "fn": "± · kereta kabel +₩12,000",
+    "s": "Okt (daun merah)",
+    "d": "Taman negara paling terkenal Korea — puncak granit Ulsanbawi, Kuil Sinheungsa dan arca Buddha batu gergasi di lembahnya. Daun merah musim luruhnya dianggap paling indah di negara ini.",
+    "t": "Naiki kereta kabel ke Gwongeumseong untuk panorama tanpa mendaki."
+  },
+  {
+    "n": "Pulau Nami",
+    "h": "남이섬",
+    "c": "Chuncheon",
+    "r": "Gangwon",
+    "cat": [
+      "alam",
+      "keluarga"
+    ],
+    "fee": 16000,
+    "fn": "Termasuk feri ulang-alik",
+    "s": "Okt–Nov",
+    "d": "Pulau separuh bulan di tengah Tasik Cheongpyeong yang terkenal dengan laluan pokok metasequoia dan pain putih — lokasi drama Winter Sonata. Basikal, trem zebra dan angsa menjadi tarikan keluarganya.",
+    "t": "Naik feri awal pagi untuk elak kumpulan besar."
+  },
+  {
+    "n": "Rail Bike Gangchon",
+    "h": "강촌레일바이크",
+    "c": "Chuncheon",
+    "r": "Gangwon",
+    "cat": [
+      "keluarga",
+      "alam"
+    ],
+    "fee": 30000,
+    "fn": "± · 2 penumpang",
+    "s": "Apr–Nov",
+    "d": "Kayuh kereta rel empat roda sepanjang laluan lama sejauh 4.5km melalui terowong berlampu LED dan lembah sungai Bukhan. Laluan pulang menggunakan kereta api lagu rakyat.",
+    "t": "Tempah slot pagi dalam talian; terowong LED adalah kemuncak."
+  },
+  {
+    "n": "Pantai &amp; Tasik Gyeongpo",
+    "h": "경포",
+    "c": "Gangneung",
+    "r": "Gangwon",
+    "cat": [
+      "alam",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Jun–Okt",
+    "d": "Pantai timur Gangneung dengan tasik Gyeongpoho di belakangnya — gabungan laut, tasik dan pavilion purba Gyeongpodae. Jalan kafe Anmok di sebelahnya menjadikan bandar ini ibu kopi Korea.",
+    "t": "Minum kopi di Jalan Anmok menghadap laut timur."
+  },
+  {
+    "n": "Ladang Biri-biri Daegwallyeong",
+    "h": "대관령양떼목장",
+    "c": "Pyeongchang",
+    "r": "Gangwon",
+    "cat": [
+      "alam",
+      "keluarga"
+    ],
+    "fee": 3000,
+    "fn": "± · rumput suapan ±₩1,000",
+    "s": "Mei–Okt",
+    "d": "Ladang biri-biri di dataran tinggi Daegwallyeong yang menawarkan suapan rumput langsung dari tangan — biri-biri akan mengikut pengunjung merata padang. Udara sejuk puncaknya bertahan walaupun musim panas.",
+    "t": "Bawa jaket sepanjang musim; laluan tanjakan ringan."
+  },
+  {
+    "n": "Kampung Hahoe",
+    "h": "하회마을",
+    "c": "Andong",
+    "r": "Gyeongsang",
+    "cat": [
+      "budaya",
+      "sejarah"
+    ],
+    "fee": 5000,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Kampung moyang klan Ryu berusia 600 tahun yang tersenarai UNESCO, dibentuk oleh lekukan Sungai Nakdong seperti bentuk shuang? \"taegeuk\". Rumah beratap jirang dan topeng Hahoe talchum menjadikannya muzium hidup budaya Korea.",
+    "t": "Feri tradisional masuk kampung; pertunjukan topeng pada hujung minggu."
+  },
+  {
+    "n": "Tongyeong",
+    "h": "통영",
+    "c": "Tongyeong",
+    "r": "Gyeongsang",
+    "cat": [
+      "alam",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "Luge ±₩15,000 · kereta kabel ±₩13,000",
+    "s": "Apr–Nov",
+    "d": "Pelabuhan kepulauan dijuluki \"Napoli Timur\" — 570 pulau kecil, pasar lama, luge dunia dan kereta kabel Mireuksan yang menghadap laut selatan. Latar drama dan filem paling banyak dilawati di Gyeongsang Selatan.",
+    "t": "Tongyeong Luge dan pemandangan dari Mireuksan adalah dua wajib."
+  },
+  {
+    "n": "Yeosu",
+    "h": "여수",
+    "c": "Yeosu",
+    "r": "Jeolla",
+    "cat": [
+      "alam",
+      "bandar",
+      "keluarga"
+    ],
+    "fee": 0,
+    "fn": "Kereta kabel Dolsan ±₩13,000",
+    "s": "Apr–Nov",
+    "d": "Pelabuhan selatan dengan \"laut malam paling cantik di Korea\" — Odongdo, jambatan Dolsan dan kereta kabel yang merentasi laut. Pertunjukan kepingan? \"Yeosu Night Sea\" menjadi pesta cahaya tahunan yang terkenal.",
+    "t": "Naik kereta kabel Dolsan saat malam; jangan lepaskan Odongdo musim camelia."
+  },
+  {
+    "n": "Teluk Suncheon",
+    "h": "순천만",
+    "c": "Suncheon",
+    "r": "Jeolla",
+    "cat": [
+      "alam"
+    ],
+    "fee": 2000,
+    "fn": "± · skylift +",
+    "s": "Okt–Nov",
+    "d": "Ladang rumput paya terbesar Korea yang menjadi hab ribuan burung migrat dan ketam kegerakan? \"kepala kekabu\"? — perbaiki: dengan papan jalan sepanjang 1.2km menghadap muara. Taman Bunga Negara bersebelahan menambah tarikan sepanjang musim.",
+    "t": "Naiki skylift untuk panorama teluk; sunset adalah kemuncak."
+  },
+  {
+    "n": "Hutan Buluh Damyang",
+    "h": "죽녹원",
+    "c": "Damyang",
+    "r": "Jeolla",
+    "cat": [
+      "alam"
+    ],
+    "fee": 2000,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Hutan buluh hijau yang menyejukkan jalan sepanjang tahun — laluan papan di antara batang buluh menjadikannya antara tempat paling difoto Jeolla. Jalan metasequoia bersebelahan terkenal dalam iklan dan drama.",
+    "t": "Cuba makanan buluh tempatan: daetongbap (nasi dalam batang buluh)."
+  },
+  {
+    "n": "Seongsimdang Daejeon",
+    "h": "대전성심당",
+    "c": "Daejeon",
+    "r": "Chungcheong",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Sepanjang tahun",
+    "d": "Bakery legenda Daejeon sejak 1956 yang menjadikan bandar ini dikenali sebagai \"bandar roti\" — barisan pembeli tidak pernah putus sepanjang hari. Soboro goreng dan roti krim menjadi ikon kedainya.",
+    "t": "Cawangan Stesen Daejeon paling senang dilawati dalam perjalanan KTX."
+  }
+]
