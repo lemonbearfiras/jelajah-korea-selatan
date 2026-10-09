@@ -27,6 +27,7 @@ var nameIn=$('#km-name'), emailIn=$('#km-email'), passIn=$('#km-pass');
 var errEl=$('#km-err'), submitBtn=$('#km-submit'), resetBtn=$('#km-reset');
 var googleBtn=$('#km-google'), outBtn=$('#km-out'), noteEl=$('#km-note');
 var avaEl=$('#km-ava'), unameEl=$('#km-uname'), umailEl=$('#km-umail'), badgeEl=$('#km-badge');
+var navLogin=$('#nav-login');
 
 var mode='demo';
 var fbAuth=null, fb=null;
@@ -63,7 +64,22 @@ function showErr(msg,ok){
 }
 function hideErr(){errEl.classList.remove('show')}
 function initials(n){n=(n||'?').trim();var p=n.split(/\s+/);return (p.length>1?p[0][0]+p[p.length-1][0]:p[0][0]||'?').toUpperCase()}
+function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function paintNav(){
+  if(!navLogin)return;
+  if(user){
+    var first=(user.name||'Akaun').trim().split(/\s+/)[0];
+    navLogin.classList.add('signed');
+    navLogin.title='Halo, '+user.name+' — ke Ruang Komuniti';
+    navLogin.innerHTML='<span class="nl-ava">'+(user.photo?'<img src="'+esc(user.photo)+'" alt="">':initials(user.name))+'</span><span class="nl-name">'+esc(first)+'</span>';
+  }else{
+    navLogin.classList.remove('signed');
+    navLogin.title='Log masuk / daftar akaun';
+    navLogin.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.2 4.9-6 8-6s6.5 1.8 8 6"/></svg><span class="nl-name">Log Masuk</span>';
+  }
+}
 function paintUser(){
+  paintNav();
   if(!user){inBox.hidden=true;outBox.hidden=false;return}
   inBox.hidden=false;outBox.hidden=true;
   unameEl.textContent=user.name;
