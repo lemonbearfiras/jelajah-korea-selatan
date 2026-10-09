@@ -137,11 +137,13 @@ form.addEventListener('submit',function(ev){
   if(tab==='up'){
     fbAuth.createUserWithEmailAndPassword(email,pass).then(function(cred){
       return cred.user.updateProfile({displayName:name}).then(function(){
+        saveUserProfile(cred.user);
         setUser(cred.user);done();
       });
     }).catch(function(e){submitBtn.disabled=false;showErr(errMsg(e.code||e.message))});
   }else{
     fbAuth.signInWithEmailAndPassword(email,pass).then(function(cred){
+      saveUserProfile(cred.user);
       setUser(cred.user);done();
     }).catch(function(e){submitBtn.disabled=false;showErr(errMsg(e.code||e.message))});
   }
@@ -161,7 +163,7 @@ resetBtn.addEventListener('click',function(){
 googleBtn.addEventListener('click',function(){
   hideErr();
   var p=new firebase.auth.GoogleAuthProvider();
-  fbAuth.signInWithPopup(p).then(function(cred){setUser(cred.user)}).catch(function(e){showErr(errMsg(e.code||e.message))});
+  fbAuth.signInWithPopup(p).then(function(cred){saveUserProfile(cred.user);setUser(cred.user)}).catch(function(e){showErr(errMsg(e.code||e.message))});
 });
 
 /* ---------- log keluar ---------- */
@@ -174,6 +176,24 @@ outBtn.addEventListener('click',function(){
     fbAuth.signOut().catch(function(){});
   }
 });
+
+/* ---------- simpan profil ke koleksi "users" ---------- */
+function saveUserProfile(u){
+  if(!fb||!u)return;
+  var ref=fb.collection('users').doc(u.uid);
+  ref.get().then(function(snap){
+    if(snap.exists)return; /* profil sudah ada */
+    return ref.set({
+      uid:u.uid,
+      name:u.displayName||'',
+      email:u.email||'',
+      photo:u.photoURL||'',
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }).catch(function(e){
+    console.warn('Profil tidak dapat disimpan:',e.code||e.message);
+  });
+}
 
 /* ---------- firebase boot ---------- */
 function setUser(u){

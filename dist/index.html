@@ -1,0 +1,2321 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jelajah Korea Selatan — Panduan Perjalanan Korea</title>
+<meta name="description" content="Panduan perjalanan Korea Selatan: destinasi, makanan, budaya, tradisi, peta interaktif dan perancangan perjalanan.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230047A0'/%3E%3Cpath d='M32 2a30 30 0 0 1 0 60 15 15 0 0 1 0-30 15 15 0 0 0 0-30z' fill='%23CD2E3A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* 1 — tokens & reset */
+:root{
+  --bg:#faf9f6; --bg-soft:#f2f0ea; --ink:#0a0a0a; --muted:#8a8a8a;
+  --line:rgba(10,10,10,.14); --red:#CD2E3A; --blue:#0047A0;
+  --red-soft:rgba(205,46,58,.08); --blue-soft:rgba(0,71,160,.08);
+  --radius:20px; --radius-sm:12px; --nav-h:76px;
+  --font:'Plus Jakarta Sans','Noto Sans KR',Arial,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 10px)}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body.locked{overflow:hidden}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+::selection{background:var(--red);color:#fff}
+h1,h2,h3,h4{line-height:1.12;letter-spacing:-.02em;font-weight:700}
+
+/* 2 — paper texture + grain overlay */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background:radial-gradient(rgba(10,10,10,.028) 1px,transparent 1px);background-size:22px 22px}
+body::after{content:"";position:fixed;inset:-50%;z-index:9998;pointer-events:none;opacity:.05;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* 3 — loader */
+#loader{position:fixed;inset:0;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:var(--ink);color:var(--bg);transition:opacity .6s var(--ease),visibility .6s}
+#loader.done{opacity:0;visibility:hidden}
+.loader-mark{width:64px;height:64px;border-radius:50%;overflow:hidden;animation:loaderSpin 1.6s linear infinite}
+.loader-mark svg{width:100%;height:100%;display:block}
+#loader p{font-size:13px;letter-spacing:.42em;text-transform:uppercase;font-weight:600}
+.loader-bar{width:150px;height:2px;background:rgba(250,249,246,.15);border-radius:2px;overflow:hidden}
+.loader-bar i{display:block;height:100%;width:40%;background:linear-gradient(90deg,var(--red),var(--blue));border-radius:2px;animation:loadSlide 1.1s var(--ease) infinite}
+@keyframes loaderSpin{to{transform:rotate(360deg)}}
+@keyframes loadSlide{0%{transform:translateX(-110%)}100%{transform:translateX(280%)}}
+
+/* 4 — scroll progress bar + circle */
+#progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:1200;background:transparent;pointer-events:none}
+#progress i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--red),var(--blue));transform:scaleX(0);transform-origin:left}
+#progress-circle{position:fixed;right:26px;bottom:26px;z-index:1100;width:56px;height:56px;border-radius:50%;background:var(--bg);border:1px solid var(--line);box-shadow:0 10px 26px rgba(10,10,10,.14);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(14px);transition:.35s var(--ease)}
+#progress-circle.show{opacity:1;visibility:visible;transform:none}
+#progress-circle svg{position:absolute;inset:6px;width:44px;height:44px;transform:rotate(-90deg)}
+#progress-circle circle{fill:none;stroke-width:3;stroke-linecap:round}
+#progress-circle .pc-track{stroke:var(--line)}
+#progress-circle .pc-bar{stroke:var(--red);stroke-dasharray:163.4;stroke-dashoffset:163.4}
+#progress-circle span{font-size:15px;font-weight:700;color:var(--ink)}
+
+/* 5 — custom cursor */
+#cursor-dot,#cursor-ring{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;border-radius:50%;display:none}
+#cursor-dot{width:6px;height:6px;background:var(--red);margin:-3px 0 0 -3px}
+#cursor-ring{width:36px;height:36px;border:1.5px solid rgba(10,10,10,.55);margin:-18px 0 0 -18px;transition:width .25s var(--ease),height .25s var(--ease),margin .25s var(--ease),background .25s,border-color .25s}
+body.cursor-hover #cursor-ring{width:56px;height:56px;margin:-28px 0 0 -28px;background:var(--red-soft);border-color:var(--red)}
+@media (pointer:fine){
+  body.custom-cursor{cursor:none}
+  body.custom-cursor a,body.custom-cursor button{cursor:none}
+  body.custom-cursor #cursor-dot,body.custom-cursor #cursor-ring{display:block}
+}
+
+/* 6 — header, nav, search, mobile menu */
+#site-header{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);--hc:#fff;--pill:rgba(255,255,255,.18);color:var(--hc);transition:background .4s var(--ease),color .4s,box-shadow .4s,border-color .4s;border-bottom:1px solid transparent}
+#site-header.scrolled{--hc:var(--ink);--pill:var(--ink);background:rgba(250,249,246,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom-color:var(--line);box-shadow:0 8px 30px rgba(10,10,10,.06)}
+.nav-wrap{width:min(1280px,92%);margin:auto;height:100%;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:17px;letter-spacing:-.01em;white-space:nowrap}
+.logo-mark{width:26px;height:26px;border-radius:50%;flex:none;background:conic-gradient(from 210deg,var(--red),#e2564b 32%,var(--blue) 55%,#3a72c4 80%,var(--red));-webkit-mask:radial-gradient(circle,transparent 0 7px,#000 7.5px);mask:radial-gradient(circle,transparent 0 7px,#000 7.5px)}
+.logo em{font-style:normal;color:var(--red)}
+#site-header.scrolled .logo em{color:var(--red)}
+.main-nav{display:flex;gap:4px}
+.main-nav a{font-size:12.5px;font-weight:600;letter-spacing:.04em;padding:9px 13px;border-radius:999px;color:var(--hc);opacity:.85;transition:.25s}
+.main-nav a:hover{opacity:1}
+.main-nav a.active{background:var(--pill);color:#fff;opacity:1}
+.nav-actions{display:flex;align-items:center;gap:12px}
+#search-toggle{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--hc);transition:.25s}
+#search-toggle:hover{background:rgba(128,128,128,.18)}
+#search-toggle svg{width:17px;height:17px}
+.nav-cta{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;background:var(--ink);color:#fff;font-size:12.5px;font-weight:700;transition:background .3s,transform .3s var(--ease)}
+.nav-cta:hover{background:var(--red)}
+#hamburger{display:none;width:40px;height:40px;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+#hamburger span{display:block;width:22px;height:2px;background:currentColor;border-radius:2px;transition:.35s var(--ease)}
+#hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#hamburger.open span:nth-child(2){opacity:0}
+#hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+#searchbar{position:fixed;top:0;left:0;right:0;z-index:1300;background:var(--bg);border-bottom:1px solid var(--line);padding:20px 5%;display:flex;align-items:center;gap:16px;transform:translateY(-110%);transition:transform .45s var(--ease)}
+#searchbar.open{transform:none}
+#searchbar input{flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:17px;color:var(--ink)}
+#searchbar input::placeholder{color:var(--muted)}
+#search-count{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+#search-close{width:34px;height:34px;border-radius:50%;font-size:16px;display:flex;align-items:center;justify-content:center;transition:.25s}
+#search-close:hover{background:var(--bg-soft)}
+#search-note{position:fixed;left:22px;bottom:22px;z-index:1090;display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;background:var(--ink);color:#fff;border-radius:999px;font-size:12px;box-shadow:0 14px 34px rgba(10,10,10,.28);opacity:0;visibility:hidden;transform:translateY(12px);transition:.35s var(--ease)}
+#search-note.show{opacity:1;visibility:visible;transform:none}
+#search-note b{font-weight:700;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#search-note button{padding:6px 13px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:700}
+#mobile-menu{position:fixed;inset:0;z-index:990;background:var(--ink);color:var(--bg);display:flex;flex-direction:column;justify-content:center;padding:0 9%;clip-path:circle(0 at calc(100% - 46px) 40px);transition:clip-path .6s var(--ease);visibility:hidden}
+#mobile-menu.open{clip-path:circle(150% at calc(100% - 46px) 40px);visibility:visible}
+.mm-link{display:flex;align-items:baseline;gap:14px;padding:13px 0;font-size:clamp(26px,6vw,34px);font-weight:700;letter-spacing:-.02em;color:var(--bg);border-bottom:1px solid rgba(250,249,246,.1);transform:translateY(18px);opacity:0;transition:.5s var(--ease)}
+#mobile-menu.open .mm-link{transform:none;opacity:1}
+.mm-link i{font-style:normal;font-size:12px;color:var(--red);font-weight:700}
+.mm-foot{margin-top:28px;font-size:12px;color:rgba(250,249,246,.5);letter-spacing:.18em;text-transform:uppercase}
+
+/* 7 — hero */
+#utama{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:var(--ink);color:#fff;padding:calc(var(--nav-h) + 30px) 0 90px}
+.hero-bg{position:absolute;inset:-12% 0;z-index:0;will-change:transform}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 40%}
+.hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(6,8,14,.72) 0%,rgba(6,8,14,.38) 42%,rgba(6,8,14,.55) 74%,rgba(6,8,14,.85) 100%)}
+#hangul-field{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none}
+#hangul-field span{position:absolute;bottom:-70px;font-family:'Noto Sans KR',sans-serif;font-weight:700;color:#fff;animation:floatUp linear infinite}
+@keyframes floatUp{0%{transform:translateY(0);opacity:0}8%{opacity:var(--ho,.12)}88%{opacity:var(--ho,.12)}100%{transform:translateY(-115vh);opacity:0}}
+.hero-inner{position:relative;z-index:3;width:min(1180px,90%);margin:auto;display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:end}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:11px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:22px}
+.hero-eyebrow::before{content:"";width:38px;height:2px;background:var(--red)}
+#utama h1{font-size:clamp(46px,7.2vw,92px);font-weight:800;letter-spacing:-.035em;line-height:1.02}
+#utama h1 .accent{background:linear-gradient(92deg,#ff8a80 0%,var(--red) 38%,#6f9ce8 78%,#9cc0ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{max-width:540px;margin-top:22px;font-size:16px;line-height:1.85;color:rgba(255,255,255,.82);font-weight:400}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.btn-primary,.btn-ghost{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:999px;font-size:13.5px;font-weight:700;letter-spacing:.02em;transition:.3s var(--ease);will-change:transform}
+.btn-primary{background:#fff;color:var(--ink)}
+.btn-primary:hover{background:var(--red);color:#fff}
+.btn-primary span,.btn-ghost span{transition:transform .3s var(--ease)}
+.btn-primary:hover span,.btn-ghost:hover span{transform:translateX(5px)}
+.btn-ghost{border:1.5px solid rgba(255,255,255,.45);color:#fff}
+.btn-ghost:hover{background:rgba(255,255,255,.12);border-color:#fff}
+.glance{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius);overflow:hidden;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.glance-item{background:rgba(10,12,18,.5);padding:24px 22px}
+.glance-item strong{display:block;font-size:clamp(24px,2.6vw,32px);font-weight:800;letter-spacing:-.02em}
+.glance-item strong em{font-style:normal;color:#ff8a80}
+.glance-item small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);font-weight:600}
+.hero-scroll{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.65)}
+.hero-scroll i{width:22px;height:36px;border:1.5px solid rgba(255,255,255,.5);border-radius:12px;position:relative}
+.hero-scroll i::after{content:"";position:absolute;left:50%;top:7px;width:3px;height:7px;margin-left:-1.5px;border-radius:3px;background:#fff;animation:wheel 1.8s var(--ease) infinite}
+@keyframes wheel{0%{transform:translateY(0);opacity:1}70%{transform:translateY(11px);opacity:0}100%{transform:translateY(0);opacity:0}}
+
+/* 8 — section scaffold + reveal */
+.sec{position:relative;padding:110px 0}
+.sec-soft{background:var(--bg-soft)}
+.sec-dark{background:var(--ink);color:var(--bg)}
+.wrap{width:min(1180px,90%);margin:auto;position:relative;z-index:1}
+.sec-label{display:inline-flex;align-items:center;gap:12px;font-size:11px;font-weight:800;letter-spacing:.32em;text-transform:uppercase;color:var(--red);margin-bottom:16px}
+.sec-label::before{content:"";width:34px;height:2px;background:currentColor}
+.sec-dark .sec-label{color:#ff8a80}
+.sec-head{max-width:720px;margin-bottom:52px}
+.sec-head h2{font-size:clamp(32px,4.6vw,54px);font-weight:800;letter-spacing:-.03em}
+.sec-dark .sec-head h2{color:var(--bg)}
+.sec-head p{margin-top:16px;color:var(--muted);font-size:15.5px}
+.sec-dark .sec-head p{color:rgba(250,249,246,.62)}
+[data-reveal]{opacity:0;transform:translateY(30px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+[data-reveal].revealed{opacity:1;transform:none}
+.btn-dark{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:999px;background:var(--ink);color:#fff;font-size:13.5px;font-weight:700;transition:.3s var(--ease);will-change:transform}
+.btn-dark:hover{background:var(--red)}
+
+/* 9 — destination slider + map */
+.rail-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+.rail-nav{display:flex;gap:10px;margin-bottom:52px}
+.rail-nav button{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:17px;transition:.3s var(--ease)}
+.rail-nav button:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+#dest-rail{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 4px 18px;scrollbar-width:none;cursor:grab}
+#dest-rail::-webkit-scrollbar{display:none}
+#dest-rail.dragging{scroll-snap-type:none;cursor:grabbing}
+.dest-card{position:relative;flex:0 0 min(330px,80vw);height:470px;border-radius:var(--radius);overflow:hidden;background:var(--ink);scroll-snap-align:start;color:#fff}
+.dest-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+.dest-card::after{content:"";position:absolute;inset:0;background:linear-gradient(185deg,rgba(6,8,14,.05) 30%,rgba(6,8,14,.88) 92%)}
+.dest-card:hover img{transform:scale(1.07)}
+.weather-chip{position:absolute;top:16px;left:16px;z-index:2;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(8,10,16,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);font-size:12px;font-weight:600}
+.weather-chip svg{width:18px;height:18px}
+.w-sun .core{fill:#ffd166}
+.w-sun .rays{stroke:#ffd166;stroke-width:2;stroke-linecap:round;transform-box:fill-box;transform-origin:center;animation:raysSpin 9s linear infinite}
+@keyframes raysSpin{to{transform:rotate(360deg)}}
+.w-cloud{fill:#dfe7f5}
+.w-snow{stroke:#bfe0ff;stroke-width:2;stroke-linecap:round}
+.dest-body{position:absolute;z-index:2;left:22px;right:22px;bottom:20px}
+.dest-tags{display:flex;gap:8px;margin-bottom:12px}
+.dest-tags span{padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.dest-body h3{font-size:27px;font-weight:800}
+.dest-body h3 small{font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:400;color:rgba(255,255,255,.65);margin-left:8px}
+.dest-body p{margin-top:8px;font-size:13px;line-height:1.65;color:rgba(255,255,255,.78);display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.dest-map-link{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:12px;font-weight:700;color:#fff;border-bottom:1.5px solid var(--red);padding-bottom:3px}
+.dest-map-link span{transition:transform .3s var(--ease)}
+.dest-map-link:hover span{transform:translateX(4px)}
+#rail-dots{display:flex;gap:8px;justify-content:center;margin-top:6px}
+#rail-dots button{width:8px;height:8px;border-radius:99px;background:var(--line);transition:.3s var(--ease)}
+#rail-dots button.on{width:26px;background:var(--red)}
+.map-panel{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;margin-top:76px;background:#fff;border:1px solid var(--line);border-radius:calc(var(--radius) + 6px);padding:52px}
+.map-kicker{font-size:11px;font-weight:800;letter-spacing:.3em;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+#peta-korea h3{font-size:clamp(24px,3vw,34px);font-weight:800}
+.map-info{margin-top:16px;color:var(--muted);font-size:14.5px;min-height:88px;transition:opacity .3s}
+.map-info.swap{opacity:0}
+.map-info strong{color:var(--ink);font-size:16px;display:block;margin-bottom:6px}
+.map-ktx{margin-top:18px;padding:14px 18px;background:var(--blue-soft);border-left:3px solid var(--blue);border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:13px;color:#2c4a76}
+.map-legend{display:flex;gap:18px;margin-top:18px;font-size:12px;color:var(--muted);align-items:center;flex-wrap:wrap}
+.map-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-right:7px}
+.map-legend .lg-line{width:22px;height:0;border-top:2px dashed var(--blue);display:inline-block;margin-right:7px;vertical-align:middle}
+.korea-svg{width:100%;height:auto}
+.korea-path{fill:var(--blue-soft);stroke:var(--blue);stroke-width:2.4;stroke-linejoin:round}
+.jeju-shape{fill:var(--blue-soft);stroke:var(--blue);stroke-width:2.4}
+.map-pin{cursor:pointer;opacity:0;transition:opacity .5s var(--ease)}
+.map-pin.on{opacity:1}
+.map-pin .pin-ring{fill:none;stroke:var(--red);stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:pinPulse 2.2s ease-out infinite}
+.map-pin .pin-dot{fill:var(--red);stroke:#fff;stroke-width:2;transition:.3s}
+.map-pin text{font-family:var(--font);font-size:12.5px;font-weight:700;fill:var(--ink);paint-order:stroke;stroke:#fff;stroke-width:4;stroke-linejoin:round}
+.map-pin.active .pin-dot{fill:var(--blue)}
+@keyframes pinPulse{0%{transform:scale(.5);opacity:.9}80%{transform:scale(2.3);opacity:0}100%{opacity:0}}
+
+/* 10 — why */
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(250,249,246,.16)}
+.why-card{position:relative;padding:34px 26px 40px;border-right:1px solid rgba(250,249,246,.16);transition:background .35s}
+.why-card:last-child{border-right:none}
+.why-card::after{content:"";position:absolute;top:-1px;left:0;width:0;height:3px;background:var(--red);transition:width .5s var(--ease)}
+.why-card:hover::after{width:100%}
+.why-card:hover{background:rgba(250,249,246,.04)}
+.why-icon{width:46px;height:46px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:20px}
+.why-icon.tint-red{background:var(--red-soft)}
+.why-icon.tint-blue{background:var(--blue-soft)}
+.why-num{font-size:11px;font-weight:800;letter-spacing:.24em;color:rgba(250,249,246,.4)}
+.why-card h3{margin:10px 0 10px;font-size:19px;color:var(--bg)}
+.why-card p{font-size:13px;color:rgba(250,249,246,.58)}
+
+/* 11 — food */
+.filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:34px}
+.fbtn{padding:10px 20px;border-radius:999px;border:1.5px solid var(--line);font-size:12.5px;font-weight:700;letter-spacing:.03em;color:var(--muted);transition:.3s var(--ease)}
+.fbtn:hover{border-color:var(--ink);color:var(--ink)}
+.fbtn.active{background:var(--ink);border-color:var(--ink);color:#fff}
+#food-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.food-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .4s var(--ease),box-shadow .4s}
+.food-card:hover{transform:translateY(-7px);box-shadow:0 22px 44px rgba(10,10,10,.1)}
+.food-fig{position:relative;height:180px;overflow:hidden}
+.food-fig img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+.food-card:hover .food-fig img{transform:scale(1.08)}
+.food-fig .badge{position:absolute;top:12px;left:12px;padding:5px 11px;border-radius:999px;background:var(--red);color:#fff;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.food-body{padding:18px 20px 20px}
+.food-body h4{font-size:17.5px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.food-body h4 small{font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--muted);font-weight:400}
+.food-body p{margin-top:7px;font-size:12.5px;color:var(--muted)}
+.spice{display:flex;gap:5px;margin-top:13px;align-items:center}
+.spice em{font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:3px}
+.sp-dot{width:9px;height:9px;border-radius:50%;background:var(--bg-soft);border:1px solid var(--line)}
+.sp-dot.hot{background:var(--red);border-color:var(--red)}
+#food-empty{display:none;text-align:center;padding:60px 20px;color:var(--muted);font-size:14.5px;border:1.5px dashed var(--line);border-radius:var(--radius)}
+#food-empty.show{display:block}
+.food-card.hide{display:none}
+.search-hidden{display:none!important}
+.mo-item:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+
+/* 12 — culture */
+.cult-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.cult-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .4s var(--ease),box-shadow .4s}
+.cult-card:hover{transform:translateY(-7px);box-shadow:0 22px 44px rgba(10,10,10,.1)}
+.cult-glyph{position:absolute;top:6px;right:14px;z-index:2;font-family:'Noto Sans KR',sans-serif;font-size:74px;font-weight:700;line-height:1;color:rgba(10,10,10,.08);pointer-events:none}
+.cult-card:nth-child(odd) .cult-glyph{color:rgba(205,46,58,.12)}
+.cult-card:nth-child(even) .cult-glyph{color:rgba(0,71,160,.12)}
+.cult-card img{width:100%;height:240px;object-fit:cover;transition:transform .9s var(--ease)}
+.cult-card:hover img{transform:scale(1.06)}
+.cult-body{padding:22px 24px 26px}
+.cult-body h3{font-size:19px}
+.cult-body p{margin-top:9px;font-size:13px;color:var(--muted)}
+
+/* 13 — traditions + timeline */
+.trad-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-bottom:70px}
+.trad-cols h3{font-size:19px;color:var(--bg);display:flex;align-items:baseline;gap:10px}
+.trad-cols h3 small{font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:400;color:rgba(250,249,246,.45)}
+.trad-cols p{margin-top:10px;font-size:13.5px;color:rgba(250,249,246,.58)}
+.trad-gallery{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-bottom:90px}
+.trad-item{position:relative;border-radius:var(--radius-sm);overflow:hidden;background:rgba(250,249,246,.06)}
+.trad-item img{width:100%;height:200px;object-fit:cover;transition:transform .9s var(--ease)}
+.trad-item:hover img{transform:scale(1.08)}
+.trad-item figcaption{padding:12px 14px;font-size:12px;font-weight:600;color:rgba(250,249,246,.75)}
+.trad-item figcaption b{display:block;color:var(--bg);font-size:13px;margin-bottom:2px}
+.timeline{border-top:1px solid rgba(250,249,246,.16);padding-top:44px}
+.timeline-kicker{font-size:11px;font-weight:800;letter-spacing:.3em;text-transform:uppercase;color:#ff8a80;margin-bottom:26px;display:block}
+#tl-track{display:flex;gap:10px;flex-wrap:wrap}
+.tl-item{display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:999px;border:1.5px solid rgba(250,249,246,.22);font-size:13px;font-weight:700;color:rgba(250,249,246,.7);transition:.3s var(--ease)}
+.tl-item i{font-style:normal;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(250,249,246,.45)}
+.tl-item:hover{border-color:rgba(250,249,246,.6)}
+.tl-item.active{background:var(--bg);border-color:var(--bg);color:var(--ink)}
+.tl-item.active i{color:var(--red)}
+#tl-panels{position:relative;margin-top:34px}
+.tl-panel{display:none;grid-template-columns:300px 1fr;gap:32px;align-items:center}
+.tl-panel.active{display:grid;animation:panelIn .55s var(--ease)}
+@keyframes panelIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.tl-panel img{width:100%;height:210px;object-fit:cover;border-radius:var(--radius-sm)}
+.tl-panel p{font-size:14.5px;color:rgba(250,249,246,.68);max-width:560px}
+.tl-panel strong{display:block;font-size:17px;color:var(--bg);margin-bottom:8px}
+
+/* 14 — plan */
+.plan-panel{background:#fff;border:1px solid var(--line);border-radius:calc(var(--radius) + 6px);padding:46px;box-shadow:0 30px 70px rgba(10,10,10,.07)}
+.plan-tabs{display:flex;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:30px}
+.plan-tab{padding:11px 22px;border-radius:999px;border:1.5px solid var(--line);font-size:13px;font-weight:700;color:var(--muted);transition:.3s var(--ease)}
+.plan-tab:hover{border-color:var(--ink);color:var(--ink)}
+.plan-tab.active{background:var(--red);border-color:var(--red);color:#fff}
+.plan-tab small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.06em;opacity:.75}
+#plan-days{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;transition:opacity .3s}
+#plan-days.swap{opacity:0}
+.plan-day{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+.pd-label{display:inline-block;padding:5px 12px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.plan-day h4{font-size:16px;margin-bottom:10px}
+.plan-day ul{list-style:none}
+.plan-day li{position:relative;padding:7px 0 7px 22px;font-size:13px;color:var(--muted);border-bottom:1px dashed var(--line)}
+.plan-day li:last-child{border-bottom:none}
+.plan-day li::before{content:"→";position:absolute;left:0;color:var(--red);font-weight:700;font-size:12px}
+#plan-note{margin-top:26px;padding:16px 20px;background:var(--bg-soft);border-radius:var(--radius-sm);font-size:13.5px;color:#4c4a45}
+.plan-foot{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:28px}
+.plan-foot p{font-size:13px;color:var(--muted)}
+
+/* 14b — planner */
+.planner{margin-top:64px}
+.planner-head h3{font-size:clamp(22px,3vw,30px);letter-spacing:-.02em}
+.planner-head p{font-size:14px;color:var(--muted);margin-top:8px;max-width:560px}
+.planner-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:start}
+.planner-controls{display:grid;gap:22px}
+.p-field{border:1px solid var(--line);border-radius:var(--radius);padding:20px;background:#fff;margin:0;min-width:0}
+.p-field legend{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 8px}
+.p-chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px}
+.p-chip{position:relative;cursor:pointer}
+.p-chip input{position:absolute;opacity:0;pointer-events:none}
+.p-chip span{display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border-radius:999px;border:1.5px solid var(--line);font-size:13px;font-weight:700;color:var(--muted);transition:.25s var(--ease);background:var(--bg)}
+.p-chip i{font-style:normal;font-size:11px;font-weight:800;opacity:.6}
+.p-chip:hover span{border-color:var(--ink);color:var(--ink)}
+.p-chip input:checked + span{background:var(--red);border-color:var(--red);color:#fff}
+.p-chip input:checked + span i{opacity:.85}
+.p-chip input:focus-visible + span{outline:2px solid var(--red);outline-offset:3px}
+.planner-result{position:sticky;top:100px;background:var(--ink);color:var(--bg);border-radius:calc(var(--radius) + 6px);padding:30px;box-shadow:0 30px 70px rgba(10,10,10,.18)}
+.pr-top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.pr-label{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(250,249,246,.55)}
+.pr-currency{display:flex;background:rgba(250,249,246,.1);border-radius:999px;padding:4px}
+.pr-currency button{padding:7px 14px;border-radius:999px;font-size:12px;font-weight:800;color:rgba(250,249,246,.7);border:none;background:none;cursor:pointer;transition:.25s}
+.pr-currency button.on{background:var(--red);color:#fff}
+.pr-total{font-size:clamp(34px,4.4vw,48px);font-weight:800;letter-spacing:-.03em;margin:16px 0 4px;font-variant-numeric:tabular-nums}
+.pr-alt{font-size:14px;color:rgba(250,249,246,.6);font-variant-numeric:tabular-nums}
+.pr-alt b{color:#f0d69a;font-weight:700}
+.pr-bars{margin:24px 0;display:grid;gap:13px}
+.pr-row{display:grid;grid-template-columns:110px 1fr auto;align-items:center;gap:12px}
+.pr-row em{font-style:normal;font-size:12px;font-weight:700;color:rgba(250,249,246,.75)}
+.pr-track{height:8px;border-radius:999px;background:rgba(250,249,246,.12);overflow:hidden}
+.pr-fill{height:100%;border-radius:999px;width:0;transition:width .7s var(--ease)}
+.pr-row:nth-child(1) .pr-fill,.pr-row:nth-child(4) .pr-fill{background:#5b8def}
+.pr-row:nth-child(2) .pr-fill,.pr-row:nth-child(5) .pr-fill{background:var(--red)}
+.pr-row:nth-child(3) .pr-fill{background:#c9a45c}
+.pr-amt{font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums;color:#fff}
+.pr-note{font-size:12px;color:rgba(250,249,246,.55);border-top:1px solid rgba(250,249,246,.14);padding-top:16px}
+.pr-tip{margin-top:14px;padding:14px 16px;background:rgba(250,249,246,.07);border-radius:var(--radius-sm);font-size:13px;line-height:1.65;color:rgba(250,249,246,.85)}
+.pr-tip strong{color:#f0d69a}
+@media (max-width:900px){.planner-grid{grid-template-columns:1fr}.planner-result{position:static}.pr-row{grid-template-columns:92px 1fr auto}}
+
+/* 14c — planner itinerary */
+.pl-itin-wrap{margin-top:46px}
+.pl-itin-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.pl-itin-head h4{font-size:clamp(19px,2.4vw,24px);letter-spacing:-.02em}
+.pl-itin-head h4 span{color:var(--red)}
+.pl-itin-head p{font-size:12.5px;color:var(--muted)}
+#pl-itin{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:16px}
+.pl-day{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;opacity:0;transform:translateY(14px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.pl-day.in{opacity:1;transform:none}
+.pl-day h4{font-size:15px;margin:10px 0 8px;letter-spacing:-.01em}
+.pl-day ul{list-style:none}
+.pl-day li{position:relative;padding:6px 0 6px 20px;font-size:12.5px;color:var(--muted);border-bottom:1px dashed var(--line)}
+.pl-day li:last-child{border-bottom:none}
+.pl-day li::before{content:"→";position:absolute;left:0;color:var(--red);font-weight:700;font-size:11px}
+@media (max-width:640px){#pl-itin{grid-template-columns:1fr}}
+
+/* 14d — pangkalan data */
+.db-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:38px}
+.db-search{flex:1 1 300px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:13px 20px;transition:border-color .3s}
+.db-search:focus-within{border-color:var(--red)}
+.db-search svg{flex:none;opacity:.5}
+.db-search input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:inherit;font-size:14px}
+.db-search input::placeholder{color:rgba(255,255,255,.4)}
+.db-count{margin:18px 0 16px;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.db-count:empty{display:none}
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(262px,1fr));gap:16px}
+.db-card{cursor:pointer;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);padding:22px;opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .5s var(--ease),border-color .3s,background .3s}
+.db-card.in{opacity:1;transform:none}
+.db-card:hover{border-color:rgba(205,46,58,.55);background:rgba(255,255,255,.07)}
+.db-card:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.db-card-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.db-badges{display:flex;gap:6px;flex-wrap:wrap}
+.db-badge{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;border:1px solid}
+.db-badge.sejarah{color:#e7c98a;border-color:rgba(201,164,92,.55)}
+.db-badge.budaya{color:#9db9ec;border-color:rgba(91,141,239,.5)}
+.db-badge.bandar{color:#eb9a9f;border-color:rgba(205,46,58,.55)}
+.db-badge.makanan{background:var(--red);border-color:var(--red);color:#fff}
+.db-badge.keluarga{background:rgba(91,141,239,.16);border-color:rgba(91,141,239,.45);color:#bcd0f5}
+.db-badge.alam{background:rgba(201,164,92,.14);border-color:rgba(201,164,92,.5);color:#e7c98a}
+.db-fee{font-size:12px;font-weight:700;color:#c9a45c;white-space:nowrap}
+.db-card h3{font-size:16.5px;letter-spacing:-.01em;color:#fff}
+.db-card h3 small{font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:400;color:rgba(255,255,255,.5);margin-left:7px}
+.db-loc{margin-top:4px;font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.db-desc{margin-top:10px;font-size:12.5px;line-height:1.65;color:rgba(255,255,255,.72);display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.db-tip{margin-top:10px;font-size:11.5px;line-height:1.55;color:rgba(231,201,138,.85);border-top:1px dashed rgba(255,255,255,.14);padding-top:10px}
+.db-empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:rgba(255,255,255,.5);font-size:14px;border:1px dashed rgba(255,255,255,.18);border-radius:var(--radius)}
+.db-empty.idle{padding:26px 20px;color:rgba(255,255,255,.45)}
+
+/* 14e — tanya panduan */
+.db-ask{margin-top:54px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);padding:30px;position:relative;overflow:hidden}
+.db-ask::before{content:"";position:absolute;right:-80px;bottom:-120px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(205,46,58,.18),transparent 70%);pointer-events:none}
+.db-ask::after{content:"";position:absolute;left:-80px;top:-120px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(0,71,160,.25),transparent 70%);pointer-events:none}
+.db-ask-head{display:flex;gap:16px;align-items:center;margin-bottom:20px;position:relative;z-index:1}
+.db-ask-badge{flex:none;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--blue));color:#fff;font-size:13px;font-weight:800;letter-spacing:.06em;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(205,46,58,.35)}
+.db-ask-head h3{font-size:20px;color:#fff}
+.db-ask-head h3 small{font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:400;color:rgba(255,255,255,.5);margin-left:8px}
+.db-ask-head p{margin-top:4px;font-size:13px;color:rgba(255,255,255,.65)}
+.db-ask-form{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+.db-ask-form input{flex:1 1 260px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:14px 22px;color:#fff;font:inherit;font-size:14px;outline:0;transition:border-color .3s}
+.db-ask-form input:focus{border-color:var(--red)}
+.db-ask-form input::placeholder{color:rgba(255,255,255,.4)}
+.db-ask-form button{cursor:pointer;background:var(--red);border:0;color:#fff;font:inherit;font-size:13px;font-weight:700;padding:14px 28px;border-radius:999px;transition:.3s var(--ease)}
+.db-ask-form button:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(205,46,58,.4)}
+.db-ask-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;position:relative;z-index:1}
+.db-ask-chips button{cursor:pointer;background:none;border:1px dashed rgba(255,255,255,.25);color:rgba(255,255,255,.65);font:inherit;font-size:12px;padding:8px 14px;border-radius:999px;transition:.3s}
+.db-ask-chips button:hover{border-color:var(--red);color:#fff}
+.db-ask-answer{margin-top:20px;font-size:14px;line-height:1.7;color:rgba(255,255,255,.85);display:none;position:relative;z-index:1}
+.db-ask-answer.show{display:block;animation:dbFade .5s var(--ease)}
+.db-ask-answer .dblead{font-weight:700;color:#fff}
+.db-ask-answer .dbmini{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.db-ask-answer .dbmini button{cursor:pointer;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);color:#fff;font:inherit;font-size:12.5px;font-weight:600;padding:9px 15px;border-radius:999px;transition:.3s var(--ease)}
+.db-ask-answer .dbmini button:hover{border-color:var(--red);background:rgba(205,46,58,.15)}
+.db-ask-answer .dbmini i{font-style:normal;color:rgba(255,255,255,.5);margin-left:6px;font-size:11px}
+.db-ask-answer .dbfoot{margin-top:12px;font-size:12px;color:rgba(255,255,255,.5)}
+.db-ask-answer.thinking .dblead::after{content:"…";animation:dbDots 1s infinite}
+@keyframes dbDots{50%{opacity:.2}}
+@keyframes dbFade{from{opacity:0;transform:translateY(8px)}}
+
+/* 14f — db modal + butiran planner */
+.db-modal{position:fixed;inset:0;z-index:1300;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility .35s}
+.db-modal.open{opacity:1;visibility:visible}
+.db-modal-bg{position:absolute;inset:0;background:rgba(8,8,12,.66);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.db-modal-card{position:relative;width:min(540px,100%);max-height:84vh;overflow:auto;background:var(--bg);color:var(--ink);border-radius:var(--radius);padding:30px 32px;transform:translateY(18px) scale(.97);transition:transform .35s var(--ease);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.db-modal.open .db-modal-card{transform:none}
+.db-modal-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:15px;cursor:pointer;transition:.3s;z-index:1}
+.db-modal-close:hover{background:var(--red);color:#fff;border-color:var(--red)}
+#db-modal-body h3{font-size:24px;letter-spacing:-.02em;padding-right:40px}
+#db-modal-body h3 small{font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:400;color:var(--muted);margin-left:9px}
+.dbm-loc{margin-top:5px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.dbm-badges{display:flex;gap:6px;flex-wrap:wrap}
+.db-modal .db-badge.sejarah{color:#8a6d2f;border-color:rgba(201,164,92,.7)}
+.db-modal .db-badge.budaya{color:var(--blue);border-color:rgba(0,71,160,.45)}
+.db-modal .db-badge.bandar{color:var(--red);border-color:rgba(205,46,58,.5)}
+.db-modal .db-badge.makanan{background:var(--red);border-color:var(--red);color:#fff}
+.db-modal .db-badge.keluarga{color:var(--blue);border-color:rgba(91,141,239,.7);background:none}
+.db-modal .db-badge.alam{color:#6b7c3f;border-color:rgba(139,158,71,.6);background:none}
+.dbm-label{display:block;margin-top:16px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.dbm-fee{margin-top:6px;font-size:14px;font-weight:700;color:var(--red)}
+.dbm-fee em{font-style:normal;font-weight:400;font-size:12.5px;color:var(--muted)}
+.dbm-desc{margin-top:6px;font-size:13.5px;line-height:1.7;color:#3c3c3c}
+.dbm-tip{margin-top:18px;background:#fff;border:1px solid var(--line);border-left:3px solid #c9a45c;border-radius:var(--radius-sm);padding:14px 16px;font-size:13px;line-height:1.65}
+.pl-info{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin-left:6px;border-radius:50%;border:1px solid var(--red);background:none;color:var(--red);font-size:10px;font-weight:800;font-style:italic;line-height:1;cursor:pointer;vertical-align:1px;transition:.3s}
+.pl-info:hover{background:var(--red);color:#fff}
+@media (max-width:640px){.db-modal-card{padding:24px 20px}.db-ask{padding:22px}}
+
+/* 15 — gallery + carousel + lightbox */
+.mosaic{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:215px;gap:16px;margin-bottom:64px}
+.mo-item{position:relative;border-radius:var(--radius-sm);overflow:hidden;cursor:pointer;background:var(--bg-soft)}
+.mo-item:nth-child(1){grid-column:span 2;grid-row:span 2}
+.mo-item:nth-child(4){grid-row:span 2}
+.mo-item img{width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease)}
+.mo-item:hover img{transform:scale(1.07)}
+.mo-cap{position:absolute;inset:auto 0 0 0;padding:40px 18px 15px;background:linear-gradient(transparent,rgba(6,8,14,.82));color:#fff;font-size:12.5px;font-weight:600;opacity:0;transform:translateY(8px);transition:.4s var(--ease)}
+.mo-item:hover .mo-cap{opacity:1;transform:none}
+.mo-cap b{display:block;font-size:14px}
+.mo-zoom{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(8,10,16,.55);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;opacity:0;transition:.35s var(--ease)}
+.mo-item:hover .mo-zoom{opacity:1}
+.carousel{position:relative;background:var(--ink);border-radius:calc(var(--radius) + 4px);overflow:hidden;color:#fff}
+#car-track{display:flex;transition:transform .8s var(--ease)}
+.car-slide{flex:0 0 100%;position:relative}
+.car-slide img{width:100%;height:min(58vh,520px);object-fit:cover}
+.car-slide figcaption{position:absolute;left:28px;bottom:24px;padding:10px 18px;border-radius:999px;background:rgba(8,10,16,.6);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);font-size:12.5px;font-weight:600}
+.car-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:48px;height:48px;border-radius:50%;background:rgba(8,10,16,.55);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;transition:.3s}
+.car-btn:hover{background:var(--red);border-color:var(--red)}
+#car-prev{left:20px}
+#car-next{right:20px}
+.car-meta{position:absolute;top:20px;right:22px;z-index:3;padding:7px 14px;border-radius:999px;background:rgba(8,10,16,.55);backdrop-filter:blur(8px);font-size:12px;font-weight:700}
+#car-bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:linear-gradient(90deg,var(--red),var(--blue));z-index:3}
+#lightbox{position:fixed;inset:0;z-index:1400;background:rgba(5,6,9,.94);display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:.4s var(--ease)}
+#lightbox.open{opacity:1;visibility:visible}
+.lb-top{display:flex;align-items:center;justify-content:space-between;padding:18px 26px;color:#fff}
+#lb-count{font-size:13px;font-weight:700;letter-spacing:.1em}
+.lb-actions{display:flex;gap:10px}
+.lb-actions button{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.25);color:#fff;display:flex;align-items:center;justify-content:center;transition:.3s}
+.lb-actions button:hover{background:var(--red);border-color:var(--red)}
+.lb-actions svg{width:16px;height:16px}
+.lb-stage{flex:1;display:flex;align-items:center;justify-content:center;gap:18px;padding:0 3%;min-height:0}
+#lb-img{max-width:86%;max-height:100%;border-radius:var(--radius-sm);box-shadow:0 30px 90px rgba(0,0,0,.6);opacity:0;transition:opacity .35s;object-fit:contain}
+#lb-img.ready{opacity:1}
+.lb-side{width:48px;height:48px;flex:none;border-radius:50%;border:1px solid rgba(255,255,255,.3);color:#fff;font-size:19px;display:flex;align-items:center;justify-content:center;transition:.3s}
+.lb-side:hover{background:var(--red);border-color:var(--red)}
+#lb-caption{text-align:center;color:rgba(255,255,255,.85);font-size:13.5px;padding:16px 20px 6px}
+#lb-thumbs{display:flex;gap:9px;justify-content:center;padding:10px 3% 22px;overflow-x:auto;scrollbar-width:none}
+#lb-thumbs::-webkit-scrollbar{display:none}
+#lb-thumbs button{flex:none;width:64px;height:44px;border-radius:8px;overflow:hidden;border:2px solid transparent;opacity:.45;transition:.3s}
+#lb-thumbs button img{width:100%;height:100%;object-fit:cover}
+#lb-thumbs button.on{border-color:var(--red);opacity:1}
+
+/* 16 — cta + flag */
+#cta{background:var(--ink);color:var(--bg);text-align:center;padding:120px 0;position:relative;overflow:hidden}
+#cta::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;border:1px solid rgba(250,249,246,.09);left:50%;top:50%;transform:translate(-50%,-50%)}
+#cta::after{content:"";position:absolute;width:760px;height:760px;border-radius:50%;border:1px solid rgba(250,249,246,.06);left:50%;top:50%;transform:translate(-50%,-50%)}
+.flag-stage{width:104px;height:104px;margin:0 auto 30px;position:relative;z-index:1}
+.flag-stage svg{width:100%;height:100%;filter:drop-shadow(0 14px 30px rgba(205,46,58,.3))}
+.taegeuk{transform-box:fill-box;transform-origin:center;animation:taeSpin 14s linear infinite}
+@keyframes taeSpin{to{transform:rotate(360deg)}}
+#cta h2{font-size:clamp(32px,4.8vw,56px);font-weight:800;letter-spacing:-.03em;position:relative;z-index:1}
+#cta h2 em{font-style:normal;color:var(--red)}
+#cta .wrap p{position:relative;z-index:1;max-width:560px;margin:18px auto 34px;color:rgba(250,249,246,.62);font-size:15.5px}
+.cta-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+#cta .btn-primary{background:var(--bg)}
+#cta .btn-primary:hover{background:var(--red);color:#fff}
+#cta .btn-ghost{border-color:rgba(250,249,246,.4)}
+#cta .btn-ghost:hover{background:rgba(250,249,246,.12)}
+
+/* 17 — footer */
+footer{background:#070707;color:var(--bg);padding:78px 0 34px}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.1fr;gap:44px;padding-bottom:48px;border-bottom:1px solid rgba(250,249,246,.1)}
+.foot-brand .logo{margin-bottom:16px}
+.foot-brand p{font-size:13px;color:rgba(250,249,246,.5);max-width:300px}
+.foot-col h4{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:rgba(250,249,246,.45);margin-bottom:18px;font-weight:800}
+.foot-col a{display:block;padding:5px 0;font-size:13.5px;color:rgba(250,249,246,.68);transition:.25s}
+.foot-col a:hover{color:#fff;transform:translateX(4px)}
+.socials{display:flex;gap:11px}
+.socials a{width:42px;height:42px;border-radius:50%;border:1px solid rgba(250,249,246,.2);display:flex;align-items:center;justify-content:center;transition:.3s var(--ease)}
+.socials a:hover{background:var(--red);border-color:var(--red);transform:translateY(-4px)}
+.socials svg{width:16px;height:16px;fill:currentColor}
+.foot-bottom{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-top:26px;font-size:12px;color:rgba(250,249,246,.4)}
+
+/* 17b — komuniti (firebase auth + komen) */
+.sec-head h2 em{font-style:italic;color:var(--red)}
+.sec-head .hangul{font-family:'Noto Sans KR',sans-serif;font-size:.4em;font-weight:700;letter-spacing:.22em;color:var(--red);vertical-align:.6em;margin:0 10px;white-space:nowrap}
+.sec-dark .sec-head .hangul{color:#ff8a80}
+.km-grid{display:grid;grid-template-columns:360px 1fr;gap:28px;align-items:start;margin-top:42px}
+.km-auth-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 18px 44px rgba(20,24,40,.07);position:sticky;top:calc(var(--nav-h) + 18px)}
+.km-auth-card.flash{animation:kmFlash 1s var(--ease)}
+@keyframes kmFlash{0%,100%{box-shadow:0 18px 44px rgba(20,24,40,.07)}30%{box-shadow:0 0 0 5px rgba(205,46,58,.25)}}
+.km-tabs{display:flex;background:var(--bg-soft);border-radius:999px;padding:4px;margin-bottom:20px}
+.km-tab{flex:1;border:none;background:none;padding:9px 0;border-radius:999px;font-weight:700;font-size:13px;cursor:pointer;color:var(--muted);transition:.3s}
+.km-tab.active{background:var(--red);color:#fff}
+.km-field{display:block;margin-bottom:14px}
+.km-field span{display:block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.km-field input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink);transition:.3s}
+.km-field input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(205,46,58,.14)}
+.km-err{display:none;font-size:12.5px;font-weight:600;color:var(--red);margin:-2px 0 14px;line-height:1.55}
+.km-err.show{display:block}
+.km-err.ok{color:#0b7a52}
+.km-submit{width:100%;border:none;background:var(--red);color:#fff;font-weight:800;font-size:14px;padding:13px;border-radius:999px;cursor:pointer;transition:.3s var(--ease)}
+.km-submit:hover:not(:disabled){background:#a8232d;transform:translateY(-1px)}
+.km-submit:disabled{opacity:.55;cursor:wait}
+.km-reset{display:block;margin:12px auto 0;border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.km-reset:hover{color:var(--red)}
+.km-div{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}
+.km-div::before,.km-div::after{content:"";flex:1;height:1px;background:var(--line)}
+.km-google{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:12px;font-weight:700;font-size:13.5px;cursor:pointer;transition:.3s var(--ease)}
+.km-google:hover{border-color:var(--ink);transform:translateY(-1px);box-shadow:0 8px 20px rgba(20,24,40,.08)}
+.km-google svg{width:17px;height:17px}
+.km-auth-card[data-mode=demo] .km-tabs,.km-auth-card[data-mode=demo] .km-f-fb,.km-auth-card[data-mode=demo] .km-div,.km-auth-card[data-mode=demo] .km-google,.km-auth-card[data-mode=demo] .km-reset{display:none}
+.km-user{display:flex;align-items:center;gap:13px}
+.km-ava{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;flex:none;overflow:hidden}
+.km-ava img{width:100%;height:100%;object-fit:cover}
+.km-user b{display:block;font-size:15px;letter-spacing:-.01em}
+.km-user small{color:var(--muted);font-size:12px;word-break:break-all}
+.km-badge{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:7px 13px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.06em}
+.km-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.km-badge.cloud{background:rgba(11,122,82,.1);color:#0b7a52}
+.km-badge.demo{background:rgba(201,164,92,.18);color:#8a6d2f}
+.km-out{margin-top:14px;width:100%;border:1px solid var(--line);background:none;border-radius:999px;padding:11px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink);transition:.3s}
+.km-out:hover{border-color:var(--red);color:var(--red)}
+.km-note{margin-top:14px;font-size:12px;line-height:1.65;color:var(--muted);padding:0 4px}
+.km-note a{color:var(--red);font-weight:700}
+.km-hint{display:flex;align-items:center;gap:9px;background:rgba(205,46,58,.07);border:1px dashed rgba(205,46,58,.35);border-radius:var(--radius-sm);padding:11px 15px;font-size:12.5px;font-weight:600;color:var(--red);margin-bottom:14px}
+.km-compose{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;transition:.3s}
+.km-compose textarea{width:100%;border:none;resize:vertical;min-height:74px;font:inherit;font-size:14px;line-height:1.6;background:none;color:var(--ink)}
+.km-compose textarea:focus{outline:none}
+.km-compose textarea:disabled{cursor:not-allowed}
+.km-compose-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:12px;border-top:1px solid var(--line)}
+#km-chars{font-size:11.5px;color:var(--muted);font-weight:600}
+.km-send{border:none;background:var(--ink);color:#fff;font-weight:800;font-size:13px;padding:10px 20px;border-radius:999px;cursor:pointer;transition:.3s var(--ease)}
+.km-send:hover:not(:disabled){background:var(--red)}
+.km-send:disabled{opacity:.45;cursor:not-allowed}
+.km-head{display:flex;align-items:baseline;justify-content:space-between;margin:26px 2px 14px}
+.km-head h3{font-size:17px}
+.km-head span{font-size:12px;font-weight:700;color:var(--muted)}
+.km-item{display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:12px;animation:kmIn .5s var(--ease)}
+@keyframes kmIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.km-item .km-ava{width:38px;height:38px;font-size:15px}
+.km-body{flex:1;min-width:0}
+.km-meta{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.km-meta b{font-size:13.5px}
+.km-meta time{font-size:11.5px;color:var(--muted)}
+.km-del{margin-left:auto;border:none;background:none;color:var(--muted);font-size:11.5px;font-weight:700;cursor:pointer;padding:2px 7px;border-radius:6px;transition:.25s}
+.km-del:hover{color:var(--red);background:rgba(205,46,58,.08)}
+.km-text{margin-top:5px;font-size:13.5px;line-height:1.7;color:#3c3c3c;word-break:break-word}
+.km-empty{border:1px dashed var(--line);border-radius:var(--radius-sm);padding:28px 20px;text-align:center;color:var(--muted);font-size:13px}
+@media (max-width:1150px){.main-nav a{padding:9px 9px}.main-nav{gap:0}}
+@media (max-width:900px){.km-grid{grid-template-columns:1fr}.km-auth-card{position:static}}
+
+/* 18 — responsive + reduced motion */
+@media (max-width:1080px){
+  .why-grid{grid-template-columns:1fr 1fr}
+  .why-card:nth-child(2){border-right:none}
+  .why-card:nth-child(-n+2){border-bottom:1px solid rgba(250,249,246,.16)}
+  #food-grid{grid-template-columns:1fr 1fr}
+  .map-panel{grid-template-columns:1fr;padding:38px;gap:34px}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:900px){
+  .main-nav,.nav-cta{display:none}
+  #hamburger{display:flex}
+  .hero-inner{grid-template-columns:1fr;gap:34px}
+  .glance{max-width:520px}
+  .trad-gallery{grid-template-columns:repeat(3,1fr)}
+  .trad-item:nth-child(n+4){display:none}
+  .cult-grid{grid-template-columns:1fr}
+  .trad-cols{grid-template-columns:1fr;gap:26px}
+  .tl-panel{grid-template-columns:1fr}
+  .tl-panel img{height:220px}
+  #plan-days{grid-template-columns:1fr}
+  .mosaic{grid-template-columns:1fr 1fr;grid-auto-rows:190px}
+  .mo-item:nth-child(n+6){display:none}
+  .mo-item:nth-child(1){grid-column:span 2;grid-row:span 1}
+}
+@media (max-width:640px){
+  :root{--nav-h:66px}
+  .sec{padding:84px 0}
+  #utama{padding-top:calc(var(--nav-h) + 40px)}
+  .glance{grid-template-columns:1fr 1fr}
+  .glance-item{padding:18px 16px}
+  #food-grid{grid-template-columns:1fr}
+  .why-grid{grid-template-columns:1fr}
+  .why-card{border-right:none;border-bottom:1px solid rgba(250,249,246,.16)}
+  .why-card:last-child{border-bottom:none}
+  .trad-gallery{grid-template-columns:1fr 1fr}
+  .trad-item:nth-child(n+4){display:block}
+  .trad-item:nth-child(n+5){display:none}
+  .mosaic{grid-template-columns:1fr 1fr;grid-auto-rows:160px}
+  .mo-item:nth-child(n+5){display:none}
+  .mo-item:nth-child(1){grid-column:span 2}
+  .car-slide img{height:340px}
+  .plan-panel{padding:26px}
+  .plan-tab{padding:10px 16px}
+  .foot-grid{grid-template-columns:1fr}
+  #progress-circle{right:18px;bottom:18px}
+  #search-note{left:14px;right:14px;justify-content:space-between}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  [data-reveal]{opacity:1;transform:none}
+}
+</style>
+</head>
+<body class="locked">
+
+<div id="loader" aria-hidden="true">
+  <div class="loader-mark">
+    <svg viewBox="0 0 120 120" role="img" aria-label="Taegeuk">
+      <circle cx="60" cy="60" r="46" fill="#0047A0"/>
+      <path d="M60 14a46 46 0 0 1 0 92 23 23 0 0 1 0-46 23 23 0 0 0 0-46z" fill="#CD2E3A"/>
+    </svg>
+  </div>
+  <p>Jelajah Korea</p>
+  <div class="loader-bar"><i></i></div>
+</div>
+
+<div id="progress" aria-hidden="true"><i></i></div>
+
+<button id="progress-circle" aria-label="Kembali ke atas">
+  <svg viewBox="0 0 56 56" aria-hidden="true">
+    <circle class="pc-track" cx="28" cy="28" r="26"/>
+    <circle class="pc-bar" cx="28" cy="28" r="26"/>
+  </svg>
+  <span>↑</span>
+</button>
+
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+
+<header id="site-header">
+  <div class="nav-wrap">
+    <a class="logo" href="#utama" aria-label="Jelajah Korea — utama">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span>Jelajah&nbsp;<em>Korea</em></span>
+    </a>
+    <nav class="main-nav" aria-label="Navigasi utama">
+      <a href="#utama" class="active">Utama</a>
+      <a href="#destinasi">Destinasi</a>
+      <a href="#makanan">Makanan</a>
+      <a href="#budaya">Budaya</a>
+      <a href="#tradisi">Tradisi</a>
+      <a href="#rancang">Rancang</a>
+      <a href="#tempat">Pangkalan</a>
+      <a href="#galeri">Galeri</a>
+      <a href="#komuniti">Komuniti</a>
+    </nav>
+    <div class="nav-actions">
+      <button id="search-toggle" aria-label="Cari" title="Cari (Ctrl+K)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.8-4.8"/></svg>
+      </button>
+      <a href="#rancang" class="nav-cta" data-magnetic>Terokah Korea <span>→</span></a>
+      <button id="hamburger" aria-label="Buka menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div id="searchbar" role="search">
+  <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#8a8a8a" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.8-4.8"/></svg>
+  <input id="search-input" type="text" placeholder="Cari destinasi, makanan atau budaya… cuba 'jeju' atau 'kimchi'" autocomplete="off">
+  <span id="search-count"></span>
+  <button id="search-close" aria-label="Tutup carian">✕</button>
+</div>
+
+<div id="search-note" role="status">
+  <span>Tapisan aktif: <b id="note-q"></b> · <span id="note-n"></span></span>
+  <button id="note-clear" type="button">Padam</button>
+</div>
+
+<div id="mobile-menu" aria-hidden="true">
+  <a class="mm-link" href="#utama" style="transition-delay:.08s"><i>01</i>Utama</a>
+  <a class="mm-link" href="#destinasi" style="transition-delay:.14s"><i>02</i>Destinasi</a>
+  <a class="mm-link" href="#makanan" style="transition-delay:.2s"><i>03</i>Makanan</a>
+  <a class="mm-link" href="#budaya" style="transition-delay:.26s"><i>04</i>Budaya</a>
+  <a class="mm-link" href="#tradisi" style="transition-delay:.32s"><i>05</i>Tradisi</a>
+  <a class="mm-link" href="#rancang" style="transition-delay:.38s"><i>06</i>Rancang</a>
+  <a class="mm-link" href="#tempat" style="transition-delay:.44s"><i>07</i>Pangkalan</a>
+  <a class="mm-link" href="#galeri" style="transition-delay:.5s"><i>08</i>Galeri</a>
+  <a class="mm-link" href="#komuniti" style="transition-delay:.56s"><i>09</i>Komuniti</a>
+  <p class="mm-foot">Jelajah Korea Selatan · 한국</p>
+</div>
+
+<main>
+
+<!-- HERO -->
+<section id="utama">
+  <div class="hero-bg"><img id="hero-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Gyeongbokgung_Palace_at_Night.jpg/1920px-Gyeongbokgung_Palace_at_Night.jpg" alt="Istana Gyeongbokgung pada waktu malam, Seoul"></div>
+  <div class="hero-overlay" aria-hidden="true"></div>
+  <div id="hangul-field" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div>
+      <p class="hero-eyebrow">Republik Korea · 대한민국</p>
+      <h1>Jelajah<br><span class="accent">Korea Selatan</span></h1>
+      <p class="hero-sub">Dari lampu neon Seoul hingga pantai tenang Jeju — temui warisan 5,000 tahun, dapur yang tak pernah tidur, dan landskap yang bertukar setiap musim.</p>
+      <div class="hero-ctas">
+        <a href="#destinasi" class="btn-primary" data-magnetic>Terokah Korea <span>→</span></a>
+        <a href="#budaya" class="btn-ghost" data-magnetic>Temui Budaya</a>
+      </div>
+    </div>
+    <aside class="glance" aria-label="Korea secara ringkas">
+      <div class="glance-item"><strong data-count="51.7" data-decimals="1">0</strong><small>Juta Penduduk</small></div>
+      <div class="glance-item"><strong data-count="17">0</strong><small>Wilayah &amp; Bandaraya</small></div>
+      <div class="glance-item"><strong data-count="4">0</strong><small>Musim Berbeza</small></div>
+      <div class="glance-item"><strong data-count="5000" data-suffix="+">0</strong><small>Tahun Sejarah</small></div>
+    </aside>
+  </div>
+  <div class="hero-scroll" aria-hidden="true"><i></i>Skrol</div>
+</section>
+
+<!-- DESTINASI -->
+<section class="sec" id="destinasi">
+  <div class="wrap">
+    <div class="rail-head" data-reveal>
+      <div class="sec-head" style="margin-bottom:0">
+        <span class="sec-label">01 — Destinasi</span>
+        <h2>Enam pertunjukan terbaik Korea.</h2>
+        <p>Seret atau gunakan anak panah untuk meneroka — setiap kad menunjukkan cuaca semasa dan pautan terus ke peta.</p>
+      </div>
+      <div class="rail-nav">
+        <button id="rail-prev" aria-label="Sebelumnya">←</button>
+        <button id="rail-next" aria-label="Seterusnya">→</button>
+      </div>
+    </div>
+    <div id="dest-rail" data-reveal data-delay="80">
+
+      <article class="dest-card searchable" data-target="seoul">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Lotte_World_Tower_In_Jamsil_%28144738473%29.jpeg/960px-Lotte_World_Tower_In_Jamsil_%28144738473%29.jpeg" alt="Lotte World Tower, Seoul">
+        <div class="weather-chip"><svg class="w-cloud" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .8-7.92A5.5 5.5 0 0 0 7.2 8.6 4.5 4.5 0 0 0 7 18z"/></svg>14°C · Cerai Berawan</div>
+        <div class="dest-body">
+          <div class="dest-tags"><span>Ibu Kota</span><span>Metro</span></div>
+          <h3>Seoul <small>서울</small></h3>
+          <p>Istana bersebelahan pencakar langit, pasar malam Mangwon, kampung hanok Bukchon dan panorama dari Namsan — bandar yang tak pernah tidur.</p>
+          <a href="#peta-korea" class="dest-map-link" data-map="seoul">Lihat di peta <span>→</span></a>
+        </div>
+      </article>
+
+      <article class="dest-card searchable" data-target="busan">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Gwangalli_Beach_Busan_%2831877282978%29.jpg/960px-Gwangalli_Beach_Busan_%2831877282978%29.jpg" alt="Pantai Gwangalli, Busan">
+        <div class="weather-chip"><svg class="w-sun" viewBox="0 0 24 24" aria-hidden="true"><circle class="core" cx="12" cy="12" r="4.6"/><g class="rays"><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19"/></g></svg>17°C · Cerah</div>
+        <div class="dest-body">
+          <div class="dest-tags"><span>Pesisir</span><span>Pantai</span></div>
+          <h3>Busan <small>부산</small></h3>
+          <p>Haeundae waktu subuh, ikan segar di pasar Jagalchi, kampung seni Gamcheon dan Jambatan Berlian Gwangandaegyo yang menyala pada waktu malam.</p>
+          <a href="#peta-korea" class="dest-map-link" data-map="busan">Lihat di peta <span>→</span></a>
+        </div>
+      </article>
+
+      <article class="dest-card searchable" data-target="jeju">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Seongsan_Ilchulbong%2C_Jeju_Island.jpg/960px-Seongsan_Ilchulbong%2C_Jeju_Island.jpg" alt="Seongsan Ilchulbong, Jeju">
+        <div class="weather-chip"><svg class="w-sun" viewBox="0 0 24 24" aria-hidden="true"><circle class="core" cx="12" cy="12" r="4.6"/><g class="rays"><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19"/></g></svg>18°C · Cerah</div>
+        <div class="dest-body">
+          <div class="dest-tags"><span>Pulau</span><span>Alam</span></div>
+          <h3>Jeju <small>제주</small></h3>
+          <p>Pulau gunung berapi dengan tebing lava, pantai pasir hitam dan perempuan penyelam haenyeo — lanskap UNESCO yang unik di Asia.</p>
+          <a href="#peta-korea" class="dest-map-link" data-map="jeju">Lihat di peta <span>→</span></a>
+        </div>
+      </article>
+
+      <article class="dest-card searchable" data-target="gyeongju">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Bulguksa_temple_Gyeongju_South_Korea_20091111_104912.jpg/960px-Bulguksa_temple_Gyeongju_South_Korea_20091111_104912.jpg" alt="Kuil Bulguksa, Gyeongju">
+        <div class="weather-chip"><svg class="w-cloud" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .8-7.92A5.5 5.5 0 0 0 7.2 8.6 4.5 4.5 0 0 0 7 18z"/></svg>15°C · Berawan</div>
+        <div class="dest-body">
+          <div class="dest-tags"><span>Sejarah</span><span>Warisan</span></div>
+          <h3>Gyeongju <small>경주</small></h3>
+          <p>"Muzium tanpa dinding" — ibu kota kerajaan Silla dengan makam purba, kuil Bulguksa dan tasik Anapji yang bercahaya pada waktu malam.</p>
+          <a href="#peta-korea" class="dest-map-link" data-map="gyeongju">Lihat di peta <span>→</span></a>
+        </div>
+      </article>
+
+      <article class="dest-card searchable" data-target="seoraksan">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Seoraksan_in_the_Fall_2-_%EC%84%A4%EC%95%85%EC%82%B0_%EB%8B%A8%ED%92%8D.jpg/960px-Seoraksan_in_the_Fall_2-_%EC%84%A4%EC%95%85%EC%82%B0_%EB%8B%A8%ED%92%8D.jpg" alt="Musim luruh di Seoraksan">
+        <div class="weather-chip"><svg viewBox="0 0 24 24" class="w-snow" fill="none" aria-hidden="true"><path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9M12 3l-2.4 2.4M12 3l2.4 2.4M12 21l-2.4-2.4M12 21l2.4-2.4"/></svg>9°C · Sejuk</div>
+        <div class="dest-body">
+          <div class="dest-tags"><span>Gunung</span><span>Musim Luruh</span></div>
+          <h3>Seoraksan <small>설악산</small></h3>
+          <p>Taman negara paling terkenal Korea — puncak batu granite, kuil Sinheungsa dan permaidani daun merah pada bulan Oktober.</p>
+          <a href="#peta-korea" class="dest-map-link" data-map="seoraksan">Lihat di peta <span>→</span></a>
+        </div>
+      </article>
+
+      <article class="dest-card searchable" data-target="jeonju">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/20240727_Jeonju_Hanok_Village_001.jpg/960px-20240727_Jeonju_Hanok_Village_001.jpg" alt="Kampung Hanok Jeonju">
+        <div class="weather-chip"><svg class="w-cloud" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .8-7.92A5.5 5.5 0 0 0 7.2 8.6 4.5 4.5 0 0 0 7 18z"/></svg>13°C · Berawan</div>
+        <div class="dest-body">
+          <div class="dest-tags"><span>Hanok</span><span>Kuliner</span></div>
+          <h3>Jeonju <small>전주</small></h3>
+          <p>Kampung Hanok dengan lebih 800 rumah tradisional, bibimbap asal dan dianggap sebagai ibu kota makanan Korea.</p>
+          <a href="#peta-korea" class="dest-map-link" data-map="jeonju">Lihat di peta <span>→</span></a>
+        </div>
+      </article>
+
+    </div>
+    <div id="rail-dots" aria-hidden="true"></div>
+
+    <div class="map-panel" id="peta-korea" data-reveal>
+      <div>
+        <p class="map-kicker">Peta Interaktif · 대한민국 지도</p>
+        <h3>Semuanya dekat — kereta api laju KTX</h3>
+        <div class="map-info" id="map-info">
+          <strong>Seoul 서울 — Ibu Kota · Metro</strong>
+          Bandaraya utama dengan 9 laluan metro, istana dinasti Joseon dan titik mula paling popular untuk pengembara.
+        </div>
+        <p class="map-ktx">🚄 KTX menghubungkan Seoul–Busan dalam lebih kurang 2 jam 30 minit — dan hampir semua destinasi di halaman ini boleh dilawati dalam satu perjalanan 7 hari.</p>
+        <div class="map-legend">
+          <span><i></i>Destinasi</span>
+          <span><span class="lg-line"></span>Laluan KTX</span>
+          <span>Klik pin pada peta untuk maklumat</span>
+        </div>
+      </div>
+      <svg class="korea-svg" viewBox="0 0 400 380" role="img" aria-label="Peta ringkas Semenanjung Korea">
+        <path class="korea-path" id="korea-path" d="M125 45 C150 25,190 30,205 55 C230 60,250 75,262 95 C285 120,300 150,302 180 C305 210,312 235,300 258 C285 275,262 282,240 278 C220 292,195 288,178 296 C158 290,140 300,122 292 C100 285,88 272,92 255 C78 240,82 220,72 205 C80 185,70 165,84 148 C74 128,84 108,98 100 C90 80,104 60,125 45 Z"/>
+        <ellipse class="jeju-shape" cx="145" cy="330" rx="28" ry="15"/>
+        <g class="map-pin" data-pin="seoraksan" transform="translate(247,86)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="12" y="4">Seoraksan</text></g>
+        <g class="map-pin" data-pin="seoul" transform="translate(150,128)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="12" y="4">Seoul</text></g>
+        <g class="map-pin" data-pin="gyeongju" transform="translate(287,238)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="-12" y="4" text-anchor="end">Gyeongju</text></g>
+        <g class="map-pin" data-pin="busan" transform="translate(297,254)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="12" y="16">Busan</text></g>
+        <g class="map-pin" data-pin="jeonju" transform="translate(118,222)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="-12" y="4" text-anchor="end">Jeonju</text></g>
+        <g class="map-pin" data-pin="jeju" transform="translate(145,330)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="14" y="4">Jeju</text></g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- MENGAPA -->
+<section class="sec sec-dark" id="mengapa">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="sec-label">02 — Mengapa Korea</span>
+      <h2>Empat sebab untuk terbang esok.</h2>
+      <p>Segalanya bergerak pantas, tetapi tradisi ribuan tahun kekal hidup — kadangkala di atas blok yang sama.</p>
+    </div>
+    <div class="why-grid" data-reveal data-delay="80">
+      <div class="why-card searchable">
+        <div class="why-icon tint-red">🏮</div>
+        <span class="why-num">01</span>
+        <h3>Budaya Hidup</h3>
+        <p>Hanbok di istana, kuil berusia ratusan tahun dan K-pop di setiap sudut — lama dan baharu hidup bersama.</p>
+      </div>
+      <div class="why-card searchable">
+        <div class="why-icon tint-blue">⛰️</div>
+        <span class="why-num">02</span>
+        <h3>Alam Semula Jadi</h3>
+        <p>70% tanahnya bergunung; tambah pula 2,000 pulau dan pesisir yang berubah wajah setiap musim.</p>
+      </div>
+      <div class="why-card searchable">
+        <div class="why-icon tint-red">🏯</div>
+        <span class="why-num">03</span>
+        <h3>Sejarah 5,000 Tahun</h3>
+        <p>Tiga kerajaan, dinasti Joseon dan kisah moden — semuanya boleh dijejaki dalam satu perjalanan.</p>
+      </div>
+      <div class="why-card searchable">
+        <div class="why-icon tint-blue">🚄</div>
+        <span class="why-num">04</span>
+        <h3>Kemodenan Pantas</h3>
+        <p>Internet terpantas di dunia, kereta api laju dan kemudahan pelancong yang lancar di setiap bandar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAKANAN -->
+<section class="sec sec-soft" id="makanan">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="sec-label">03 — Makanan</span>
+      <h2>Rasa Korea, satu pinggan satu cerita.</h2>
+      <p>Tapis mengikut kategori atau gunakan bar carian di atas — banchan, barbeku dan jajanan jalanan menanti.</p>
+    </div>
+    <div class="filter-bar" data-reveal role="group" aria-label="Tapis makanan">
+      <button class="fbtn active" data-f="semua">Semua</button>
+      <button class="fbtn" data-f="utama">Hidangan Utama</button>
+      <button class="fbtn" data-f="jajanan">Jajanan Jalanan</button>
+      <button class="fbtn" data-f="barbeku">Barbeku</button>
+      <button class="fbtn" data-f="pedas">🌶️ Pedas</button>
+    </div>
+    <div id="food-grid" data-reveal data-delay="80">
+
+      <article class="food-card searchable" data-cat="utama pedas" data-name="kimchi">
+        <div class="food-fig"><span class="badge">Wajib Cuba</span><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Korean_cuisine-Kimchi_and_banchan-01.jpg/960px-Korean_cuisine-Kimchi_and_banchan-01.jpg" alt="Kimchi dengan banchan"></div>
+        <div class="food-body">
+          <h4>Kimchi <small>김치</small></h4>
+          <p>Sayuran diperam dengan gochugaru — jantung setiap meja Korea dan simbol kebudayaannya.</p>
+          <div class="spice"><em>pedas</em><span class="sp-dot hot"></span><span class="sp-dot hot"></span><span class="sp-dot hot"></span><span class="sp-dot"></span></div>
+        </div>
+      </article>
+
+      <article class="food-card searchable" data-cat="utama" data-name="bibimbap">
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Dolsot_Bibimbap_%286352434359%29.jpg/960px-Dolsot_Bibimbap_%286352434359%29.jpg" alt="Dolsot bibimbap"></div>
+        <div class="food-body">
+          <h4>Bibimbap <small>비빔밥</small></h4>
+          <p>Nasi panas dalam batu, sayuran tersusun, telur dan gochujang — kacau sebelum dimakan.</p>
+          <div class="spice"><em>pedas</em><span class="sp-dot hot"></span><span class="sp-dot hot"></span><span class="sp-dot"></span><span class="sp-dot"></span></div>
+        </div>
+      </article>
+
+      <article class="food-card searchable" data-cat="utama barbeku" data-name="bulgogi">
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Bulgogi_%28Marinated_beef._Served_with_rice%29_-_Kogi_2023-09-11.jpg/960px-Bulgogi_%28Marinated_beef._Served_with_rice%29_-_Kogi_2023-09-11.jpg" alt="Bulgogi"></div>
+        <div class="food-body">
+          <h4>Bulgogi <small>불고기</small></h4>
+          <p>Daging lembu diperam kicap-manis, dibakar atas gril — pintu masuk paling ramah untuk pemula.</p>
+          <div class="spice"><em>pedas</em><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span></div>
+        </div>
+      </article>
+
+      <article class="food-card searchable" data-cat="jajanan pedas" data-name="tteokbokki">
+        <div class="food-fig"><span class="badge">Paling Pedas</span><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Korean_rice_cake_%28tteokbokki%29.jpg/960px-Korean_rice_cake_%28tteokbokki%29.jpg" alt="Tteokbokki"></div>
+        <div class="food-body">
+          <h4>Tteokbokki <small>떡볶이</small></h4>
+          <p>Kek beras kenyal dalam sos gochujang pekat — ikon jajanan jalanan Myeongdong.</p>
+          <div class="spice"><em>pedas</em><span class="sp-dot hot"></span><span class="sp-dot hot"></span><span class="sp-dot hot"></span><span class="sp-dot hot"></span></div>
+        </div>
+      </article>
+
+      <article class="food-card searchable" data-cat="jajanan" data-name="chicken">
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Yangnyeom_Chicken_Korean_fried_chicken.jpg/960px-Yangnyeom_Chicken_Korean_fried_chicken.jpg" alt="Korean fried chicken"></div>
+        <div class="food-body">
+          <h4>K-Fried Chicken <small>치킨</small></h4>
+          <p>Chimaek — ayam goreng rangup berpasangan dengan bir — ritual malam hujung minggu Korea.</p>
+          <div class="spice"><em>pedas</em><span class="sp-dot hot"></span><span class="sp-dot hot"></span><span class="sp-dot"></span><span class="sp-dot"></span></div>
+        </div>
+      </article>
+
+      <article class="food-card searchable" data-cat="barbeku" data-name="galbi">
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Korean_barbecue-Galbi-01.jpg/960px-Korean_barbecue-Galbi-01.jpg" alt="Galbi"></div>
+        <div class="food-body">
+          <h4>Galbi <small>갈비</small></h4>
+          <p>Rusuk lembu diperam, dibakar di atas arang di meja sendiri — hidangan sambutan istimewa.</p>
+          <div class="spice"><em>pedas</em><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span></div>
+        </div>
+      </article>
+
+      <article class="food-card searchable" data-cat="jajanan utama" data-name="gimbap">
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Gimbap.jpg/960px-Gimbap.jpg" alt="Gimbap"></div>
+        <div class="food-body">
+          <h4>Gimbap <small>김밥</small></h4>
+          <p>Gulungan nasi, telur, sayur dan daging dibalut rumpai laut — bekal wajib untuk piknik musim bunga.</p>
+          <div class="spice"><em>pedas</em><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span></div>
+        </div>
+      </article>
+
+      <article class="food-card searchable" data-cat="jajanan" data-name="hotteok">
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Hotteok_2.jpg/960px-Hotteok_2.jpg" alt="Hotteok"></div>
+        <div class="food-body">
+          <h4>Hotteok <small>호떡</small></h4>
+          <p>Pankek manis inti gula perang dan kacang — pemanas musim sejuk di pasar namdaemun.</p>
+          <div class="spice"><em>pedas</em><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span></div>
+        </div>
+      </article>
+
+    </div>
+    <div id="food-empty"><p>Tiada hidangan sepadan untuk tapisan ini. Cuba kategori lain atau padam carian.</p></div>
+  </div>
+</section>
+
+<!-- BUDAYA -->
+<section class="sec" id="budaya">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="sec-label">04 — Budaya</span>
+      <h2>Warisan yang masih bernyawa.</h2>
+      <p>Bukan artifak di belakang kaca — hanbok disewa untuk berjalan di istana, hanok dihuni, adat diamalkan setiap hari.</p>
+    </div>
+    <div class="cult-grid">
+      <article class="cult-card searchable" data-reveal>
+        <span class="cult-glyph" aria-hidden="true">한복</span>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Hanbok_-_Korean_traditional_dress_05.jpg/960px-Hanbok_-_Korean_traditional_dress_05.jpg" alt="Hanbok tradisional">
+        <div class="cult-body">
+          <h3>Hanbok <small style="font-family:'Noto Sans KR',sans-serif;font-weight:400;color:var(--muted)">한복</small></h3>
+          <p>Pakaian tradisional dengan garisan melengkung dan warna cerah — dipakai semasa Seollal, perkahwinan dan sesi gambar istana.</p>
+        </div>
+      </article>
+      <article class="cult-card searchable" data-reveal data-delay="80">
+        <span class="cult-glyph" aria-hidden="true">한옥</span>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Traditional_hanok_houses_at_golden_hour_in_Bukchon_Hanok_Village_in_Seoul.jpg/960px-Traditional_hanok_houses_at_golden_hour_in_Bukchon_Hanok_Village_in_Seoul.jpg" alt="Rumah hanok di Bukchon">
+        <div class="cult-body">
+          <h3>Hanok &amp; Warisan <small style="font-family:'Noto Sans KR',sans-serif;font-weight:400;color:var(--muted)">한옥</small></h3>
+          <p>Rumah kayu bumbung berlian dengan sistem pemanasan ondol purba — Bukchon dan Jeonju adalah galeri hidupnya.</p>
+        </div>
+      </article>
+      <article class="cult-card searchable" data-reveal data-delay="160">
+        <span class="cult-glyph" aria-hidden="true">예</span>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/2008-Korea-Seoul-Jongmyo_jeryeak-06.jpg/960px-2008-Korea-Seoul-Jongmyo_jeryeak-06.jpg" alt="Upacara Jongmyo jeryeak">
+        <div class="cult-body">
+          <h3>Adat &amp; Hormat <small style="font-family:'Noto Sans KR',sans-serif;font-weight:400;color:var(--muted)">예의</small></h3>
+          <p>Membongkok apabila bertemu, dua tangan semasa memberi dan menerima — upacara Jongmyo jeryeak masih diadakan setiap tahun.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- TRADISI -->
+<section class="sec sec-dark" id="tradisi">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="sec-label">05 — Tradisi</span>
+      <h2>Kalendar penuh perayaan.</h2>
+      <p>Daripada sup nasi Tahun Baharu hingga tanglung menyala merentas sungai — pilih satu tarikh dan Korea akan beraya bersama anda.</p>
+    </div>
+    <div class="trad-cols" data-reveal>
+      <div>
+        <h3>Seollal <small>설날</small></h3>
+        <p>Tahun Baharu qamari: keluarga pulang, memakai hanbok, menghormati datuk nenek dan makan tteokguk — sup nasi penanda tambah umur.</p>
+      </div>
+      <div>
+        <h3>Chuseok <small>추석</small></h3>
+        <p>"Hari raya hasil tuaian": songpyeon dibuat bersama-sama, upacara charye dan bulan purnama paling terang dalam setahun.</p>
+      </div>
+      <div>
+        <h3>Menghormati Tradisi <small>전통</small></h3>
+        <p>Muzik upacara Jongmyo, tarian topeng talchum dan pesta tanah Gangneung Danoje — sebahagian diiktiraf UNESCO.</p>
+      </div>
+    </div>
+    <div class="trad-gallery" data-reveal data-delay="60">
+      <figure class="trad-item searchable">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Tteokguk_%28rice_cake_soup%29_01.jpg" alt="Tteokguk — sup nasi Seollal">
+        <figcaption><b>Seollal</b>Tteokguk, sup nasi Tahun Baharu</figcaption>
+      </figure>
+      <figure class="trad-item searchable">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Lanterns_in_the_Tree_at_Jogyesa.jpg/960px-Lanterns_in_the_Tree_at_Jogyesa.jpg" alt="Tanglung di Kuil Jogyesa">
+        <figcaption><b>Yeondeunghoe</b>Tanglung di Kuil Jogyesa</figcaption>
+      </figure>
+      <figure class="trad-item searchable">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg/960px-Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg" alt="Pesta Gangneung Danoje">
+        <figcaption><b>Danoje</b>Pesta tanah Gangneung</figcaption>
+      </figure>
+      <figure class="trad-item searchable">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Korea_Chuseok_Songpyeon_03.jpg/960px-Korea_Chuseok_Songpyeon_03.jpg" alt="Songpyeon Chuseok">
+        <figcaption><b>Chuseok</b>Songpyeon, kuih beras penuh bulan</figcaption>
+      </figure>
+      <figure class="trad-item searchable">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Jinju_namgang_lantern_festival_domestic_local_symbol.jpg/960px-Jinju_namgang_lantern_festival_domestic_local_symbol.jpg" alt="Pesta Tanglung Jinju">
+        <figcaption><b>Jinju Yudeung</b>Tanglung di atas Sungai Nam</figcaption>
+      </figure>
+    </div>
+
+    <div class="timeline" data-reveal>
+      <span class="timeline-kicker">Garisan Masa Perayaan</span>
+      <div id="tl-track" role="tablist" aria-label="Perayaan mengikut bulan">
+        <button class="tl-item" data-tl="0"><i>Jan–Feb</i>Seollal</button>
+        <button class="tl-item active" data-tl="1"><i>Mei</i>Yeondeunghoe</button>
+        <button class="tl-item" data-tl="2"><i>Jun</i>Danoje</button>
+        <button class="tl-item" data-tl="3"><i>Sep–Okt</i>Chuseok</button>
+        <button class="tl-item" data-tl="4"><i>Okt</i>Jinju Yudeung</button>
+      </div>
+      <div id="tl-panels">
+        <div class="tl-panel" data-tp="0">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Tteokguk_%28rice_cake_soup%29_01.jpg" alt="Tteokguk">
+          <div><strong>Seollal · 설날</strong><p>Hari pertama kalendar qamari — anak-anak memakan semangkuk tteokguk dan secara simbolik "bertambah setahun", manakala seluruh negara bergerak perlahan sempena perjalanan balik kampung paling sibuk dalam setahun.</p></div>
+        </div>
+        <div class="tl-panel active" data-tp="1">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Lanterns_in_the_Tree_at_Jogyesa.jpg/960px-Lanterns_in_the_Tree_at_Jogyesa.jpg" alt="Tanglung Yeondeunghoe">
+          <div><strong>Yeondeunghoe · 연등회</strong><p>Pada hari Buddha awal Mei, puluhan ribu tanglung kertas menyala di sepanjang Jongno, Seoul — perayaan yang tersenarai dalam Warisan Budaya Takbenda UNESCO sejak 2020.</p></div>
+        </div>
+        <div class="tl-panel" data-tp="2">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg/960px-Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg" alt="Danoje Gangneung">
+          <div><strong>Danoje · 단오제</strong><p>Pesta tanah tertua Korea di Gangneung — upacara shamanik, tarian topeng dan permainan tradisional sepanjang 20 hari, diiktiraf UNESCO.</p></div>
+        </div>
+        <div class="tl-panel" data-tp="3">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Korea_Chuseok_Songpyeon_03.jpg/960px-Korea_Chuseok_Songpyeon_03.jpg" alt="Songpyeon">
+          <div><strong>Chuseok · 추석</strong><p>Pada bulan lapan kalendar qamari, keluarga berkumpul untuk charye, melawat makam nenek moyang dan berkongsi songpyeon semasa bulan purnama.</p></div>
+        </div>
+        <div class="tl-panel" data-tp="4">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Jinju_namgang_lantern_festival_domestic_local_symbol.jpg/960px-Jinju_namgang_lantern_festival_domestic_local_symbol.jpg" alt="Jinju Namgang Yudeung">
+          <div><strong>Jinju Yudeung · 진주 남강 유등축제</strong><p>Sepanjang dua minggu pada Oktober, berjuta tanglung menerangi Sungai Nam di Jinju — mengenang pertahanan kubu Jinjuseong pada tahun 1592.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RANCANG -->
+<section class="sec" id="rancang">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="sec-label">06 — Rancang Perjalanan</span>
+      <h2>Rancang perjalanan anda.</h2>
+      <p>Tiga laluan yang sudah diuji — pilih mengikut masa yang anda ada, dan tukar ganti ikut selera.</p>
+    </div>
+    <div class="plan-panel" data-reveal>
+      <div class="plan-tabs" role="tablist" aria-label="Pilih tempoh perjalanan">
+        <button class="plan-tab active" data-plan="p1" role="tab" aria-selected="true">3 Hari<small>Bandaraya</small></button>
+        <button class="plan-tab" data-plan="p2" role="tab" aria-selected="false">5 Hari<small>Klasik</small></button>
+        <button class="plan-tab" data-plan="p3" role="tab" aria-selected="false">7 Hari<small>Penuh</small></button>
+      </div>
+      <div id="plan-days"></div>
+      <p id="plan-note"></p>
+      <div class="plan-foot">
+        <p>Setiap laluan bermula dan berakhir di Seoul (ICN/GMP).</p>
+        <a href="#galeri" class="btn-dark" data-magnetic>Lihat Galeri Inspirasi <span>→</span></a>
+      </div>
+    </div>
+
+    <div class="planner" data-reveal>
+      <div class="planner-head">
+        <span class="sec-label">Perancang Bajet</span>
+        <h3>Kira kos perjalanan anda.</h3>
+        <p>Pilih tema, kadar, musim dan tempoh — anggaran kos dan jadual harian bagi seorang pengembara dikira serta-merta dalam Won atau Ringgit.</p>
+      </div>
+      <div class="planner-grid">
+        <div class="planner-controls">
+          <fieldset class="p-field">
+            <legend>Tema perjalanan</legend>
+            <div class="p-chips">
+              <label class="p-chip"><input type="radio" name="pl-tema" value="sejarah"><span><b>Sejarah</b><i>역사</i></span></label>
+              <label class="p-chip"><input type="radio" name="pl-tema" value="bandar" checked><span><b>Bandar</b><i>도시</i></span></label>
+              <label class="p-chip"><input type="radio" name="pl-tema" value="makanan"><span><b>Makanan</b><i>음식</i></span></label>
+              <label class="p-chip"><input type="radio" name="pl-tema" value="keluarga"><span><b>Keluarga</b><i>가족</i></span></label>
+              <label class="p-chip"><input type="radio" name="pl-tema" value="budaya"><span><b>Budaya</b><i>문화</i></span></label>
+            </div>
+          </fieldset>
+          <fieldset class="p-field">
+            <legend>Kadar perjalanan</legend>
+            <div class="p-chips">
+              <label class="p-chip"><input type="radio" name="pl-kadar" value="santai"><span><b>Santai</b><i>1–2 aktiviti/hari</i></span></label>
+              <label class="p-chip"><input type="radio" name="pl-kadar" value="sederhana" checked><span><b>Sederhana</b><i>2–4 aktiviti/hari</i></span></label>
+              <label class="p-chip"><input type="radio" name="pl-kadar" value="padat"><span><b>Padat</b><i>4–6 aktiviti/hari</i></span></label>
+            </div>
+          </fieldset>
+          <fieldset class="p-field">
+            <legend>Musim</legend>
+            <div class="p-chips">
+              <label class="p-chip"><input type="radio" name="pl-musim" value="sakura" checked><span><b>Sakura</b><i>Apr</i></span></label>
+              <label class="p-chip"><input type="radio" name="pl-musim" value="panas"><span><b>Panas</b><i>Jun–Ogo</i></span></label>
+              <label class="p-chip"><input type="radio" name="pl-musim" value="luruh"><span><b>Luruh</b><i>Okt–Nov</i></span></label>
+              <label class="p-chip"><input type="radio" name="pl-musim" value="sejuk"><span><b>Sejuk</b><i>Dis–Feb</i></span></label>
+            </div>
+          </fieldset>
+          <fieldset class="p-field">
+            <legend>Tempoh</legend>
+            <div class="p-chips">
+              <label class="p-chip"><input type="radio" name="pl-tempoh" value="3"><span><b>3 Hari</b></span></label>
+              <label class="p-chip"><input type="radio" name="pl-tempoh" value="5" checked><span><b>5 Hari</b></span></label>
+              <label class="p-chip"><input type="radio" name="pl-tempoh" value="7"><span><b>7 Hari</b></span></label>
+              <label class="p-chip"><input type="radio" name="pl-tempoh" value="10"><span><b>10 Hari</b></span></label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="planner-result">
+          <div class="pr-top">
+            <span class="pr-label">Anggaran per orang</span>
+            <div class="pr-currency" role="group" aria-label="Pilih mata wang">
+              <button type="button" class="on" data-cur="krw">&#8361; Won</button>
+              <button type="button" data-cur="myr">RM Ringgit</button>
+            </div>
+          </div>
+          <div class="pr-total" id="pr-total">&#8361;0</div>
+          <p class="pr-alt" id="pr-alt"></p>
+          <div class="pr-bars" id="pr-bars"></div>
+          <p class="pr-note">Penerbangan tidak termasuk. Kadar anggaran: RM1 &asymp; &#8361;300 (semasa).</p>
+          <div class="pr-tip" id="pr-tip"></div>
+        </div>
+      </div>
+      <div class="pl-itin-wrap">
+        <div class="pl-itin-head">
+          <h4>Jadual harian anda <span id="pl-itin-meta"></span></h4>
+          <p id="pl-itin-sub"></p>
+        </div>
+        <div class="pl-itin" id="pl-itin"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PANGKALAN DATA -->
+<section class="sec sec-dark" id="tempat">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="sec-label">07 — Pangkalan Data</span>
+      <h2><span class="hangul">모든 명소</span> Setiap tempat, di hujung jari</h2>
+      <p>68 destinasi seluruh Korea Selatan — istana berusia 600 tahun, pasar wangi bijan, pantai pulau gunung berapi — lengkap dengan yuran, musim terbaik dan tip pengembara. Semuanya tersimpan dalam halaman ini; carian dan pembantu panduan berfungsi walaupun tanpa internet.</p>
+    </div>
+    <div class="db-tools" data-reveal>
+      <label class="db-search">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.8-4.8"/></svg>
+        <input id="db-q" type="text" placeholder="Cari tempat… cuba 'istana', 'jeju' atau 'pasar'" autocomplete="off">
+      </label>
+    </div>
+    <p class="db-count" id="db-count"></p>
+    <div class="db-grid" id="db-grid"></div>
+    <div class="db-ask" data-reveal>
+      <div class="db-ask-head">
+        <span class="db-ask-badge" aria-hidden="true">AI</span>
+        <div>
+          <h3>Tanya Panduan <small>여행 도우미</small></h3>
+          <p>Pembantu perjalanan mini ini membaca pangkalan data dan mencadangkan tempat ikut citarasa anda — dijawab terus dari pelayar, tanpa internet.</p>
+        </div>
+      </div>
+      <form class="db-ask-form" id="db-ask-form">
+        <input id="db-ask-input" type="text" placeholder="Tanya apa-apa… cth: 'tempat best untuk kanak-kanak di Busan'" autocomplete="off">
+        <button type="submit">Tanya →</button>
+      </form>
+      <div class="db-ask-chips" id="db-ask-chips">
+        <button type="button">Tempat percuma di Seoul?</button>
+        <button type="button">Makanan sedap di Jeonju?</button>
+        <button type="button">Aktiviti kanak-kanak?</button>
+        <button type="button">Pemandangan musim luruh?</button>
+      </div>
+      <div class="db-ask-answer" id="db-ask-answer" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERI -->
+<section class="sec sec-soft" id="galeri">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="sec-label">08 — Galeri</span>
+      <h2>Saat-saat dari Korea.</h2>
+      <p>Klik mana-mana imej untuk paparan penuh skrin — anak panah atau kekunci berfungsi juga.</p>
+    </div>
+    <div class="mosaic" data-reveal>
+      <div class="mo-item" data-g="0" role="button" tabindex="0" aria-label="Besarkan: Seoul pada waktu malam">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Seoul_cityscape_by_night_%2802%29.jpg/960px-Seoul_cityscape_by_night_%2802%29.jpg" alt="Pemandangan malam Seoul">
+        <span class="mo-zoom" aria-hidden="true">⤢</span>
+        <div class="mo-cap"><b>Seoul Waktu Malam</b>Suasana bandar dari atas Bukhansan</div>
+      </div>
+      <div class="mo-item" data-g="1" role="button" tabindex="0" aria-label="Besarkan: Menara Namsan">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Namsan_Tower_sunset%2C_Seoul.jpg/960px-Namsan_Tower_sunset%2C_Seoul.jpg" alt="Menara Namsan waktu senja">
+        <span class="mo-zoom" aria-hidden="true">⤢</span>
+        <div class="mo-cap"><b>Menara Namsan</b>Senja di atas ibu kota</div>
+      </div>
+      <div class="mo-item" data-g="2" role="button" tabindex="0" aria-label="Besarkan: Jambatan Gwangandaegyo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Gwangandaegyo_Diamond_Bridge_Gwangalli_Beach_Busan_%2831877282428%29.jpg/960px-Gwangandaegyo_Diamond_Bridge_Gwangalli_Beach_Busan_%2831877282428%29.jpg" alt="Jambatan Gwangandaegyo, Busan">
+        <span class="mo-zoom" aria-hidden="true">⤢</span>
+        <div class="mo-cap"><b>Gwangandaegyo</b>Jambatan Berlian, Busan</div>
+      </div>
+      <div class="mo-item" data-g="3" role="button" tabindex="0" aria-label="Besarkan: Seongsan-ri, Jeju">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Seongsan-ri_town_at_blue_hour_seen_from_Seongsan_Ilchulbong_volcano_Jeju_Island_South_Korea.jpg/960px-Seongsan-ri_town_at_blue_hour_seen_from_Seongsan_Ilchulbong_volcano_Jeju_Island_South_Korea.jpg" alt="Bandar Seongsan-ri, Jeju">
+        <span class="mo-zoom" aria-hidden="true">⤢</span>
+        <div class="mo-cap"><b>Seongsan-ri</b>Jeju pada jam biru</div>
+      </div>
+      <div class="mo-item" data-g="4" role="button" tabindex="0" aria-label="Besarkan: Bukchon Hanok">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bukchon_Hanok_Village_03.jpg/960px-Bukchon_Hanok_Village_03.jpg" alt="Kampung Hanok Bukchon">
+        <span class="mo-zoom" aria-hidden="true">⤢</span>
+        <div class="mo-cap"><b>Bukchon</b>Kampung hanok, Seoul</div>
+      </div>
+      <div class="mo-item" data-g="5" role="button" tabindex="0" aria-label="Besarkan: Jalan Jongno">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Night_view_of_Downtown_Seoul_along_Jongno_Street_in_2020.jpg" alt="Jalan Jongno waktu malam">
+        <span class="mo-zoom" aria-hidden="true">⤢</span>
+        <div class="mo-cap"><b>Jongno</b>Denyut jalan lama Seoul</div>
+      </div>
+    </div>
+
+    <div class="carousel" data-reveal data-delay="80" aria-label="Karusel imej">
+      <span class="car-meta" id="car-count">1 / 8</span>
+      <button class="car-btn" id="car-prev" aria-label="Imej sebelumnya">←</button>
+      <button class="car-btn" id="car-next" aria-label="Imej seterusnya">→</button>
+      <div id="car-track"></div>
+      <div id="car-bar" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<!-- KOMUNITI -->
+<section class="sec" id="komuniti">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="sec-label">09 — Komuniti</span>
+      <h2>Ruang <em>berkongsi</em> pengembara <span class="hangul">여행 후기</span></h2>
+      <p>Daftar, log masuk dan tinggalkan komen — nasihat jadual, tip bajet atau tempat makanan paling sedap yang anda jumpa. Komen disimpan selamat dalam pangkalan data Firebase.</p>
+    </div>
+    <div class="km-grid">
+      <aside data-reveal>
+        <div class="km-auth-card" id="km-card" data-mode="firebase">
+          <div id="km-auth-out">
+            <div class="km-tabs" id="km-tabs">
+              <button class="km-tab active" id="km-tab-in" type="button">Masuk</button>
+              <button class="km-tab" id="km-tab-up" type="button">Daftar</button>
+            </div>
+            <form id="km-form" novalidate>
+              <label class="km-field" id="km-f-name" hidden>
+                <span>Nama penuh</span>
+                <input type="text" id="km-name" maxlength="40" autocomplete="name" placeholder="cth. Nur Aisyah">
+              </label>
+              <label class="km-field km-f-fb">
+                <span>Emel</span>
+                <input type="email" id="km-email" autocomplete="email" placeholder="anda@contoh.com">
+              </label>
+              <label class="km-field km-f-fb">
+                <span>Kata laluan</span>
+                <input type="password" id="km-pass" autocomplete="current-password" placeholder="Minima 6 aksara">
+              </label>
+              <p class="km-err" id="km-err" role="alert"></p>
+              <button class="km-submit" id="km-submit" type="submit">Masuk</button>
+              <button class="km-reset" id="km-reset" type="button">Lupa kata laluan?</button>
+            </form>
+            <div class="km-div"><span>atau</span></div>
+            <button class="km-google" id="km-google" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.9-.1-1.5-.3-2.2H12v4.1h6.5c-.1 1.1-.8 2.7-2.4 3.8l-.1.2 3.6 2.8.3.02c2.2-2.05 3.6-5.07 3.6-8.72z"/><path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.94-2.91l-3.79-2.93c-1.02.71-2.36 1.19-4.15 1.19-3.18 0-5.88-2.1-6.84-5.01l-.14.01-3.7 2.86-.05.14C3.25 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.16 14.34c-.25-.73-.39-1.51-.39-2.34s.14-1.61.38-2.34l-.01-.16-3.75-2.9-.12.06C.47 8.24 0 10.06 0 12s.47 3.76 1.27 5.34l3.89-3z"/><path fill="#EB4335" d="M12 4.65c2.26 0 3.79.98 4.66 1.8l3.4-3.32C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.7 1.27 6.66l3.88 3c.97-2.91 3.67-5.01 6.85-5.01z"/></svg>
+              Sambung dengan Google
+            </button>
+          </div>
+          <div id="km-auth-in" hidden>
+            <div class="km-user">
+              <span class="km-ava" id="km-ava">A</span>
+              <div><b id="km-uname">—</b><small id="km-umail"></small></div>
+            </div>
+            <span class="km-badge cloud" id="km-badge">Firebase</span>
+            <button class="km-out" id="km-out" type="button">Log keluar</button>
+          </div>
+        </div>
+        <p class="km-note" id="km-note"></p>
+      </aside>
+      <div data-reveal data-delay="90">
+        <p class="km-hint" id="km-hint" hidden>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+          Log masuk dahulu untuk menulis komen.
+        </p>
+        <form class="km-compose" id="km-compose">
+          <textarea id="km-text" rows="3" maxlength="600" placeholder="Kongsi pengalaman anda…"></textarea>
+          <div class="km-compose-foot">
+            <span id="km-chars">0 / 600</span>
+            <button class="km-send" id="km-send" type="submit" disabled>Hantar komen</button>
+          </div>
+        </form>
+        <div class="km-head"><h3>Komen terkini</h3><span id="km-count"></span></div>
+        <div id="km-list" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="wrap">
+    <div class="flag-stage" data-reveal aria-hidden="true">
+      <svg viewBox="0 0 120 120" role="img" aria-label="Bendera Korea Selatan">
+        <g class="tri" transform="rotate(-34 60 60)" fill="#faf9f6">
+          <rect x="14" y="10" width="28" height="6" rx="2"/><rect x="14" y="18" width="28" height="6" rx="2"/><rect x="14" y="26" width="28" height="6" rx="2"/>
+          <rect x="78" y="10" width="12" height="6" rx="2"/><rect x="94" y="10" width="12" height="6" rx="2"/><rect x="78" y="18" width="28" height="6" rx="2"/><rect x="78" y="26" width="12" height="6" rx="2"/><rect x="94" y="26" width="12" height="6" rx="2"/>
+          <rect x="14" y="82" width="28" height="6" rx="2"/><rect x="14" y="90" width="12" height="6" rx="2"/><rect x="30" y="90" width="12" height="6" rx="2"/><rect x="14" y="98" width="28" height="6" rx="2"/>
+          <rect x="78" y="82" width="12" height="6" rx="2"/><rect x="94" y="82" width="12" height="6" rx="2"/><rect x="78" y="90" width="12" height="6" rx="2"/><rect x="94" y="90" width="12" height="6" rx="2"/><rect x="78" y="98" width="12" height="6" rx="2"/><rect x="94" y="98" width="12" height="6" rx="2"/>
+        </g>
+        <g class="taegeuk">
+          <path d="M60 14a46 46 0 0 1 0 92 23 23 0 0 1 0-46 23 23 0 0 0 0-46z" fill="#CD2E3A"/>
+          <path d="M60 106a46 46 0 0 1 0-92 23 23 0 0 1 0 46 23 23 0 0 0 0 46z" fill="#5b8def"/>
+        </g>
+      </svg>
+    </div>
+    <h2 data-reveal>Bersedia menjelajah <em>Korea</em>?</h2>
+    <p data-reveal data-delay="60">Pilih laluan, simpan tarikh perayaan dan biarkan Korea selebihnya — negara ini tahu cara menyambut tetamu.</p>
+    <div class="cta-actions" data-reveal data-delay="120">
+      <a href="#rancang" class="btn-primary" data-magnetic>Mulakan Perjalanan <span>→</span></a>
+      <a href="#destinasi" class="btn-ghost" data-magnetic>Jelajah Destinasi</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="logo" href="#utama"><span class="logo-mark" aria-hidden="true"></span><span>Jelajah&nbsp;<em>Korea</em></span></a>
+        <p>Panduan perjalanan bebas kepada destinasi, makanan, budaya dan tradisi Korea Selatan — ditulis untuk pengembara berbahasa Melayu.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Terokah</h4>
+        <a href="#destinasi">Destinasi</a>
+        <a href="#makanan">Makanan</a>
+        <a href="#budaya">Budaya</a>
+        <a href="#tradisi">Tradisi</a>
+      </div>
+      <div class="foot-col">
+        <h4>Tempat</h4>
+        <a href="#destinasi">Seoul</a>
+        <a href="#destinasi">Busan</a>
+        <a href="#destinasi">Jeju</a>
+        <a href="#destinasi">Gyeongju</a>
+      </div>
+      <div class="foot-col">
+        <h4>Ikuti Kami</h4>
+        <div class="socials">
+          <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.8.1-1.1.1-1.5.2-1.9.3-.5.2-.8.4-1.1.7-.3.3-.5.6-.7 1.1-.1.4-.3.8-.3 1.9-.1 1.3-.1 1.6-.1 4.8s0 3.5.1 4.8c.1 1.1.2 1.5.3 1.9.2.5.4.8.7 1.1.3.3.6.5 1.1.7.4.1.8.3 1.9.3 1.3.1 1.6.1 4.8.1s3.5 0 4.8-.1c1.1-.1 1.5-.2 1.9-.3.5-.2.8-.4 1.1-.7.3-.3.5-.6.7-1.1.1-.4.3-.8.3-1.9.1-1.3.1-1.6.1-4.8s0-3.5-.1-4.8c-.1-1.1-.2-1.5-.3-1.9-.2-.5-.4-.8-.7-1.1-.3-.3-.6-.5-1.1-.7-.4-.1-.8-.3-1.9-.3-1.3-.1-1.6-.1-4.8-.1zm0 3.1a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8zm0 8.1a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zm6.2-8.3a1.1 1.1 0 1 1-2.3 0 1.1 1.1 0 0 1 2.3 0z"/></svg>
+          </a>
+          <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube">
+            <svg viewBox="0 0 24 24"><path d="M23.5 7.2s-.2-1.6-.9-2.3c-.9-.9-1.9-.9-2.4-1C16.9 3.6 12 3.6 12 3.6s-4.9 0-8.2.3c-.5.1-1.5.1-2.4 1-.7.7-.9 2.3-.9 2.3S.3 9.1.3 11v1.8c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.9.9 2 .9 2.5 1 1.8.2 7.9.3 8.1.3 0 0 4.9 0 8.2-.3.5-.1 1.5-.1 2.4-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8V11c0-1.9-.2-3.8-.2-3.8zM9.6 15.3V8.4l6.4 3.5-6.4 3.4z"/></svg>
+          </a>
+          <a href="https://x.com" target="_blank" rel="noopener" aria-label="X">
+            <svg viewBox="0 0 24 24"><path d="M18.9 2H22l-6.8 7.8L23.3 22h-6.3l-4.9-6.4L6.5 22H3.4l7.3-8.3L1 2h6.5l4.4 5.9L18.9 2zm-1.1 18.1h1.7L6.6 3.8H4.7l13.1 16.3z"/></svg>
+          </a>
+          <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24"><path d="M22 12.1C22 6.5 17.5 2 12 2S2 6.5 2 12.1c0 5 3.7 9.2 8.5 9.9v-7H7.9v-2.9h2.6V9.8c0-2.6 1.5-4 3.9-4 1.1 0 2.3.2 2.3.2v2.5h-1.3c-1.3 0-1.7.8-1.7 1.6v2h2.9l-.5 2.9h-2.4v7c4.8-.7 8.3-4.9 8.3-9.9z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Jelajah Korea Selatan. Hak cipta terpelihara.</span>
+      <span>Budaya · Sejarah · Alam · Bandar</span>
+      <span>Dibuat dengan ♥ untuk Korea 🇰🇷</span>
+    </div>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Galeri paparan penuh">
+  <div class="lb-top">
+    <span id="lb-count">1 / 11</span>
+    <div class="lb-actions">
+      <button id="lb-fullscreen" aria-label="Skrin penuh">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+      </button>
+      <button id="lb-close" aria-label="Tutup">✕</button>
+    </div>
+  </div>
+  <div class="lb-stage">
+    <button class="lb-side" id="lb-prev" aria-label="Sebelumnya">←</button>
+    <img id="lb-img" src="" alt="">
+    <button class="lb-side" id="lb-next" aria-label="Seterusnya">→</button>
+  </div>
+  <p id="lb-caption"></p>
+  <div id="lb-thumbs"></div>
+</div>
+
+<div class="db-modal" id="db-modal" aria-hidden="true">
+  <div class="db-modal-bg" data-dbclose></div>
+  <div class="db-modal-card" role="dialog" aria-modal="true" aria-label="Butiran tempat">
+    <button class="db-modal-close" id="db-modal-close" aria-label="Tutup">✕</button>
+    <div id="db-modal-body"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,c){return (c||document).querySelector(s)};
+var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+var finePointer=window.matchMedia('(pointer:fine)').matches;
+var reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var FB_IMG='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'600\' viewBox=\'0 0 800 600\'%3E%3Crect width=\'800\' height=\'600\' fill=\'%23f2f0ea\'/%3E%3Ccircle cx=\'400\' cy=\'250\' r=\'64\' fill=\'%23CD2E3A\'/%3E%3Ccircle cx=\'400\' cy=\'250\' r=\'64\' fill=\'%230047A0\' opacity=\'0.35\'/%3E%3Ctext x=\'400\' y=\'410\' font-family=\'Arial\' font-size=\'26\' fill=\'%230a0a0a\' text-anchor=\'middle\'%3EJelajah Korea Selatan%3C/text%3E%3C/svg%3E';
+
+function guardImg(img){
+  if(!img||img.dataset.fbGuard)return;
+  img.dataset.fbGuard='1';
+  img.addEventListener('error',function(){
+    if(img.dataset.fbDone)return;
+    img.dataset.fbDone='1';
+    img.src=FB_IMG;
+  });
+}
+$$('img').forEach(guardImg);
+
+/* gallery data */
+var W='https://upload.wikimedia.org/wikipedia/commons/';
+var GALLERY=[
+  {src:W+'thumb/b/b0/Seoul_cityscape_by_night_%2802%29.jpg/1920px-Seoul_cityscape_by_night_%2802%29.jpg',t:'Seoul Waktu Malam'},
+  {src:W+'thumb/0/0a/Namsan_Tower_sunset%2C_Seoul.jpg/1920px-Namsan_Tower_sunset%2C_Seoul.jpg',t:'Menara Namsan'},
+  {src:W+'thumb/0/09/Gwangandaegyo_Diamond_Bridge_Gwangalli_Beach_Busan_%2831877282428%29.jpg/1920px-Gwangandaegyo_Diamond_Bridge_Gwangalli_Beach_Busan_%2831877282428%29.jpg',t:'Gwangandaegyo, Busan'},
+  {src:W+'thumb/4/4a/Seongsan-ri_town_at_blue_hour_seen_from_Seongsan_Ilchulbong_volcano_Jeju_Island_South_Korea.jpg/1920px-Seongsan-ri_town_at_blue_hour_seen_from_Seongsan_Ilchulbong_volcano_Jeju_Island_South_Korea.jpg',t:'Seongsan-ri, Jeju'},
+  {src:W+'thumb/f/ff/Bukchon_Hanok_Village_03.jpg/1920px-Bukchon_Hanok_Village_03.jpg',t:'Bukchon Hanok'},
+  {src:W+'c/c7/Night_view_of_Downtown_Seoul_along_Jongno_Street_in_2020.jpg',t:'Jalan Jongno, Seoul'},
+  {src:W+'thumb/b/bf/Korea_Gyeongbokgung_Guard_13.jpg/1920px-Korea_Gyeongbokgung_Guard_13.jpg',t:'Pengawal Gyeongbokgung'},
+  {src:W+'thumb/3/3f/Cherry_Blossom_in_Yeouido_Park_-_panoramio.jpg/1920px-Cherry_Blossom_in_Yeouido_Park_-_panoramio.jpg',t:'Bunga Sakura Yeouido'},
+  {src:W+'thumb/3/34/Korean_pancakes_and_pan-fried_foods_at_Gwangjang_Market.jpg/1920px-Korean_pancakes_and_pan-fried_foods_at_Gwangjang_Market.jpg',t:'Pasar Gwangjang'},
+  {src:W+'thumb/6/69/Exterior_front_view_of_Daejojeon_Hall_of_Changdeokgung_Palace_with_blue_sky_in_Seoul.jpg/1920px-Exterior_front_view_of_Daejojeon_Hall_of_Changdeokgung_Palace_with_blue_sky_in_Seoul.jpg',t:'Daejojeon, Changdeokgung'},
+  {src:W+'thumb/0/0f/Burimun_gate_and_pine_under_blue_sky_at_Beomeosa_temple_in_Busan%2C_South_Korea.jpg/1920px-Burimun_gate_and_pine_under_blue_sky_at_Beomeosa_temple_in_Busan%2C_South_Korea.jpg',t:'Gerbang Beomeosa, Busan'}
+];
+var lbEl,imgLB,capLB,countLB,thumbsEl,thumbEls=[],lbCur=0;
+
+/* plan data */
+var PLANS={
+  p1:{note:'<strong>Tip:</strong> Laluan bandaraya sesuai untuk cuti panjang hujung minggu — beli T-money card pada hari pertama &amp; biarkan subway membawa anda ke hampir semua tempat.',days:[
+    {l:'Hari 1',h:'Seoul Klasik',items:['Gyeongbokgung &amp; pertukaran pengawal diraja','Bukchon Hanok Village','Insadong &amp; kedai teh tradisional','N Seoul Tower waktu senja']},
+    {l:'Hari 2',h:'Seoul Moden',items:['Myeongdong &amp; jajanan jalanan','Kafe &amp; galeri di Seongsu-dong','Piknik di Taman Han River, Yeouido','Belanja malam di Dongdaemun']},
+    {l:'Hari 3',h:'Pilihan Sehari',items:['DMZ (tempahan awal) atau Everland','Gwangjang Market untuk makan tengah hari','Pasar membeli-belah terakhir sebelum ke lapangan terbang']}
+  ]},
+  p2:{note:'<strong>Tip:</strong> Tempah tiket KTX lebih awal untuk kadar murah; Seoul–Busan mengambil kira-kira 2 jam 30 minit. Bawa beg galas kecil untuk perjalanan sebegini.',days:[
+    {l:'Hari 1–2',h:'Seoul',items:['Istana diraja &amp; Bukchon Hanok','Myeongdong, Hongdae &amp; Han River','Gwangjang Market &amp; Namsan Tower']},
+    {l:'Hari 3',h:'Gyeongju',items:['KTX ke Singyeongju','Kuil Bulguksa &amp; Seokguram','Makam Daereungwon &amp; Anapji waktu malam']},
+    {l:'Hari 4',h:'Busan',items:['Haedong Yonggungsa waktu pagi','Haeundae &amp; Gwangalli Beach','Pasar Jagalchi &amp; Kampung Gamcheon']},
+    {l:'Hari 5',h:'Pulang',items:['Pagi bebas di Nampo atau Songdo','KTX kembali ke Seoul','Membeli-belah duty-free &amp; berlepas']}
+  ]},
+  p3:{note:'<strong>Tip:</strong> Laluan 7 hari paling menjimatkan dengan Korea Rail Pass (KR Pass) — satu pas untuk semua perjalanan KTX anda.',days:[
+    {l:'Hari 1',h:'Seoul',items:['Gyeongbokgung, Bukchon &amp; Insadong','Ikseon-dong waktu petang']},
+    {l:'Hari 2',h:'Seoul',items:['Namsan Tower &amp; Myeongdong','Hongdae &amp; Han River waktu malam']},
+    {l:'Hari 3',h:'Jeonju',items:['KTX ke Jeonju','Kampung Hanok &amp; bibimbap asal','Makan malam kawasan Gyeonggijeon']},
+    {l:'Hari 4',h:'Busan',items:['KTX ke Busan','Haeundae &amp; Gwangalli','Pasar Jagalchi waktu malam']},
+    {l:'Hari 5',h:'Busan',items:['Kampung Gamcheon &amp; Huinnyeoul','Haedong Yonggungsa','Seomyeon waktu malam']},
+    {l:'Hari 6',h:'Gyeongju',items:['Bulguksa &amp; Seokguram','Makam Daereungwon &amp; Cheomseongdae','Anapji pada waktu malam']},
+    {l:'Hari 7',h:'Seoul &amp; Pulang',items:['KTX kembali ke Seoul','Masa lapang di Insadong','Berlepas dari ICN/GMP']}
+  ]}
+};
+var header=$('#site-header');
+var mobileMenu=$('#mobile-menu'),hamburger=$('#hamburger');
+var searchBar=$('#searchbar'),searchInput=$('#search-input'),searchCount=$('#search-count');
+var searchNote=$('#search-note'),noteQ=$('#note-q'),noteN=$('#note-n');
+var progressBar=$('#progress i'),pcBtn=$('#progress-circle'),pcBar=$('#progress-circle .pc-bar');
+var loader=$('#loader');
+$$('img').forEach(function(im){if(im.id!=='hero-img')im.loading='lazy';});
+/* counters */
+function animateCount(el){
+  var target=parseFloat(el.dataset.count||'0');
+  var dec=parseInt(el.dataset.decimals||'0',10);
+  var suf=el.dataset.suffix||'';
+  function render(v){el.innerHTML=(dec?v.toFixed(dec):Math.round(v).toLocaleString('en-US'))+(suf?'<em>'+suf+'</em>':'')}
+  if(reducedMotion){render(target);return}
+  var t0=null,dur=1700;
+  function tick(ts){
+    if(t0===null)t0=ts;
+    var p=Math.min((ts-t0)/dur,1);
+    render(target*(1-Math.pow(1-p,3)));
+    if(p<1)requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+var countersDone=false;
+function runCounters(){if(countersDone)return;countersDone=true;$$('strong[data-count]').forEach(animateCount)}
+(function(){
+  var min=new Promise(function(r){setTimeout(r,700)});
+  var loaded=new Promise(function(r){
+    if(document.readyState==='complete')r();else window.addEventListener('load',r);
+    setTimeout(r,3500);
+  });
+  Promise.all([min,loaded]).then(function(){
+    loader.classList.add('done');
+    document.body.classList.remove('locked');
+    setTimeout(runCounters,250);
+    setTimeout(function(){if(loader&&loader.parentNode)loader.parentNode.removeChild(loader)},800);
+  });
+})();
+/* floating hangul */
+(function(){
+  var field=$('#hangul-field');if(!field||reducedMotion)return;
+  var chars=['한','국','서','울','부','산','제','주','경','주','설','악','전','주','여','행'];
+  var n=window.innerWidth<640?8:14;
+  for(var i=0;i<n;i++){
+    var s=document.createElement('span');
+    s.textContent=chars[Math.floor(Math.random()*chars.length)];
+    s.style.left=(Math.random()*92+2)+'%';
+    s.style.fontSize=(Math.random()*46+18)+'px';
+    s.style.setProperty('--ho',(Math.random()*0.1+0.05).toFixed(2));
+    s.style.animationDuration=(Math.random()*16+14)+'s';
+    s.style.animationDelay=(-Math.random()*20)+'s';
+    field.appendChild(s);
+  }
+})();
+/* reveal + map draw */
+var mapDrawn=false;
+function drawMap(){
+  if(mapDrawn)return;mapDrawn=true;
+  var path=$('#korea-path');
+  if(path&&!reducedMotion){
+    var len=path.getTotalLength();
+    path.style.strokeDasharray=len;path.style.strokeDashoffset=len;
+    path.getBoundingClientRect();
+    path.style.transition='stroke-dashoffset 3.2s cubic-bezier(.22,1,.36,1)';
+    path.style.strokeDashoffset='0';
+  }
+  $$('.map-pin').forEach(function(p,i){setTimeout(function(){p.classList.add('on')},reducedMotion?0:2300+i*260)});
+}
+var revealEls=$$('[data-reveal]');
+revealEls.forEach(function(el){var d=el.getAttribute('data-delay');if(d)el.style.transitionDelay=d+'ms'});
+var revealObs=new IntersectionObserver(function(entries){
+  entries.forEach(function(en){
+    if(en.isIntersecting){
+      en.target.classList.add('revealed');
+      if(en.target.querySelector('#korea-path'))drawMap();
+      revealObs.unobserve(en.target);
+    }
+  });
+},{threshold:0.12});
+revealEls.forEach(function(el){revealObs.observe(el)});
+if(reducedMotion){revealEls.forEach(function(el){el.classList.add('revealed')});drawMap();}
+/* scroll: progress, header, parallax */
+var heroBg=$('.hero-bg');
+var parTX=0,parX=0;
+function onScrollFrame(){
+  var st=window.scrollY||document.documentElement.scrollTop||0;
+  var max=document.documentElement.scrollHeight-window.innerHeight;
+  var p=max>0?Math.min(st/max,1):0;
+  progressBar.style.transform='scaleX('+p+')';
+  pcBar.style.strokeDashoffset=String(163.4*(1-p));
+  pcBtn.classList.toggle('show',st>600);
+  header.classList.toggle('scrolled',st>40);
+  if(heroBg&&!reducedMotion&&st<window.innerHeight*1.4){heroBg.style.transform='translate3d('+parX+'px,'+(st*0.28)+'px,0)'}
+}
+var scrollTick=false;
+window.addEventListener('scroll',function(){if(scrollTick)return;scrollTick=true;requestAnimationFrame(function(){onScrollFrame();scrollTick=false})},{passive:true});
+onScrollFrame();
+pcBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:reducedMotion?'auto':'smooth'})});
+/* cursor + parallax mouse lerp */
+if(finePointer&&!reducedMotion){
+  document.body.classList.add('custom-cursor');
+  var cursorDot=$('#cursor-dot'),cursorRing=$('#cursor-ring');
+  var mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
+  window.addEventListener('mousemove',function(e){
+    mx=e.clientX;my=e.clientY;
+    parTX=(e.clientX/window.innerWidth-0.5)*16;
+    cursorDot.style.left=mx+'px';cursorDot.style.top=my+'px';
+  });
+  (function loop(){
+    rx+=(mx-rx)*0.16;ry+=(my-ry)*0.16;
+    parX+=(parTX-parX)*0.06;
+    cursorRing.style.left=rx+'px';cursorRing.style.top=ry+'px';
+    requestAnimationFrame(loop);
+  })();
+  document.addEventListener('mouseover',function(e){
+    var t=e.target.closest('a,button,.dest-card,.mo-item,.map-pin,input,select,.tl-item,.fbtn,.plan-tab');
+    document.body.classList.toggle('cursor-hover',!!t);
+  });
+  document.documentElement.addEventListener('mouseleave',function(){cursorDot.style.opacity='0';cursorRing.style.opacity='0'});
+  document.documentElement.addEventListener('mouseenter',function(){cursorDot.style.opacity='1';cursorRing.style.opacity='1'});
+}
+/* magnetic */
+if(finePointer&&!reducedMotion){
+  $$('[data-magnetic]').forEach(function(el){
+    el.addEventListener('mousemove',function(e){
+      var r=el.getBoundingClientRect();
+      el.style.transform='translate('+((e.clientX-r.left-r.width/2)/r.width*10)+'px,'+((e.clientY-r.top-r.height/2)/r.height*8)+'px)';
+    });
+    el.addEventListener('mouseleave',function(){el.style.transform=''});
+  });
+}
+/* scroll-spy */
+var navLinks=$$('.main-nav a');
+var spySections=navLinks.map(function(a){return $(a.getAttribute('href'))}).filter(Boolean);
+if('IntersectionObserver' in window){
+  var spy=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){navLinks.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+en.target.id)})}
+    });
+  },{rootMargin:'-40% 0px -55% 0px'});
+  spySections.forEach(function(s){spy.observe(s)});
+}
+/* mobile menu */
+function toggleMenu(force){
+  var open=typeof force==='boolean'?force:!mobileMenu.classList.contains('open');
+  mobileMenu.classList.toggle('open',open);
+  hamburger.classList.toggle('open',open);
+  hamburger.setAttribute('aria-expanded',String(open));
+  mobileMenu.setAttribute('aria-hidden',String(!open));
+  document.body.classList.toggle('locked',open);
+}
+hamburger.addEventListener('click',function(){toggleMenu()});
+$$('.mm-link',mobileMenu).forEach(function(a){a.addEventListener('click',function(){toggleMenu(false)})});
+var mqDesktop=window.matchMedia('(min-width: 901px)');
+function mqHandler(){if(mqDesktop.matches&&mobileMenu.classList.contains('open'))toggleMenu(false)}
+if(mqDesktop.addEventListener)mqDesktop.addEventListener('change',mqHandler);else mqDesktop.addListener(mqHandler);
+/* search */
+function searchQuery(){return searchInput.value.trim().toLowerCase()}
+function syncFoodEmpty(){
+  if(!foodEmpty)return;
+  var visible=foodCards.filter(function(c){return !c.classList.contains('hide')&&!c.classList.contains('search-hidden')});
+  foodEmpty.classList.toggle('show',visible.length===0);
+}
+function applySearch(){
+  var q=searchQuery();
+  var matches=0;
+  $$('.searchable').forEach(function(el){
+    var ok=!q||(el.textContent||'').toLowerCase().indexOf(q)>-1;
+    el.classList.toggle('search-hidden',!ok);
+    if(ok)matches++;
+  });
+  syncFoodEmpty();
+  searchCount.textContent=q?matches+' padanan':'';
+  noteQ.textContent=q;noteN.textContent=matches+' padanan';
+  searchNote.classList.toggle('show',!!q);
+}
+var searchTimer=null;
+searchInput.addEventListener('input',function(){clearTimeout(searchTimer);searchTimer=setTimeout(applySearch,160)});
+searchInput.addEventListener('keydown',function(e){
+  if(e.key==='Enter'){
+    var first=$$('.searchable').filter(function(el){return !el.classList.contains('search-hidden')})[0];
+    if(first)first.scrollIntoView({behavior:reducedMotion?'auto':'smooth',block:'center'});
+  }
+});
+function openSearch(){searchBar.classList.add('open');setTimeout(function(){searchInput.focus()},60);applySearch()}
+function closeSearch(){searchBar.classList.remove('open');searchInput.value='';applySearch()}
+$('#search-close').addEventListener('click',closeSearch);
+$('#note-clear').addEventListener('click',function(){closeSearch();searchInput.focus()});
+$('#search-toggle').addEventListener('click',function(){searchBar.classList.contains('open')?closeSearch():openSearch()});
+/* destination rail */
+var rail=$('#dest-rail'),dotsEl=$('#rail-dots');
+var cards=$$('.dest-card',rail);
+cards.forEach(function(_,i){
+  var d=document.createElement('button');
+  d.setAttribute('aria-label','Ke kad '+(i+1));
+  d.addEventListener('click',function(){railTo(i)});
+  dotsEl.appendChild(d);
+});
+var dotBtns=$$('button',dotsEl);
+function step(){var c=cards[0];return c?c.getBoundingClientRect().width+24:354}
+function railTo(i){rail.scrollTo({left:i*step(),behavior:reducedMotion?'auto':'smooth'})}
+function railBy(dir){rail.scrollBy({left:dir*step(),behavior:reducedMotion?'auto':'smooth'})}
+$('#rail-prev').addEventListener('click',function(){railBy(-1)});
+$('#rail-next').addEventListener('click',function(){railBy(1)});
+var railTicking=false;
+rail.addEventListener('scroll',function(){
+  if(railTicking)return;railTicking=true;
+  requestAnimationFrame(function(){
+    var i=Math.max(0,Math.min(cards.length-1,Math.round(rail.scrollLeft/step())));
+    dotBtns.forEach(function(d,k){d.classList.toggle('on',k===i)});
+    railTicking=false;
+  });
+});
+if(dotBtns[0])dotBtns[0].classList.add('on');
+var dragging=false,dragX=0,dragScroll=0,moved=false;
+rail.addEventListener('pointerdown',function(e){
+  if(e.pointerType!=='mouse')return;
+  dragging=true;moved=false;dragX=e.clientX;dragScroll=rail.scrollLeft;
+  rail.classList.add('dragging');
+});
+window.addEventListener('pointermove',function(e){
+  if(!dragging)return;
+  var dx=e.clientX-dragX;
+  if(Math.abs(dx)>5)moved=true;
+  rail.scrollLeft=dragScroll-dx;
+});
+window.addEventListener('pointerup',function(){if(!dragging)return;dragging=false;rail.classList.remove('dragging')});
+rail.addEventListener('click',function(e){if(moved){e.preventDefault();e.stopPropagation();moved=false}},true);
+/* map */
+var PINS={
+  seoul:{t:'Seoul 서울 — Ibu Kota · Metro',d:'Bandaraya utama dengan 9 laluan metro, istana dinasti Joseon dan titik mula paling popular untuk pengembara.'},
+  busan:{t:'Busan 부산 — Bandar Pesisir',d:'Pantai, pasar ikan Jagalchi dan kampung seni Gamcheon — 2 jam 30 minit dari Seoul dengan KTX.'},
+  jeju:{t:'Jeju 제주 — Pulau Vulkanik',d:'Penerbangan 1 jam dari Seoul; lanskap UNESCO, tebing lava dan budaya haenyeo yang unik.'},
+  gyeongju:{t:'Gyeongju 경주 — Ibu Kota Silla Kuno',d:'Makam purba, kuil Bulguksa dan tasik Anapji — 2 jam dengan KTX ke Singyeongju.'},
+  seoraksan:{t:'Seoraksan 설악산 — Taman Negara',d:'Puncak Ulsanbawi dan kuil Sinheungsa; 2 jam 40 minit dengan KTX dan bas dari Seoul.'},
+  jeonju:{t:'Jeonju 전주 — Kampung Hanok',d:'Lebih 800 rumah hanok, bibimbap asal dan pansori — 1 jam 40 minit dengan KTX.'}
+};
+var mapInfo=$('#map-info');
+function activatePin(id){
+  $$('.map-pin').forEach(function(p){p.classList.toggle('active',p.dataset.pin===id)});
+  var pin=PINS[id];
+  if(!pin||!mapInfo)return;
+  mapInfo.classList.add('swap');
+  setTimeout(function(){mapInfo.innerHTML='<strong>'+pin.t+'</strong>'+pin.d;mapInfo.classList.remove('swap')},180);
+}
+$$('.map-pin').forEach(function(p){p.addEventListener('click',function(){activatePin(p.dataset.pin)})});
+$$('.dest-map-link').forEach(function(a){
+  a.addEventListener('click',function(){var id=a.dataset.map;setTimeout(function(){activatePin(id)},reducedMotion?0:400)});
+});
+/* food filter */
+var foodCards=$$('#food-grid .food-card');
+var foodEmpty=$('#food-empty');
+var currentFood='semua';
+function applyFoodFilter(){
+  foodCards.forEach(function(c){
+    var cats=(c.dataset.cat||'').split(' ');
+    c.classList.toggle('hide',!(currentFood==='semua'||cats.indexOf(currentFood)>-1));
+  });
+  syncFoodEmpty();
+}
+$$('.fbtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    $$('.fbtn').forEach(function(x){x.classList.remove('active')});
+    b.classList.add('active');
+    currentFood=b.dataset.f;
+    applyFoodFilter();
+  });
+});
+/* timeline */
+var tlItems=$$('.tl-item'),tlPanels=$$('.tl-panel');
+tlItems.forEach(function(b,i){
+  b.addEventListener('click',function(){
+    tlItems.forEach(function(x){x.classList.remove('active')});
+    tlPanels.forEach(function(p,k){p.classList.toggle('active',k===i)});
+    b.classList.add('active');
+  });
+});
+/* plan tabs */
+var planDays=$('#plan-days'),planNote=$('#plan-note');
+function renderPlan(id){
+  var p=PLANS[id];
+  planDays.classList.add('swap');
+  setTimeout(function(){
+    planDays.innerHTML=p.days.map(function(d){
+      return '<div class="plan-day"><span class="pd-label">'+d.l+'</span><h4>'+d.h+'</h4><ul>'+d.items.map(function(i){return '<li>'+i+'</li>'}).join('')+'</ul></div>';
+    }).join('');
+    planNote.innerHTML=p.note;
+    planDays.classList.remove('swap');
+  },reducedMotion?0:220);
+}
+renderPlan('p1');
+$$('.plan-tab').forEach(function(b){
+  b.addEventListener('click',function(){
+    if(b.classList.contains('active'))return;
+    $$('.plan-tab').forEach(function(x){x.classList.remove('active');x.setAttribute('aria-selected','false')});
+    b.classList.add('active');b.setAttribute('aria-selected','true');
+    renderPlan(b.dataset.plan);
+  });
+});
+/* budget planner */
+var PL_RATE=300;
+var PL_RATES={
+  santai:{penginapan:110000,makanan:40000,aktiviti:10000,pengangkutan:10000,lain:8000},
+  sederhana:{penginapan:90000,makanan:35000,aktiviti:22000,pengangkutan:12000,lain:10000},
+  padat:{penginapan:95000,makanan:32000,aktiviti:35000,pengangkutan:15000,lain:12000}
+};
+var PL_SEASON={sakura:{m:1.3,l:'Sakura (April)'},panas:{m:1.1,l:'Musim Panas (Jun–Ogo)'},luruh:{m:1.2,l:'Musim Luruh (Okt–Nov)'},sejuk:{m:.9,l:'Musim Sejuk (Dis–Feb)'}};
+var PL_PACE={santai:'Santai — 1–2 aktiviti sehari',sederhana:'Sederhana — 2–4 aktiviti sehari',padat:'Padat — 4–6 aktiviti sehari'};
+var PL_THEME={
+  sejarah:{pkg:35000,l:'Sejarah',c:'Seoul + Gyeongju atau Suwon',d:'Istana Gyeongbokgung & Changdeokgung, makam Silla di Gyeongju dan kubu Hwaseong.'},
+  bandar:{pkg:25000,l:'Bandar',c:'Seoul + Busan',d:'Menara N Seoul, pasar malam Myeongdong, kafe Seongsu dan pantai Gwangalli.'},
+  makanan:{pkg:30000,l:'Makanan',c:'Seoul + Jeonju',d:'Gwangjang Market, bibimbap asal di Jeonju dan jalan jajanan Myeongdong.'},
+  keluarga:{pkg:60000,l:'Keluarga',c:'Seoul + Everland/Busan',d:'Everland, piknik di Han River dan pantai Haeundae yang mesra kanak-kanak.'},
+  budaya:{pkg:20000,l:'Budaya',c:'Seoul + Jeonju',d:'Bukchon Hanok, sewaan hanbok, kuil Jogyesa dan kampung hanok Jeonju.'}
+};
+var PL_LIM={santai:2,sederhana:4,padat:5};
+var PL_DAYS={
+  sejarah:[
+    {t:'Tiba di Seoul — Jongno Bersejarah',a:['Kedatangan di Incheon &amp; check-in di Jongno','Istana Gyeongbokgung &amp; Plaza Gwanghwamun','Upacara pertukaran pengawal di Gwanghwamun','Muzium Negara Korea','Berjalan kaki di sepanjang Cheonggyecheon']},
+    {t:'Istana Diraja &amp; Warisan UNESCO',a:['Istana Changdeokgung &amp; Taman Huwon','Balairong Jongmyo (UNESCO)','Istana Changgyeonggung','Jalan seni Insadong','Menara N Seoul waktu malam']},
+    {t:'Zon Penamatan Perang (DMZ)',a:['Lawatan berpandu seharian ke DMZ','Dora Observatory — melihat Korea Utara','Terowong Penembusan Ketiga','Stesen kereta api Dorasan','Kembali ke Seoul']},
+    {t:'Hari ke Suwon',a:['Kubu kota Hwaseong (UNESCO)','Taman Haenggung istana','Menara Paldalmun','Pasar malam di kota lama Suwon','Menaiki kereta api kembali ke Seoul']},
+    {t:'KTX ke Gyeongju — Silla Kuno',a:['Tren laju KTX ke Gyeongju','Kuil Bulguksa (UNESCO)','Gua Seokguram','Taman makam Daereungwon','Menara astronomi Cheomseongdae']},
+    {t:'Gyeongju — Muzium Terbuka',a:['Istana Donggung &amp; Kolam Wolji','Muzium Negara Gyeongju','Berbasikal di taman makam raja','Kuil Bunhwangsa berdiri','Suasana malam di Anapji']},
+    {t:'Kembali ke Seoul — Jejak Joseon',a:['KTX pagi kembali ke Seoul','Istana Deoksugung','Dinding kota lama Hanyangdoseong','Gerbang Sungnyemun','Pasar malam Myeongdong']},
+    {t:'Insadong &amp; Seni Lama',a:['Jalan seni Insadong &amp; kedai kraf lama','Muzium seni tradisional','Kuil Buddha Jogyesa','Persiaran Cheonggyecheon','Pertunjukan tradisional (pilihan)']},
+    {t:'Hari Bebas Bersejarah',a:['Muzium Perang Korea (pilihan)','Tapak Sejong &amp; Hangeul','Berbelanja di Dongdaemun','Berjalan di sekitar stesen lama','Makan malam hidangan diraja (pilihan)']},
+    {t:'Hari Pulang',a:['Sarapan pagi yang terakhir','Cenderamata di Insadong','Check-out &amp; ke lapangan terbang Incheon','Tiba di Malaysia','Tamat jelajah bersejarah']}
+  ],
+  bandar:[
+    {t:'Tiba di Seoul — Myeongdong',a:['Kedatangan di Incheon &amp; check-in','Jalan-jalan di Cheonggyecheon','Membeli-belah di Myeongdong','Menara N Seoul waktu malam','Suasana malam Jongno']},
+    {t:'Gangnam Style',a:['Starfield COEX &amp; Perpustakaan Bintang','Kuil Bongeunsa','Apgujeong &amp; kedai fesyen','Garosu-gil &amp; kafe hipster','Hidangan malam di Gangnam']},
+    {t:'Hongdae &amp; Yeonnam',a:['Taman jalur kereta Gyeongui','Jalan universiti Hongik','Kedai kopi &amp; kedai vinyl','Mural &amp; galeri kecil','Pasar malam Hongdae']},
+    {t:'Seongsu — Brooklyn Seoul',a:['Kafe di kilang lama','Taman Seoul Forest','Pop-up store tempatan','Common Ground','Makan tengah hari kafe ikonik']},
+    {t:'KTX ke Busan — Haeundae',a:['Tren laju KTX ke Busan','Pantai Haeundae','Hutan Dongbaekseom','Menara Busan &amp; Yongdusan','Pantai Gwangalli waktu malam']},
+    {t:'Busan Berwarna',a:['Kampung Budaya Gamcheon','Pasar ikan Jagalchi','BIFF Square &amp; street food','Pasar Gukje','Suasana malam di Nampo']},
+    {t:'Busan Pantai &amp; Pulang',a:['Kuil laut Haedong Yonggungsa','Taman Taejongdae &amp; mercu suar','Shinsegae Centum City','KTX petang balik ke Seoul','Makan malam di Seoul']},
+    {t:'Dongdaemun &amp; DDP',a:['Dongdaemun Design Plaza','Pasar malam Dongdaemun','Kwangjang Market &amp; jajan','Sungai Cheonggyecheon malam','Kedai butik tempatan']},
+    {t:'Itaewon &amp; Noksapyeong',a:['Muzium Leeum','Itaewon Global Street','Gyeongnidan-gil kafe','Pemandangan Menara N Seoul','Makan malam antarabangsa']},
+    {t:'Hari Pulang',a:['Sarapan pagi terakhir','Beli-belah di Myeongdong','Check-out &amp; ke lapangan terbang','Tiba di Malaysia','Tamat jelajah bandar']}
+  ],
+  makanan:[
+    {t:'Tiba di Seoul — Gwangjang',a:['Kedatangan &amp; check-in','Mayak gimbap &amp; bindaetteok di Gwangjang','Jalan kaki di Cheonggyecheon','Kopi di kafe Jongno','Sup di restoran lama (pilihan)']},
+    {t:'Jalan Makanan Myeongdong',a:['Street food: tteokbokki &amp; corndog','Gyoza &amp; korean fried chicken','Bingsu ais kacang Korea','Jalan jajanan malam','Kedai coklat &amp; snek']},
+    {t:'Namdaemun &amp; Masakan Klasik',a:['Pasar Namdaemun','Alley kalguksu — mi buatan tangan','Kelas kimchi (pilihan)','Rumah teh di Insadong','Hidangan bulgogi malam']},
+    {t:'Hongdae: Kafe &amp; Chimaek',a:['Kafe dessert kegemaran','Chimaek — ayam goreng &amp; bir','Mural jalan di Hongdae','Pasar malam Hongdae','BBQ daging lembut malam']},
+    {t:'KTX ke Jeonju — Nambu Market',a:['Tren ke Jeonju (bandar makanan)','Nambu Market &amp; pasar malam','Bibimbap asal Jeonju','Jalan kampung hanok','Makgeolli alley']},
+    {t:'Jeonju: Surga Pencuci Mulut',a:['Bakery PNB — choco pie Jeonju','Choco pie keju viral','Kongnamul gukbap — sup taugeh','Teh &amp; pencuci mulut ogura','Street food jalan hanok']},
+    {t:'Jeonju &amp; Kembali ke Seoul',a:['Sarapan di pasar','Teh omija istimewa Jeonju','Kopi di kafe hanok','Balik ke Seoul dengan KTX','BBG hanwoo makan malam']},
+    {t:'Mangwon &amp; Pasar Moden',a:['Pasar Mangwon tempatan','Kafe di Mangridan-gil','Jajan street food kedai khemah','Makan tengah hari ramyeon','Dessert di kedai kek hipster']},
+    {t:'Kelas Masak Korea',a:['Kelas masak hidangan Korea','Pasar bahan segar bersama chef','Makan tengah hari hasil masakan','Beli sos gochujang &amp; rempah','Sesi foto makanan']},
+    {t:'Hari Pulang',a:['Sarapan pagi terakhir','Snek run di kedai serbaneka','Kimchi untuk dibawa pulang','Ke lapangan terbang Incheon','Tamat jelajah makanan']}
+  ],
+  keluarga:[
+    {t:'Tiba di Seoul — Han River',a:['Kedatangan &amp; check-in','Piknik di Taman Han River','Sewa basikal &amp; layang-layang','Air pancut pelangi Banpo','Pemandangan malam sungai']},
+    {t:'Everland Hari Penuh',a:['Taman tema Everland','Safari World berpandu','Thunder Falls &amp; roller coaster','Parade waktu petang','Pertunjukan bunga api (musim panas)']},
+    {t:'Lotte World Adventure',a:['Lotte World dalam bangunan','Magic Island di luar','Lotte World Aquarium','Aiskrim &amp; jajan taman','Lotte World Mall']},
+    {t:'Taman Bandar &amp; Zoo',a:['Seoul Grand Park &amp; Zoo','Kereta kabel ke atas bukit','Taman kanak-kanak Seoul','Picnic di taman','Makan malan keluarga']},
+    {t:'KTX ke Busan — Haeundae',a:['Tren laju ke Busan','Bermain pasir di Pantai Haeundae','SEA LIFE Busan Aquarium','Taman Dongbaekseom','Pantai Gwangalli waktu malam']},
+    {t:'Songdo &amp; Gamcheon',a:['Kereta kabel pantai Songdo','Kampung Budaya Gamcheon','Street food di BIFF Square','Taman Yongdusan','Makan malam seafood']},
+    {t:'Spa Keluarga &amp; Pulang',a:['Jjimjilbang — spa sauna Korea','Taman air Shinsegae (pilihan)','KTX petang balik ke Seoul','Snek di stesen','Makan malan di Seoul']},
+    {t:'COEX &amp; Starfield',a:['Aquarium COEX','Perpustakaan Starfield Bintang','Taman Bongeunsa','Kedai mainan &amp; kedai serbaneka','Makan tengah hari keluarga']},
+    {t:'Namsan &amp; Menara',a:['Kereta kabel ke Namsan','Menara N Seoul','Gembok cinta di platform','Jalan di Myeongdong','Ayam goreng keluarga malam']},
+    {t:'Hari Pulang',a:['Sarapan pagi terakhir','Beli cenderamata kanak-kanak','Check-out &amp; ke lapangan terbang','Tiba di Malaysia','Tamat jelajah keluarga']}
+  ],
+  budaya:[
+    {t:'Tiba di Seoul — Hanbok &amp; Bukchon',a:['Kedatangan &amp; sewaan hanbok','Kampung Hanok Bukchon','Kuil Buddha Jogyesa','Cheonggyecheon waktu malam','Foto hanbok di lorong hanok']},
+    {t:'Insadong &amp; Kraf Tradisional',a:['Jalan seni Insadong','Bengkel kertas tradisional hanji','Rumah teh dengan pencuci mulut hujung','Kedai seramik &amp; lakuer','Pertunjukan Nanta (pilihan)']},
+    {t:'Istana &amp; Muzik Gugak',a:['Istana Changdeokgung &amp; Huwon','Istana Gyeongbokgung','Persembahan muzik gugak','Persiaran istana berhanbok','Konsert petang (pilihan)']},
+    {t:'Kelas Budaya Diraja',a:['Kelas masakan masakan diraja','Pasar bahan tradisional','Muzium Hangeul &amp; kisah Raja Sejong','Jejaki dinding kota lama','Malam di Insadong']},
+    {t:'KTX ke Jeonju — Kampung Hanok',a:['Tren ke Jeonju','Kampung Hanok Jeonju (700 hanok)','Balairung Gyeonggijeon','Makam Raja Taejo','Teh di rumah teh hanok']},
+    {t:'Jeonju: Hanji &amp; Pansori',a:['Muzium kertas Hanji','Lorong mural Jaman','Pertunjukan Pansori','Hidangan lokal Jeonju','Makgeolli tradisional']},
+    {t:'Kembali ke Seoul — Seni Moden',a:['KTX pagi ke Seoul','Muzium seni moden MMCA','Berjalan di sekitar istana','Pasaran kraf tempatan','Malam bebas']},
+    {t:'Kukkiwon &amp; Taekwondo',a:['Demonstrasi Taekwondo Kukkiwon','Pengalaman asas Taekwondo','Meditasi ringkas di kuil','Perpustakaan Starfield','Makan malam']},
+    {t:'Pengalaman Templestay',a:['Program templestay di Jogyesa','Ceremony pagi kuil','Tea ceremony','Pasar kraf Insadong','Gayageum persembahan (pilihan)']},
+    {t:'Hari Pulang',a:['Sarapan &amp; minum teh terakhir','Cenderamata kraf tangan','Check-out &amp; ke lapangan terbang','Tiba di Malaysia','Tamat jelajah budaya']}
+  ]
+};
+/* KOREA_DB_START */
+var KOREA_DB=[
+{n:'Istana Gyeongbokgung',h:'경복궁',c:'Seoul',r:'Seoul',cat:['sejarah','budaya'],fee:3000,fn:'Tutup Selasa · percuma jika berhanbok',s:'Apr · Okt–Nov',d:'Istana utama Dinasti Joseon yang dibina pada 1395 di kaki Gunung Bugak, dengan 330 bangunan tradisional dan tasik Gyeonghoeru. Upacara pertukaran pengawal setiap jam (10pagi–2petang) adalah antara pertunjukan paling meriah di Seoul.',t:'Masuk percuma jika memakai hanbok; tutup setiap Selasa.'},
+{n:'Istana Changdeokgung &amp; Huwon',h:'창덕궁',c:'Seoul',r:'Seoul',cat:['sejarah','budaya'],fee:3000,fn:'Taman Huwon +₩8,000 · tutup Isnin',s:'Apr–Nov',d:'Istana Joseon kedua yang tersenarai UNESCO kerana padanannya dengan alam semula jadi. Taman Huwon (Taman Rahsia) mengekalkan kolam purba dan pokok berusia lebih 300 tahun.',t:'Tempah slot Huwon seawal mungkin — tiket cepat habis.'},
+{n:'Balairung Jongmyo',h:'종묘',c:'Seoul',r:'Seoul',cat:['sejarah'],fee:1000,fn:'Percuma untuk pelajar? semak kaunter',s:'Mei',d:'Kuil rohajaan raja-raja Dinasti Joseon yang tersenarai UNESCO, dengan koridor kayu Jeongjeon terpanjang dunia. Upacara Jongmyo Daeje pada Mei setahun sekali membawa penuh protokol diraja.',t:'Slot tertentu hanya boleh masuk bersama lawatan berpandu.'},
+{n:'Istana Deoksugung',h:'덕수궁',c:'Seoul',r:'Seoul',cat:['sejarah'],fee:1000,fn:'Tutup Isnin',s:'Okt–Nov',d:'Istana yang menjadi kediaman Raja Gojong selepas Joseon dibuka ke dunia — satu-satunya yang bercampur bangunan barat moden. Jalan beratap platanus di sebelahnya menjadi laluan berjalan paling romantik di Seoul.',t:'Jalan Deoksugung Doldam-gil paling indah pada musim luruh.'},
+{n:'Kampung Bukchon Hanok',h:'북촌한옥마을',c:'Seoul',r:'Seoul',cat:['budaya'],fee:0,fn:'',s:'Sepanjang tahun',d:'Kampung hanok berusia 600 tahun dengan lorong berbukit dan bumbung melengkung tradisional, masih didiami penduduk sehingga hari ini. Puncak Bukchonro 11-gil menawarkan panorama bumbung hanok dengan Menara N Seoul di latar belakang.',t:'Kawasan kediaman sebenar — berjalan senyap dan hormati penduduk.'},
+{n:'Insadong',h:'인사동',c:'Seoul',r:'Seoul',cat:['budaya','makanan'],fee:0,fn:'',s:'Sepanjang tahun',d:'Jalan seni dan kraf tradisional Korea — kedai seramik, kertas hanji, teh dan lukisan kaligrafi. Rumah teh bertingkat di lorong kecil menyimpan suasana Joseon yang tenang.',t:'SSamziegil adalah kompleks kraf spiral yang wajib dilawati.'},
+{n:'Kuil Jogyesa',h:'조계사',c:'Seoul',r:'Seoul',cat:['budaya'],fee:0,fn:'',s:'Mei',d:'Kuil induk Buddhisme Jogye Korea yang terletak di tengah bandar, diapit pokok pinus putih berusia ratusan tahun. Pada Pesta Lampion Lotus bulan Mei, seluruh halaman dipenuhi ribuan lampion berwarna.',t:'Percuma dan terbuka hingga malam; program templestay tersedia.'},
+{n:'Pasar Gwangjang',h:'광장시장',c:'Seoul',r:'Seoul',cat:['makanan'],fee:0,fn:'',s:'Sepanjang tahun',d:'Pasar bertutup tertua Korea (1905) dan syurga jajanan: mayak gimbap, bindaetteok, yukhoe dan kalguksu disajikan gerai demi gerai. Lorong makanan kedainya terkenal dalam banyak dokumentari makanan dunia.',t:'Datang sebelum 11pagi untuk elak barisan panjang.'},
+{n:'Pasar Namdaemun',h:'남대문시장',c:'Seoul',r:'Seoul',cat:['makanan','bandar'],fee:0,fn:'',s:'Sepanjang tahun',d:'Pasar tradisional terbesar Korea dengan lebih 10,000 gerai yang dibuka sejak 1414. Alley kalguksu di dalamnya terkenal dengan mi buatan tangan yang disajikan sejak generasi.',t:'Tempat terbaik untuk cenderamata murah dan snek pagi.'},
+{n:'Myeongdong',h:'명동',c:'Seoul',r:'Seoul',cat:['bandar','makanan'],fee:0,fn:'',s:'Sepanjang tahun',d:'Pusat beli-belah dan kosmetik paling sibuk di Korea yang bertukar menjadi jalan jajanan gergasi selepas matahari tenggelam. Tteokbokki keju, corndog gigitan dan bingsu menjadi makanan wajib di sini.',t:'Jalan jajanan paling meriah selepas pukul 6 petang.'},
+{n:'Cheonggyecheon',h:'청계천',c:'Seoul',r:'Seoul',cat:['bandar','alam'],fee:0,fn:'',s:'Nov',d:'Sungai sepanjang 5.8km yang dipulihkan daripada jalan raya bertutup pada 2005, kini menjadi koridor rehat di tengah bandar. Laluan pejalan kaki sejuk dan penuh lampu pada waktu malam.',t:'Pesta Lampion Nov–Dis adalah kemuncak tahunan.'},
+{n:'Menara N Seoul',h:'N서울타워',c:'Seoul',r:'Seoul',cat:['bandar'],fee:21000,fn:'Kereta kabel ±₩15,000 ulang-alik',s:'Sepanjang tahun',d:'Menara di puncak Bukit Namsan (236m) yang menawarkan panorama 360° Seoul — antara titik paling ikonik ibu kota. Ribuan gembok cinta di pagar dek menjadi tanda pertunangan popular pelancong.',t:'Naik kereta kabel atau bas pengangkut Namsan 01A/05B.'},
+{n:'Hongdae',h:'홍대',c:'Seoul',r:'Seoul',cat:['bandar'],fee:0,fn:'',s:'Sepanjang tahun',d:'Zon seni jalanan di sekitar Universiti Hongik — busking, mural, kedai vinil dan kehidupan malam paling muda di Seoul. Setiap Sabtu, Pasar Free Market menjual kraf buatan tangan pelajar seni.',t:'Persembahan tarian jalanan bermula pukul 8 malam di luar stesen.'},
+{n:'Seongsu-dong',h:'성수동',c:'Seoul',r:'Seoul',cat:['bandar'],fee:0,fn:'',s:'Sepanjang tahun',d:'Dijuluki "Brooklyn Seoul" — kilang kasut lama disulam menjadi kafe designer, pop-up store dan studio. Taman Seoul Forest di sebelahnya menawarkan ruang hijau dan rusa liar.',t:'Datang pagi untuk kafe sebelum hujung minggu menjadi padat.'},
+{n:'Perpustakaan Starfield COEX',h:'별마당도서관',c:'Seoul',r:'Seoul',cat:['bandar','keluarga'],fee:0,fn:'',s:'Sepanjang tahun',d:'Perpustakaan awam raksasa di tengah pusat beli-belah COEX dengan rak buku setinggi 13 meter — antara ruang membaca paling digemari di dunia. Dinding kaca menumpahkan cahaya ke galeri dua tingkat.',t:'Gabungkan dengan Kuil Bongeunsa yang bersebelahan.'},
+{n:'Muzium Perang Korea',h:'전쟁기념관',c:'Seoul',r:'Seoul',cat:['sejarah','keluarga'],fee:0,fn:'',s:'Sepanjang tahun',d:'Muzium ketenteraan terbesar di Asia yang merakamkan Perang Korea 1950–53 dan sejarah pertahanan negara. Padang luar memaparkan lebih 160 pesawat, kereta kebal dan kapal sebenar.',t:'Percuma; pameran luar sangat sesuai untuk kanak-kanak.'},
+{n:'Muzium Negara Korea',h:'국립중앙박물관',c:'Seoul',r:'Seoul',cat:['sejarah','budaya'],fee:0,fn:'',s:'Sepanjang tahun',d:'Muzium terbesar Korea dengan lebih 420,000 artifak — mahkota emas Silla dan porselin celadon Goryeo menjadi kemuncaknya. Bangunan barunya direka menyerap seni bina istana tradisional.',t:'Percuma; jadualkan 2–3 jam untuk galeri utama.'},
+{n:'Taman Han River',h:'한강공원',c:'Seoul',r:'Seoul',cat:['keluarga','alam'],fee:0,fn:'Sewa tikar piknik ±₩3,000',s:'Apr–Okt',d:'Sistem taman pinggir sungai sepanjang 40km yang menjadi halaman belakang warga Seoul — piknik, layang-layang, berbasikal dan mi segera dari mesin ramyeon tepi sungai. Air pancut Banpo Moonlight Rainbow di Jembatan Banpo menyala setiap malam Apr–Okt.',t:'Guna aplikasi "Congcafe" untuk tempahan khemah piknik.'},
+{n:'Lotte World',h:'롯데월드',c:'Seoul',r:'Seoul',cat:['keluarga'],fee:55000,fn:'Lebih murah dalam talian',s:'Sepanjang tahun',d:'Taman tema dalam bangunan terbesar dunia yang berada di dalam kompleks beli-belah Lotte World Mall, dengan pulau luar Magic Island yang menampilkan coaster Gyro Drop. Ais terapung, parada dan pertunjukan laser berlangsung sepanjang hari.',t:'Muat turun aplikasi Magic Pass untuk kurangi masa beratur.'},
+{n:'Seoul Grand Park &amp; Zoo',h:'서울대공원',c:'Gwacheon',r:'Incheon &amp; Gyeonggi',cat:['keluarga','alam'],fee:5000,fn:'Kereta kabel +₩4,000',s:'Apr–Okt',d:'Kompleks zoo dan taman tema terbesar Korea di lembah Gwacheon, dengan kereta kabel dan lebih 3,000 haiwan. Muzium Seni Moden (MMCA) cawangan Gwacheon berada di sebelahnya.',t:'Gabungkan zoo dan MMCA untuk satu hari penuh keluarga.'},
+{n:'Aquarium COEX',h:'코엑스아쿠아리움',c:'Seoul',r:'Seoul',cat:['keluarga'],fee:31000,fn:'',s:'Sepanjang tahun',d:'Akuarium dengan 183 tangki dan terowong kaca bergerak — jerung, ikan pari dan penguin menjadi bintang utama. Terletak dalam kompleks COEX bersebelahan Perpustakaan Starfield.',t:'Jadual suapan jerung dan papan pameran penyelam adalah kemuncak.'},
+{n:'Zon Bebas Tentera (DMZ)',h:'비무장지대',c:'Paju',r:'Incheon &amp; Gyeonggi',cat:['sejarah'],fee:80000,fn:'Pakej tur ±₩50,000–90,000 · pasport wajib',s:'Apr–Jun · Sep–Okt',d:'Sempadan paling terkawal di dunia yang membahagikan Semenanjung Korea sejak 1953 — Imjingak, Terowong Penembusan Ketiga, Dora Observatory dan Stesen Dorasan membuka kisah perang dingin yang masih berterusan. Hanya boleh dilawati melalui tur berpandu berlesen.',t:'Bawa pasport sebenar; tempah 3–7 hari awal, jangan pakaian berlubang.'},
+{n:'Kuil Haedong Yonggungsa',h:'해동용궁사',c:'Busan',r:'Busan',cat:['budaya','alam'],fee:0,fn:'',s:'Apr · Okt',d:'Kuil Buddha yang jarang kerana dibina di atas batu karang tepi laut timur Busan, bukannya di pergunungan. Patung Goddess of Mercy menghadap laut terbit dan jembatan 108 tangga menjadi mercu tandanya.',t:'Datang sebelum 9pagi — parkir dan lorong cepat penuh.'},
+{n:'Pantai Haeundae',h:'해운대',c:'Busan',r:'Busan',cat:['bandar','alam'],fee:0,fn:'',s:'Jun–Sep',d:'Pantai paling ikonik Korea dengan lengkungan pasir sepanjang 1.5km yang dipenuhi 8–10 juta pelancong setiap musim panas. Menara hotel sepanjang tepian bertukar menjadi panorama cahaya pada waktu malam.',t:'Sebelah timur pantai (Dongbaekseom) lebih tenang untuk sunrise.'},
+{n:'Pulau Dongbaekseom',h:'동백섬',c:'Busan',r:'Busan',cat:['alam'],fee:0,fn:'',s:'Sepanjang tahun',d:'Pulau kecil berhutan pain yang bersambung ke Pantai Haeundae melalui laluan papan kayu, dengan Rumah Persidangan APEC dan mercu suar Nurimaru. Laluan 30 minitnya menawarkan pemandangan laut terbaik Busan.',t:'Sunrise dan pemandangan jambatan Gwangan dari hujungnya.'},
+{n:'Kampung Budaya Gamcheon',h:'감천문화마을',c:'Busan',r:'Busan',cat:['budaya','bandar'],fee:0,fn:'',s:'Sepanjang tahun',d:'Kampung berbukit dihuni pelarian perang yang kini penuh dengan mural, arca dan lorong warna-warni — dijuluki "Machu Picchu Korea". Rumah-rumah bertingkat membentuk labirin paling difoto di Busan.',t:'Ambil peta setem di pusat pelawat; berjalan senyap di lorong kediaman.'},
+{n:'Pasar Jagalchi',h:'자갈치시장',c:'Busan',r:'Busan',cat:['makanan'],fee:0,fn:'',s:'Sepanjang tahun',d:'Pasar hasil laut terbesar Korea yang dikendalikan generasi demi generasi wanita Jagalchi. Pilih ikan hidup di tingkat bawah dan minta dimasak di restoran tingkat atas — hwej (sashimi) segar terus dari tangki.',t:'Tawar-menawar lembut adalah sebahagian pengalaman.'},
+{n:'BIFF Square &amp; Nampo-dong',h:'비프광장',c:'Busan',r:'Busan',cat:['makanan','bandar'],fee:0,fn:'',s:'Sepanjang tahun',d:'Jalan perayaan filem antarabangsa Busan yang kini menjadi pusat jajanan: hotteok berbijian (ssiat hotteok) dan sup babi dwaeji gukbap menjadi juaranya. Bintang pengarah filem dunia tertanam di sepanjang jalan.',t:'Barisan panjang di hotteok berbijian bergerak pantas — berbaloi.'},
+{n:'Pantai Gwangalli',h:'광안리',c:'Busan',r:'Busan',cat:['bandar'],fee:0,fn:'',s:'Jun–Sep',d:'Pantai dengan pemandangan paling dramatik di Busan — Jambatan Gwangandaegyo menyala berwarna-warni setiap malam di hadapan barisan kafe tepi laut. Pertunjukan drone besar diadakan setiap Sabtu malam.',t:'Pilih kafe tingkat atas untuk panorama jambatan bercahaya.'},
+{n:'Taejongdae',h:'태종대',c:'Busan',r:'Busan',cat:['alam'],fee:0,fn:'Kereta api Danubi ±₩4,000',s:'Apr–Nov',d:'Taman tebing laut di hujung Pulau Yeongdo yang dinamakan sempena Raja Taejong — tebing curam, mercu suar dan Batu Sinseon yang dipercayai tempat dewa bermain. Laluan tepi tebing menawarkan pemandangan Selat Korea.',t:'Naiki kereta api Danubi untuk jimat masa berjalan.'},
+{n:'Kereta Kabel Songdo',h:'송도해상케이블카',c:'Busan',r:'Busan',cat:['keluarga','bandar'],fee:15000,fn:'±₩20,000 ulang-alik · kabin kristal +',s:'Sepanjang tahun',d:'Kereta kabel yang merentasi laut dari Pantai Songdo ke Pulau Dongseom — antara pengalaman udara terbaik di Busan. Kabin "crystal" berlantai kaca memberi pandangan telanjang ke bawah laut.',t:'Laluan berpapan kayu di pulau hujungnya berbaloi dijelajah.'},
+{n:'Kuil Beomeosa',h:'범어사',c:'Busan',r:'Busan',cat:['budaya'],fee:0,fn:'',s:'Apr–Nov',d:'Kuil agung abad ke-7 di kaki Gunung Geumjeong, salah satu tiga kuil utama Busan. Gerbang Iljumun berlapis dan halaman batu purba memberikan suasana tenang yang jauh dari bandar raya.',t:'Gabungkan dengan laluan mendaki benteng Geumjeongsan.'},
+{n:'SEA LIFE Busan',h:'씨라이프부산',c:'Busan',r:'Busan',cat:['keluarga'],fee:31000,fn:'',s:'Sepanjang tahun',d:'Akuarium tepi Pantai Haeundae dengan terowong kaca 80 meter — jerung bakar, ikan pari raksasa dan penguin Humboldt menjadi kegemaran kanak-kanak. Ruang interaktif membolehkan sentuhan bintang laut.',t:'Semak jadual suapan pada papan tiket masuk.'},
+{n:'Seongsan Ilchulbong',h:'성산일출봉',c:'Jeju',r:'Jeju',cat:['alam'],fee:5000,fn:'Tutup ketika angin kencang',s:'Sepanjang tahun',d:'Kawah tuff gunung berapi setinggi 182m yang tersenarai UNESCO — "Puncak Matahari Terbit" Jeju yang memerlukan pendakian 30–45 minit. Puncaknya menampilkan kawah raksasa berbentuk mangkuk menghadap laut.',t:'Naik sebelum 7pagi untuk matahari terbit dan elak jerebu orang.'},
+{n:'Gunung Hallasan',h:'한라산',c:'Jeju',r:'Jeju',cat:['alam'],fee:0,fn:'Tempah laluan dalam talian',s:'Apr–Jun · Sep–Okt',d:'Gunung tertinggi Korea Selatan (1,947m) di tengah pulau — seluruh Jeju sebenarnya gunung berapi ini. Kawah puncak Baengnokdam dan hutan azalea membentuk laluan mendaki terbaik negara.',t:'Tempah slot laluan Gwaneumsa awal; bawa jaket — cuaca berubah cepat.'},
+{n:'Pulau Udo',h:'우도',c:'Jeju',r:'Jeju',cat:['alam','keluarga'],fee:5000,fn:'Feri ulang-alik',s:'Apr–Okt',d:'Pulau kecil berbentuk lelaki berbaring di timur laut Jeju — 15 minit feri dari Seongsan. Laluan pantai berbasikal, lembu liar dan perisa kacang tanah menjadi identitinya.',t:'Ais krim dan burger kacang tanah Udo wajib dicuba.'},
+{n:'Gua Lava Manjanggul',h:'만장굴',c:'Jeju',r:'Jeju',cat:['alam'],fee:2000,fn:'',s:'Sepanjang tahun',d:'Terowong lava sepanjang 7.4km — antara yang terpanjang di dunia dan tersenarai UNESCO bersama sebahagian Geopark Jeju. Tongkol lava gergasi dan stalaktit lava membentuk galeri geologi sejuk sepanjang tahun.',t:'Suhu dalam gua sekitar 11–13°C — bawa jaket ringan.'},
+{n:'Air Terjun Cheonjiyeon',h:'천지연폭포',c:'Jeju',r:'Jeju',cat:['alam'],fee:2000,fn:'',s:'Sepanjang tahun',d:'Air terjun setinggi 22m yang turun terus ke kolam air payau bernama "kolam langit dan bumi". Ikan mullet dan udang gergasi kolamnya boleh dilihat jelas dari jambatan batu.',t:'Paling indah selepas hujan; lampu malam menyala hingga 10 malam.'},
+{n:'Pasar Dongmun',h:'동문시장',c:'Jeju',r:'Jeju',cat:['makanan'],fee:0,fn:'',s:'Sepanjang tahun',d:'Pasar tertua Jeju yang dibuka pada 1945 — hasil laut, black pork dan jajanan pulau dijual bersebelahan dengan gerai makan malam. Lorong black pork di sebelahnya menjadi destinasi sendiri.',t:'Datang malam: pasar rakyat bertukar menjadi jalan makanan.'},
+{n:'Aqua Planet Jeju',h:'아쿠아플래닛제주',c:'Jeju',r:'Jeju',cat:['keluarga'],fee:33000,fn:'',s:'Sepanjang tahun',d:'Akuarium terbesar Korea di timur laut pulau dengan tangki utama tiga tingkat yang menempatkan 50,000 haiwan laut. Pertunjukan penyelam dan pengumpulan plankton epaulette menjadi hantaran paling diminati.',t:'Gabungkan dengan Seongsan Ilchulbong yang berdekatan.'},
+{n:'Ladang Teh O&#39;sulloc',h:'오설록',c:'Jeju',r:'Jeju',cat:['makanan','budaya'],fee:0,fn:'',s:'Sepanjang tahun',d:'Ladang teh hijau berbukit di barat Jeju dengan muzium teh pertama Korea. Pemandangan barisan teh berkeliling seperti gelombang hijau menjadi latar kafe paling difoto di pulau ini.',t:'Roll cake teh hijau dan latte wajib; percuma masuk.'},
+{n:'Kuil Bulguksa',h:'불국사',c:'Gyeongju',r:'Gyeongsang',cat:['sejarah','budaya'],fee:5000,fn:'',s:'Apr–Nov',d:'Kuil agung kerajaan Silla abad ke-8 yang tersenarai UNESCO — tangga Cheongungyo, pagoda batu Dabotap dan Seokgatap menjadi ikon seni bina Buddha Korea. Nama bermaksud "Kuil Tanah Buddha".',t:'Bas 12 dari kuil menuju Seokguram di puncak bukit.'},
+{n:'Gua Seokguram',h:'석굴암',c:'Gyeongju',r:'Gyeongsang',cat:['sejarah'],fee:4000,fn:'',s:'Sepanjang tahun',d:'Grotto Buddha abad ke-8 di puncak Gunung Tohamsan — arca Buddha Sakyamuni setinggi 3.5m menghadap laut timur, direka supaya cahaya matahari terbit jatuh ke wajahnya. Tersenarai UNESCO bersama Bulguksa.',t:'Pagi sejuk; sunrise dari pintu gua adalah detik paling magis.'},
+{n:'Taman Daereungwon',h:'대릉원',c:'Gyeongju',r:'Gyeongsang',cat:['sejarah'],fee:3000,fn:'',s:'Sepanjang tahun',d:'Taman berisi 23 gundukan makam diraja Silla yang membentuk siluet bukit hijau di tengah bandar Gyeongju. Makam Cheonmachong dibuka untuk pengunjung melihat pengebumian kereta kuda emas.',t:'Sewa basikal untuk jelajah laluan makam yang lebih luas.'},
+{n:'Menara Cheomseongdae',h:'첨성대',c:'Gyeongju',r:'Gyeongsang',cat:['sejarah'],fee:0,fn:'',s:'Sepanjang tahun',d:'Observatorium batu tertua di Asia Timur (abad ke-7) yang dibina dalam 365 blok batu mewakili hari setahun. Struktur berbentuk botol ini kekal tegak selama 1,400 tahun.',t:'Kolam Donggung &amp; Wolji hanya beberapa langkah — lihat keduanya.'},
+{n:'Donggung &amp; Kolam Wolji',h:'동궁과월지',c:'Gyeongju',r:'Gyeongsang',cat:['sejarah'],fee:2000,fn:'',s:'Sepanjang tahun',d:'Kompleks istana sampingan Silla tepi kolam yang digunakan untuk jamuan kerajaan. Pada waktu malam, bangunan yang dibina semula berpantulan dalam air kolam — pemandangan paling difoto di Gyeongju.',t:'Datang selepas gelap untuk pantulan lampu yang sebenar.'},
+{n:'Muzium Negara Gyeongju',h:'경주국립박물관',c:'Gyeongju',r:'Gyeongsang',cat:['sejarah','budaya'],fee:0,fn:'',s:'Sepanjang tahun',d:'Rumah kepada mahkota emas Silla, barangan makam Cheonmachong dan lonceng gangsa Emille seberat 18 tan yang bertonang legenda. Bangunan utamanya mengadap tapak makam purba.',t:'Percuma; 1–2 jam mencukupi untuk galeri utama.'},
+{n:'Jalan Hwangnidan-gil',h:'황리단길',c:'Gyeongju',r:'Gyeongsang',cat:['makanan','bandar'],fee:0,fn:'',s:'Sepanjang tahun',d:'Jalan aliran muda Gyeongju — kedai hanok lama bertukar menjadi kafe artistik, restoran moden-Korea dan kedai kraftangan. Donat kkwabaegi dan ais krim menjadi jajanan wajib di sini.',t:'Paling hidup pada petang hujung minggu; parkir sukar.'},
+{n:'Kampung Hanok Jeonju',h:'전주한옥마을',c:'Jeonju',r:'Jeolla',cat:['budaya'],fee:0,fn:'',s:'Sepanjang tahun',d:'Kampung hanok terbesar Korea dengan lebih 800 rumah tradisional di tengah bandar — pusat budaya dan makanan Joseon. Sewa hanbok, teh di rumah hanok dan Jeonju bibimbap menjadi tiga pengalaman wajib.',t:'Naik ke bukit Omokdae untuk panorama bumbung hanok waktu senja.'},
+{n:'Balairung Gyeonggijeon',h:'경기전',c:'Jeonju',r:'Jeolla',cat:['sejarah'],fee:3000,fn:'',s:'Sepanjang tahun',d:'Balairung yang menyimpan potret pengasas Dinasti Joseon, Raja Taejo Yi Seong-gye — Jeonju adalah kampung halaman keturunannya. Halaman pain tua dan pintu berlapis membentuk bingkai sejarah yang tenang.',t:'Lorong mural Jaman berada di belakangnya.'},
+{n:'Pasar Nambu',h:'남부시장',c:'Jeonju',r:'Jeolla',cat:['makanan'],fee:0,fn:'Pasar malam Jum–Sab',s:'Sepanjang tahun',d:'Pasar rakyat Jeonju sejak 1920-an yang menjadi "pasar ibu-ibu" — bahan segar dan makanan tepi jalan dijual bersama. Pasar malamnya menjadikan lorong penuh dengan kkwabaegi, sup taugeh kongnamul gukbap dan jajanan moden.',t:'Pasar malam hanya aktif Jumaat dan Sabtu malam.'},
+{n:'Kedai PNB Bakery',h:'전주피에네베',c:'Jeonju',r:'Jeolla',cat:['makanan'],fee:0,fn:'',s:'Sepanjang tahun',d:'Kedai choco pie legenda Jeonju yang menjadi suvenir wajib bandar ini — kek pisang berlapis krim dipenuhi krim marshmallow. Barisan panjang menandakan reputasinya yang berusia beberapa dekad.',t:'Beli kotak besar sebagai buah tangan; cepat habis petang.'},
+{n:'Chinatown Incheon',h:'인천차이나타운',c:'Incheon',r:'Incheon &amp; Gyeonggi',cat:['makanan','sejarah'],fee:0,fn:'',s:'Sepanjang tahun',d:'Kampung Cina tertua Korea yang lahir dengan pembukaan pelabuhan Incheon pada 1883 — asal-usul jajangmyeon Korea di sini. Muzium jajangmyeon, gerbang besar China dan Taman Kebebasan Jayu membentuk laluan berbukitnya.',t:'Makan jjajangmyeon di jalan lahirnya, diapit Taman Jayu.'},
+{n:'Songdo Central Park',h:'송도센트럴파크',c:'Incheon',r:'Incheon &amp; Gyeonggi',cat:['bandar','keluarga'],fee:0,fn:'Bot kanal ±₩12,000',s:'Apr–Okt',d:'Taman air laut di tengah bandar pintar Songdo — kanal yang dilayari bot pedalaman diapit menara moden. Reka bentuknya mengambil inspirasi dari Central Park New York versi Korea.',t:'Naik ke menara observasi G-Tower yang berdekatan.'},
+{n:'Kubu Hwaseong Suwon',h:'수원화성',c:'Suwon',r:'Incheon &amp; Gyeonggi',cat:['sejarah'],fee:2000,fn:'',s:'Apr–Nov',d:'Benteng Joseon sepanjang 5.7km yang melingkari Suwon (1796) — karya seni bina ketenterakan UNESCO dengan empat gerbang besar dan menara meriam. Dokumen rekanya tersimpan dalam Warisan Ingatan Dunia UNESCO.',t:'Naiki kereta api naga ke Istana Haenggung; sunset di Hwahongmun.'},
+{n:'Everland',h:'에버랜드',c:'Yongin',r:'Incheon &amp; Gyeonggi',cat:['keluarga'],fee:59000,fn:'±₩39,000 dibeli dalam talian',s:'Sepanjang tahun',d:'Taman tema terbesar Korea dengan Safari World, Taman Bunga Tulip dan coaster kayu T-Express yang antara paling curam di dunia. Musimannya bertukar — tulip, carnival, Halloween dan Festival Cahaya musim sejuk.',t:'Beli tiket dalam talian; guna aplikasi Q-Pass untuk kurangi beratur.'},
+{n:'Kampung Folk Korea',h:'한국민속촌',c:'Yongin',r:'Incheon &amp; Gyeonggi',cat:['keluarga','budaya'],fee:25000,fn:'±',s:'Sepanjang tahun',d:'Kampung Joseon yang dibina semula secara autentik — rumah daerah, pasaran lama, tarian petani, perkahwinan tradisional dan perlumbaan pengayung dijadikan pertunjukan tetap. Berada bersebelahan Everland.',t:'Semak jadual pertunjukan di pintu masuk; musim sejuk ada Festival Cahaya.'},
+{n:'Taman Negara Seoraksan',h:'설악산국립공원',c:'Sokcho',r:'Gangwon',cat:['alam'],fee:9000,fn:'± · kereta kabel +₩12,000',s:'Okt (daun merah)',d:'Taman negara paling terkenal Korea — puncak granit Ulsanbawi, Kuil Sinheungsa dan arca Buddha batu gergasi di lembahnya. Daun merah musim luruhnya dianggap paling indah di negara ini.',t:'Naiki kereta kabel ke Gwongeumseong untuk panorama tanpa mendaki.'},
+{n:'Pulau Nami',h:'남이섬',c:'Chuncheon',r:'Gangwon',cat:['alam','keluarga'],fee:16000,fn:'Termasuk feri ulang-alik',s:'Okt–Nov',d:'Pulau separuh bulan di tengah Tasik Cheongpyeong yang terkenal dengan laluan pokok metasequoia dan pain putih — lokasi drama Winter Sonata. Basikal, trem zebra dan angsa menjadi tarikan keluarganya.',t:'Naik feri awal pagi untuk elak kumpulan besar.'},
+{n:'Rail Bike Gangchon',h:'강촌레일바이크',c:'Chuncheon',r:'Gangwon',cat:['keluarga','alam'],fee:30000,fn:'± · 2 penumpang',s:'Apr–Nov',d:'Kayuh kereta rel empat roda sepanjang laluan lama sejauh 4.5km melalui terowong berlampu LED dan lembah sungai Bukhan. Laluan pulang menggunakan kereta api lagu rakyat.',t:'Tempah slot pagi dalam talian; terowong LED adalah kemuncak.'},
+{n:'Pantai &amp; Tasik Gyeongpo',h:'경포',c:'Gangneung',r:'Gangwon',cat:['alam','bandar'],fee:0,fn:'',s:'Jun–Okt',d:'Pantai timur Gangneung dengan tasik Gyeongpoho di belakangnya — gabungan laut, tasik dan pavilion purba Gyeongpodae. Jalan kafe Anmok di sebelahnya menjadikan bandar ini ibu kopi Korea.',t:'Minum kopi di Jalan Anmok menghadap laut timur.'},
+{n:'Ladang Biri-biri Daegwallyeong',h:'대관령양떼목장',c:'Pyeongchang',r:'Gangwon',cat:['alam','keluarga'],fee:3000,fn:'± · rumput suapan ±₩1,000',s:'Mei–Okt',d:'Ladang biri-biri di dataran tinggi Daegwallyeong yang menawarkan suapan rumput langsung dari tangan — biri-biri akan mengikut pengunjung merata padang. Udara sejuk puncaknya bertahan walaupun musim panas.',t:'Bawa jaket sepanjang musim; laluan tanjakan ringan.'},
+{n:'Kampung Hahoe',h:'하회마을',c:'Andong',r:'Gyeongsang',cat:['budaya','sejarah'],fee:5000,fn:'',s:'Sepanjang tahun',d:'Kampung moyang klan Ryu berusia 600 tahun yang tersenarai UNESCO, dibentuk oleh lekukan Sungai Nakdong seperti bentuk shuang? "taegeuk". Rumah beratap jirang dan topeng Hahoe talchum menjadikannya muzium hidup budaya Korea.',t:'Feri tradisional masuk kampung; pertunjukan topeng pada hujung minggu.'},
+{n:'Tongyeong',h:'통영',c:'Tongyeong',r:'Gyeongsang',cat:['alam','bandar'],fee:0,fn:'Luge ±₩15,000 · kereta kabel ±₩13,000',s:'Apr–Nov',d:'Pelabuhan kepulauan dijuluki "Napoli Timur" — 570 pulau kecil, pasar lama, luge dunia dan kereta kabel Mireuksan yang menghadap laut selatan. Latar drama dan filem paling banyak dilawati di Gyeongsang Selatan.',t:'Tongyeong Luge dan pemandangan dari Mireuksan adalah dua wajib.'},
+{n:'Yeosu',h:'여수',c:'Yeosu',r:'Jeolla',cat:['alam','bandar','keluarga'],fee:0,fn:'Kereta kabel Dolsan ±₩13,000',s:'Apr–Nov',d:'Pelabuhan selatan dengan "laut malam paling cantik di Korea" — Odongdo, jambatan Dolsan dan kereta kabel yang merentasi laut. Pertunjukan kepingan? "Yeosu Night Sea" menjadi pesta cahaya tahunan yang terkenal.',t:'Naik kereta kabel Dolsan saat malam; jangan lepaskan Odongdo musim camelia.'},
+{n:'Teluk Suncheon',h:'순천만',c:'Suncheon',r:'Jeolla',cat:['alam'],fee:2000,fn:'± · skylift +',s:'Okt–Nov',d:'Ladang rumput paya terbesar Korea yang menjadi hab ribuan burung migrat dan ketam kegerakan? "kepala kekabu"? — perbaiki: dengan papan jalan sepanjang 1.2km menghadap muara. Taman Bunga Negara bersebelahan menambah tarikan sepanjang musim.',t:'Naiki skylift untuk panorama teluk; sunset adalah kemuncak.'},
+{n:'Hutan Buluh Damyang',h:'죽녹원',c:'Damyang',r:'Jeolla',cat:['alam'],fee:2000,fn:'',s:'Sepanjang tahun',d:'Hutan buluh hijau yang menyejukkan jalan sepanjang tahun — laluan papan di antara batang buluh menjadikannya antara tempat paling difoto Jeolla. Jalan metasequoia bersebelahan terkenal dalam iklan dan drama.',t:'Cuba makanan buluh tempatan: daetongbap (nasi dalam batang buluh).'},
+{n:'Seongsimdang Daejeon',h:'대전성심당',c:'Daejeon',r:'Chungcheong',cat:['makanan'],fee:0,fn:'',s:'Sepanjang tahun',d:'Bakery legenda Daejeon sejak 1956 yang menjadikan bandar ini dikenali sebagai "bandar roti" — barisan pembeli tidak pernah putus sepanjang hari. Soboro goreng dan roti krim menjadi ikon kedainya.',t:'Cawangan Stesen Daejeon paling senang dilawati dalam perjalanan KTX.'}
+];
+/* KOREA_DB_END */
+/* --- enjin padanan & pembantu pangkalan data --- */
+var DB_DEC=function(s){return String(s).replace(/&amp;/g,'&').replace(/&#39;/g,"'").replace(/&quot;/g,'"')};
+var DB_UP=function(s){return DB_DEC(s).toUpperCase()};
+var DB_STOP='ISTANA|TAMAN|PASAR|KUIL|PANTAI|KAMPUNG|GUNUNG|BALAIRUNG|MUZIUM|PULAU|TERJUN|MENARA|PERPUSTAKAAN|KERETA|KABEL|KEDAI|LADANG|NEGARA|CENTRAL|PARK|GRAND|WORLD|SQUARE|JALAN|BEBAS|ZON|TENTERA|RAIL|BIKE|KOLAM|DONGGUNG|SEOUL|BUSAN'.split('|');
+var DB_FIX={'Menara N Seoul':['N SEOUL','SEOUL TOWER'],'Seoul Grand Park':['GRAND PARK'],'Zon Bebas Tentera (DMZ)':['DMZ'],'Perpustakaan Starfield COEX':['STARFIELD'],'Taman Han River':['HAN RIVER'],'Kereta Kabel Songdo':['KABEL SONGDO'],'Songdo Central Park':['SONGDO CENTRAL'],'SEA LIFE Busan':['SEA LIFE'],'Ladang Teh O&#39;sulloc':['OSULLOC','SULLOC'],'Pulau Udo':['UDO'],'Pulau Nami':['NAMI'],'Kedai PNB Bakery':['PNB'],'BIFF Square &amp; Nampo-dong':['BIFF'],'Donggung &amp; Kolam Wolji':['WOLJI'],'Kampung Folk Korea':['FOLK']};
+var DB_IDX=KOREA_DB.map(function(e){
+  var keys=(DB_FIX[e.n]||[]).slice();
+  DB_UP(e.n).split(/[^A-Z0-9']+/).forEach(function(w){
+    if(w.length>=5&&DB_STOP.indexOf(w)<0&&keys.indexOf(w)<0)keys.push(w);
+  });
+  return {e:e,k:keys};
+});
+function dbMatch(text){
+  var t=DB_UP(text),best=null,bl=0;
+  DB_IDX.forEach(function(it){
+    var hit=0;
+    it.k.forEach(function(k){if(t.indexOf(k)>=0)hit+=k.length});
+    if(hit>bl){bl=hit;best=it.e}
+  });
+  return best;
+}
+function dbFind(n){
+  var d=DB_DEC(n);
+  for(var i=0;i<KOREA_DB.length;i++){if(DB_DEC(KOREA_DB[i].n)===d)return KOREA_DB[i]}
+  return null;
+}
+function dbAct(x){
+  var e=dbMatch(x);
+  return e?'<li>'+x+' <button type="button" class="pl-info" data-n="'+e.n+'" aria-label="Terangkan '+DB_DEC(e.n)+'">i</button></li>':'<li>'+x+'</li>';
+}
+var plCur='krw';
+function plVal(name){var el=document.querySelector('input[name='+name+']:checked');return el?el.value:null}
+function plFmt(n){return plCur==='krw'?('₩'+n.toLocaleString('en-US')):('RM '+(n/PL_RATE).toLocaleString('en-US',{maximumFractionDigits:0}))}
+function plCompute(){
+  var kadar=plVal('pl-kadar')||'sederhana',musim=plVal('pl-musim')||'sakura',tema=plVal('pl-tema')||'bandar';
+  var dur=parseInt(plVal('pl-tempoh')||'5',10);
+  var r=PL_RATES[kadar],s=PL_SEASON[musim],t=PL_THEME[tema];
+  var hotel=Math.round(r.penginapan*s.m/1000)*1000;
+  var lines=[
+    {k:'Penginapan',a:hotel*dur},
+    {k:'Makanan',a:r.makanan*dur},
+    {k:'Pengangkutan',a:r.pengangkutan*dur},
+    {k:'Aktiviti & tiket',a:r.aktiviti*dur+t.pkg},
+    {k:'Lain-lain',a:r.lain*dur}
+  ];
+  var rail=dur>=7?120000:dur>=5?60000:dur>=3?30000:0;
+  if(kadar==='santai')rail=Math.round(rail*.6);else if(kadar==='padat')rail=Math.round(rail*1.15);
+  lines[2].a+=rail;
+  var total=lines.reduce(function(s2,x){return s2+x.a},0);
+  return{lines:lines,total:total,dur:dur,kadar:kadar,musim:s,tema:t,tkey:tema};
+}
+function renderPlanner(){
+  var p=plCompute();
+  $('#pr-total').textContent=plFmt(p.total);
+  $('#pr-alt').innerHTML=plCur==='krw'
+    ?'≈ <b>RM '+(p.total/PL_RATE).toLocaleString('en-US',{maximumFractionDigits:0})+'</b> bagi seorang pengembara'
+    :'≈ <b>₩'+p.total.toLocaleString('en-US')+'</b> bagi seorang pengembara';
+  var bars=$('#pr-bars');
+  bars.innerHTML=p.lines.map(function(x){
+    return '<div class="pr-row"><em>'+x.k+'</em><div class="pr-track"><div class="pr-fill"></div></div><span class="pr-amt">'+plFmt(x.a)+'</span></div>';
+  }).join('');
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    Array.prototype.forEach.call(bars.querySelectorAll('.pr-fill'),function(f,i){f.style.width=Math.round(p.lines[i].a/p.total*100)+'%'});
+  })});
+  $('#pr-tip').innerHTML='<strong>Cadangan '+p.tema.l+':</strong> '+p.tema.d+' Laluan ideal: '+p.tema.c+' · '+p.dur+' hari · '+PL_PACE[p.kadar]+' · '+p.musim.l+'.';
+  var days=PL_DAYS[p.tkey].slice(0,p.dur),lim=PL_LIM[p.kadar];
+  $('#pl-itin-meta').textContent='— '+PL_THEME[p.tkey].l+' · '+p.dur+' hari';
+  $('#pl-itin-sub').textContent='Kadar '+PL_PACE[p.kadar].toLowerCase()+': '+lim+' aktiviti dipaparkan setiap hari.';
+  var itin=$('#pl-itin');
+  itin.innerHTML=days.map(function(d,i){
+    return '<div class="pl-day"><span class="pd-label">Hari '+(i+1)+'</span><h4>'+d.t+'</h4><ul>'+d.a.slice(0,lim).map(dbAct).join('')+'</ul></div>';
+  }).join('');
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    Array.prototype.forEach.call(itin.children,function(el,i){el.style.transitionDelay=(i*50)+'ms';el.classList.add('in')});
+  })});
+}
+document.querySelector('.planner').addEventListener('change',renderPlanner);
+$$('.pr-currency button').forEach(function(b){
+  b.addEventListener('click',function(){
+    plCur=b.dataset.cur;
+    $$('.pr-currency button').forEach(function(x){x.classList.toggle('on',x===b)});
+    renderPlanner();
+  });
+});
+renderPlanner();
+/* carousel */
+var carIdx=[6,7,8,9,10,2,3,0];
+var carTrack=$('#car-track'),carCount=$('#car-count'),carBar=$('#car-bar'),carEl=$('.carousel');
+var carCur=0,carTimer=null,carPaused=false;
+carTrack.innerHTML=carIdx.map(function(gi){
+  var g=GALLERY[gi];
+  var src=gi===5?g.src:g.src.replace('1920px-','1280px-');
+  return '<figure class="car-slide"><img src="'+src+'" alt="'+g.t+'"><figcaption>'+g.t+'</figcaption></figure>';
+}).join('');
+$$('img',carTrack).forEach(guardImg);
+function restartBar(){
+  if(reducedMotion)return;
+  carBar.style.transition='none';carBar.style.width='0';
+  void carBar.offsetWidth;
+  carBar.style.transition='width 5.6s linear';carBar.style.width='100%';
+}
+function carGo(i){
+  carCur=((i%carIdx.length)+carIdx.length)%carIdx.length;
+  carTrack.style.transform='translateX(-'+(carCur*100)+'%)';
+  carCount.textContent=(carCur+1)+' / '+carIdx.length;
+  restartBar();
+}
+function carPlay(){
+  clearTimeout(carTimer);
+  if(reducedMotion||carPaused)return;
+  carTimer=setTimeout(function(){carGo(carCur+1);carPlay()},5600);
+}
+$('#car-prev').addEventListener('click',function(){carGo(carCur-1);carPlay()});
+$('#car-next').addEventListener('click',function(){carGo(carCur+1);carPlay()});
+carEl.addEventListener('mouseenter',function(){carPaused=true;clearTimeout(carTimer);carBar.style.transition='none'});
+carEl.addEventListener('mouseleave',function(){carPaused=false;carPlay()});
+var swipeX=null;
+carEl.addEventListener('pointerdown',function(e){swipeX=e.clientX});
+carEl.addEventListener('pointerup',function(e){
+  if(swipeX===null)return;
+  var dx=e.clientX-swipeX;swipeX=null;
+  if(Math.abs(dx)>40){carGo(carCur+(dx<0?1:-1));carPlay()}
+});
+carGo(0);carPlay();
+/* lightbox */
+function buildLB(){
+  lbEl=$('#lightbox');imgLB=$('#lb-img');capLB=$('#lb-caption');
+  countLB=$('#lb-count');thumbsEl=$('#lb-thumbs');
+  GALLERY.forEach(function(g,i){
+    var b=document.createElement('button');
+    b.setAttribute('aria-label','Imej '+(i+1)+': '+g.t);
+    var t=document.createElement('img');
+    t.src=g.src.replace('1920px-','960px-');t.alt='';
+    b.appendChild(t);
+    b.addEventListener('click',function(){lbShow(i)});
+    thumbsEl.appendChild(b);thumbEls.push(b);
+  });
+  $$('img',thumbsEl).forEach(guardImg);
+  guardImg(imgLB);
+  $('#lb-close').addEventListener('click',closeLB);
+  $('#lb-prev').addEventListener('click',function(){lbShow(lbCur-1)});
+  $('#lb-next').addEventListener('click',function(){lbShow(lbCur+1)});
+  $('#lb-fullscreen').addEventListener('click',function(){
+    if(!document.fullscreenElement){if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen()}
+    else if(document.exitFullscreen){document.exitFullscreen()}
+  });
+  $$('.mo-item').forEach(function(m){
+    function open(){openLB(parseInt(m.dataset.g,10))}
+    m.addEventListener('click',open);
+    m.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});
+  });
+}
+function openLB(i){lbShow(i);lbEl.classList.add('open');document.body.classList.add('locked')}
+function closeLB(){lbEl.classList.remove('open');document.body.classList.remove('locked')}
+function lbShow(i){
+  var n=GALLERY.length;
+  lbCur=((i%n)+n)%n;
+  var g=GALLERY[lbCur];
+  imgLB.classList.remove('ready');
+  imgLB.onload=function(){imgLB.classList.add('ready')};
+  imgLB.src=g.src;imgLB.alt=g.t;
+  capLB.textContent=g.t;
+  countLB.textContent=(lbCur+1)+' / '+n;
+  thumbEls.forEach(function(t,k){t.classList.toggle('on',k===lbCur)});
+  if(thumbEls[lbCur])thumbEls[lbCur].scrollIntoView({block:'nearest',inline:'nearest',behavior:reducedMotion?'auto':'smooth'});
+}
+buildLB();
+/* ===== PANGKALAN DATA + TANYA PANDUAN ===== */
+if(typeof KOREA_DB!=='undefined'&&KOREA_DB.length){
+var DB_CATL={sejarah:'Sejarah',budaya:'Budaya',bandar:'Bandar',makanan:'Makanan',keluarga:'Keluarga',alam:'Alam'};
+function dbFee(e){return e.fee?'±&#8361;'+String(e.fee).replace(/\B(?=(\d{3})+(?!\d))/g,','):'Percuma'}
+function dbBadges(e){return e.cat.map(function(c){return '<span class="db-badge '+c+'">'+DB_CATL[c]+'</span>'}).join('')}
+var dbGrid=$('#db-grid'),dbCount=$('#db-count'),dbQ=$('#db-q');
+function dbRender(){
+  var q=DB_UP(dbQ.value.trim()),n=0;
+  if(!q){
+    dbGrid.innerHTML='<div class="db-empty idle">Taip di atas untuk cari tempat — cth. "istana", "jeju", "pasar" atau "makanan".</div>';
+    dbCount.textContent='';
+    return;
+  }
+  var html=KOREA_DB.map(function(e){
+    var hay=DB_UP(e.n+' '+e.h+' '+e.c+' '+e.r+' '+e.d+' '+e.cat.map(function(c){return DB_CATL[c]}).join(' '));
+    if(hay.indexOf(q)<0)return '';
+    n++;
+    return '<article class="db-card" tabindex="0" role="button" data-n="'+e.n+'" aria-label="Butiran '+DB_DEC(e.n)+'">'+
+      '<div class="db-card-top"><div class="db-badges">'+dbBadges(e)+'</div><span class="db-fee">'+dbFee(e)+'</span></div>'+
+      '<h3>'+DB_DEC(e.n)+'<small>'+e.h+'</small></h3>'+
+      '<p class="db-loc">'+e.c+' — '+e.r+'</p>'+
+      '<p class="db-desc">'+e.d+'</p>'+
+      (e.t?'<p class="db-tip">Tip: '+e.t+'</p>':'')+
+    '</article>';
+  }).join('');
+  dbGrid.innerHTML=html||'<div class="db-empty">Tiada tempat ditemui — cuba kata kunci lain.</div>';
+  dbCount.textContent=n+' tempat ditemui';
+  var cards=$$('.db-card',dbGrid);
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    cards.forEach(function(c,i){c.style.transitionDelay=Math.min(i*35,700)+'ms';c.classList.add('in')});
+  })});
+}
+dbGrid.addEventListener('click',function(ev){var c=ev.target.closest('.db-card');if(c)dbOpenModal(dbFind(c.getAttribute('data-n')))});
+dbGrid.addEventListener('keydown',function(ev){
+  if(ev.key==='Enter'||ev.key===' '){var c=ev.target.closest('.db-card');if(c){ev.preventDefault();dbOpenModal(dbFind(c.getAttribute('data-n')))}}
+});
+dbQ.addEventListener('input',dbRender);
+/* --- modal --- */
+var dbModal=$('#db-modal'),dbBody=$('#db-modal-body');
+function dbOpenModal(e){
+  if(!e)return;
+  dbBody.innerHTML=
+    '<div class="dbm-badges">'+dbBadges(e)+'</div>'+
+    '<h3 style="margin-top:12px">'+e.n+'<small>'+e.h+'</small></h3>'+
+    '<p class="dbm-loc">'+e.c+' · '+e.r+'</p>'+
+    '<span class="dbm-label">Yuran masuk</span><p class="dbm-fee">'+dbFee(e)+(e.fn?' <em>— '+e.fn+'</em>':'')+'</p>'+
+    '<span class="dbm-label">Musim terbaik</span><p class="dbm-desc">'+e.s+'</p>'+
+    '<span class="dbm-label">Tentang tempat ini</span><p class="dbm-desc">'+e.d+'</p>'+
+    (e.t?'<div class="dbm-tip"><b>Tip pengembara:</b> '+e.t+'</div>':'');
+  dbModal.classList.add('open');
+  dbModal.setAttribute('aria-hidden','false');
+  document.body.classList.add('locked');
+}
+function dbCloseModal(){
+  dbModal.classList.remove('open');
+  dbModal.setAttribute('aria-hidden','true');
+  document.body.classList.remove('locked');
+}
+$('#db-modal-close').addEventListener('click',dbCloseModal);
+$('.db-modal-bg',dbModal).addEventListener('click',dbCloseModal);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&dbModal.classList.contains('open'))dbCloseModal()});
+document.addEventListener('click',function(ev){
+  var b=ev.target.closest('.pl-info');
+  if(b)dbOpenModal(dbFind(b.getAttribute('data-n')));
+});
+/* --- Tanya Panduan --- */
+var DB_REGIONS=['seoul','busan','jeju','gyeongju','tongyeong','hahoe','andong','jeonju','yeosu','suncheon','damyang','incheon','suwon','yongin','everland','gangwon','seoraksan','nami','chuncheon','daejeon'];
+var DB_RMAP={seoul:'Seoul',busan:'Busan',jeju:'Jeju',gyeongju:'Gyeongsang',tongyeong:'Gyeongsang',hahoe:'Gyeongsang',andong:'Gyeongsang',jeonju:'Jeolla',yeosu:'Jeolla',suncheon:'Jeolla',damyang:'Jeolla',incheon:'Incheon & Gyeonggi',suwon:'Incheon & Gyeonggi',yongin:'Incheon & Gyeonggi',everland:'Incheon & Gyeonggi',gangwon:'Gangwon',seoraksan:'Gangwon',nami:'Gangwon',chuncheon:'Gangwon',daejeon:'Chungcheong'};
+var DB_CATS={sejarah:['sejarah','istana','dinasti','warisan','purba'],budaya:['budaya','hanbok','kuil','tradisi','seni','upacara','teh'],bandar:['bandar','moden','beli','belian','shopping','malam','urban','kedai','kafe'],makanan:['makan','makanan','sedap','kuliner','juadah','restoran','hidangan','lapar'],keluarga:['kanak','anak','keluarga','family','budak','seronok'],alam:['alam','gunung','pantai','pulau','hiking','pemandangan','semula','luar']};
+var DB_FREE=['percuma','free','murah','jimat','budget'];
+var DB_SEASON={sakura:'Apr',spring:'Apr',bunga:'Apr',luruh:'Okt',autumn:'Okt',fall:'Nov',daun:'Okt',salji:'Jan',snow:'Jan',sejuk:'Jan',winter:'Jan',panas:'Jul',summer:'Jul'};
+var dbAns=$('#db-ask-answer'),dbAskIn=$('#db-ask-input');
+function dbAskEngine(q){
+  var t=DB_DEC(q).toLowerCase(),cats=[],regs=[],mon='',free=DB_FREE.some(function(w){return t.indexOf(w)>=0}),toks;
+  Object.keys(DB_CATS).forEach(function(c){if(DB_CATS[c].some(function(w){return t.indexOf(w)>=0}))cats.push(c)});
+  DB_REGIONS.forEach(function(w){if(t.indexOf(w)>=0&&regs.indexOf(DB_RMAP[w])<0)regs.push(DB_RMAP[w])});
+  Object.keys(DB_SEASON).forEach(function(w){if(t.indexOf(w)>=0)mon=DB_SEASON[w]});
+  toks=t.split(/[^a-z0-9']+/).filter(function(w){
+    return w.length>=4&&DB_STOP2.indexOf(w)<0;
+  });
+  var scored=KOREA_DB.map(function(e){
+    var sc=0;
+    e.cat.forEach(function(c){if(cats.indexOf(c)>=0)sc+=4});
+    if(regs.indexOf(e.r)>=0)sc+=4;
+    if(free&&e.fee===0)sc+=3;else if(free&&e.fee<=5000)sc+=1;
+    if(mon&&e.s.indexOf(mon)>=0)sc+=2;
+    var hay=DB_UP(e.n+' '+e.d+' '+e.c);
+    toks.forEach(function(w){if(hay.indexOf(DB_UP(w))>=0)sc+=1});
+    return {e:e,s:sc};
+  }).sort(function(a,b){return b.s-a.s});
+  return {list:scored,cats:cats,regs:regs,mon:mon,free:free,top:scored.length?scored[0].s:0};
+}
+var DB_STOP2=('tempat|best|mana|apa|yang|untuk|dengan|boleh|nak|saya|kita|tolong|cadang|cadangan|destinasi|bagus|cantik|lawat|lawatan|pergi|adakah|bagaimana|area|kawasan|sekitar|pengalaman|aktiviti|singgah|jalan').split('|');
+function dbReply(q){
+  var r=dbAskEngine(q);
+  dbAns.classList.add('show','thinking');
+  dbAns.innerHTML='<p class="dblead">Mencari dalam pangkalan data</p>';
+  setTimeout(function(){
+    dbAns.classList.remove('thinking');
+    if(r.top<4){
+      var sugg=['Istana Gyeongbokgung','Everland','Pasar Gwangjang'].map(function(n){return dbFind(n)}).filter(Boolean);
+      dbAns.innerHTML='<p class="dblead">Hmm, soalan itu agak luas untuk saya.</p>'+
+        '<p>Cuba sebut kategori (makanan, sejarah, kanak-kanak, alam), nama bandar (Seoul, Busan, Jeju, Jeonju…), atau kata seperti "percuma" dan "musim luruh".</p>'+
+        '<div class="dbmini">'+sugg.map(function(e){return '<button type="button" data-n="'+e.n+'">'+DB_DEC(e.n)+' <i>'+e.c+'</i></button>'}).join('')+'</div>';
+      return;
+    }
+    var bits=[];
+    if(r.cats.length)bits.push(r.cats.map(function(c){return DB_CATL[c].toLowerCase()}).join('/'));
+    if(r.regs.length)bits.push(r.regs.join('/'));
+    var lead=bits.length?'Pilihan terbaik untuk '+bits.join(' di ')+':':'Cadangan istimewa untuk anda:';
+    if(r.free)lead+=' (fokus tempat murah/percuma)';
+    if(r.mon)lead+=' — sesuai sekitar '+r.mon;
+    var top=r.list.filter(function(x){return x.s>0}).slice(0,3);
+    dbAns.innerHTML='<p class="dblead">'+lead+'</p>'+
+      '<div class="dbmini">'+top.map(function(x){return '<button type="button" data-n="'+x.e.n+'">'+DB_DEC(x.e.n)+' <i>'+x.e.c+'</i></button>'}).join('')+'</div>'+
+      '<p class="dbfoot">'+top.length+' cadangan daripada '+KOREA_DB.length+' tempat · klik untuk butiran penuh.</p>';
+  },550);
+}
+$('#db-ask-form').addEventListener('submit',function(ev){
+  ev.preventDefault();
+  var v=dbAskIn.value.trim();
+  if(v)dbReply(v);
+});
+$('#db-ask-chips').addEventListener('click',function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  dbAskIn.value=b.textContent;
+  dbReply(b.textContent);
+});
+dbAns.addEventListener('click',function(ev){
+  var b=ev.target.closest('button[data-n]');
+  if(b)dbOpenModal(dbFind(b.getAttribute('data-n')));
+});
+dbRender();
+}
+/* global keys */
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&(e.key==='k'||e.key==='K')){
+    e.preventDefault();
+    searchBar.classList.contains('open')?closeSearch():openSearch();
+    return;
+  }
+  var lbOpen=lbEl&&lbEl.classList.contains('open');
+  if(e.key==='Escape'){
+    if(lbOpen)closeLB();
+    else if(mobileMenu.classList.contains('open'))toggleMenu(false);
+    else if(searchBar.classList.contains('open'))closeSearch();
+    return;
+  }
+  if(lbOpen){
+    if(e.key==='ArrowRight')lbShow(lbCur+1);
+    if(e.key==='ArrowLeft')lbShow(lbCur-1);
+  }
+});
+})();
+</script>
+
+<!-- Firebase (awan) + komuniti — lihat README-FIREBASE.md -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/komuniti-auth.js"></script>
+<script src="js/komuniti-comments.js"></script>
+</body>
+</html>
