@@ -70,10 +70,23 @@ function paintNav(){
   if(user){
     var first=(user.name||'Akaun').trim().split(/\s+/)[0];
     navLogin.classList.add('signed');
-    navLogin.title='Halo, '+user.name+' — ke Ruang Komuniti';
+    if(mode==='firebase'){
+      navLogin.href='https://lemonbearfiras.github.io/jelajah-korea-selatan/profile?v='+encodeURIComponent(user.uid);
+      navLogin.target='_blank';
+      navLogin.rel='noopener';
+      navLogin.title='Halo, '+user.name+' — lihat halaman profil awam anda';
+    }else{
+      navLogin.href='#komuniti';
+      navLogin.removeAttribute('target');
+      navLogin.removeAttribute('rel');
+      navLogin.title='Halo, '+user.name+' — ke Ruang Komuniti';
+    }
     navLogin.innerHTML='<span class="nl-ava">'+(user.photo?'<img src="'+esc(user.photo)+'" alt="">':initials(user.name))+'</span><span class="nl-name">'+esc(first)+'</span>';
   }else{
     navLogin.classList.remove('signed');
+    navLogin.href='#komuniti';
+    navLogin.removeAttribute('target');
+    navLogin.removeAttribute('rel');
     navLogin.title='Log masuk / daftar akaun';
     navLogin.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.2 4.9-6 8-6s6.5 1.8 8 6"/></svg><span class="nl-name">Log Masuk</span>';
   }
