@@ -619,6 +619,34 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
 @media (max-width:1150px){.main-nav a{padding:9px 9px}.main-nav{gap:0}}
 @media (max-width:900px){.km-grid{grid-template-columns:1fr}.km-auth-card{position:static}}
 
+/* 19 — beautification pass */
+.hero-bg img{transform-origin:52% 42%;animation:kenBurns 30s var(--ease) infinite alternate}
+@keyframes kenBurns{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.12) translate(-1.4%,-2%)}}
+.hero-enter{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease) var(--d,0s),transform .9s var(--ease) var(--d,0s)}
+body.site-ready .hero-enter{opacity:1;transform:none}
+.ticker{position:relative;z-index:4;background:linear-gradient(92deg,var(--red) 0%,#8f1f3f 42%,var(--blue) 100%);color:#fff;overflow:hidden;padding:15px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.ticker-track{display:flex;width:max-content;animation:tickerScroll 34s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker-set{display:flex;align-items:center;flex:none}
+.ticker-set span{display:inline-flex;align-items:baseline;gap:9px;padding:0 26px;font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;white-space:nowrap}
+.ticker-set b{font-family:'Noto Sans KR',sans-serif;font-weight:700;letter-spacing:.05em;font-size:14px;opacity:.85}
+.ticker-set i{font-style:normal;opacity:.55}
+@keyframes tickerScroll{to{transform:translateX(-50%)}}
+.dest-card{transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.dest-card:hover{transform:translateY(-9px);box-shadow:0 28px 56px rgba(10,10,10,.3)}
+.btn-primary{position:relative;overflow:hidden}
+.btn-primary::after{content:"";position:absolute;top:-20%;left:-70%;width:45%;height:140%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);transition:left .65s var(--ease);pointer-events:none}
+.btn-primary:hover::after{left:135%}
+::selection{background:rgba(205,46,58,.88);color:#fff}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:var(--bg-soft)}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--red),var(--blue));border-radius:8px;border:3px solid var(--bg-soft)}
+::-webkit-scrollbar-thumb:hover{background:var(--red)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+footer{position:relative}
+footer::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),#e2564b 32%,var(--blue) 68%)}
+
 /* 18 — responsive + reduced motion */
 @media (max-width:1080px){
   .why-grid{grid-template-columns:1fr 1fr}
@@ -674,6 +702,7 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   [data-reveal]{opacity:1;transform:none}
+  .hero-enter{opacity:1;transform:none}
 }
 </style>
 </head>
@@ -768,23 +797,35 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
   <div id="hangul-field" aria-hidden="true"></div>
   <div class="hero-inner">
     <div>
-      <p class="hero-eyebrow">Republik Korea · 대한민국</p>
-      <h1>Jelajah<br><span class="accent">Korea Selatan</span></h1>
-      <p class="hero-sub">Dari lampu neon Seoul hingga pantai tenang Jeju — temui warisan 5,000 tahun, dapur yang tak pernah tidur, dan landskap yang bertukar setiap musim.</p>
-      <div class="hero-ctas">
+      <p class="hero-eyebrow hero-enter">Republik Korea · 대한민국</p>
+      <h1 class="hero-enter" style="--d:.12s">Jelajah<br><span class="accent">Korea Selatan</span></h1>
+      <p class="hero-sub hero-enter" style="--d:.26s">Dari lampu neon Seoul hingga pantai tenang Jeju — temui warisan 5,000 tahun, dapur yang tak pernah tidur, dan landskap yang bertukar setiap musim.</p>
+      <div class="hero-ctas hero-enter" style="--d:.4s">
         <a href="#destinasi" class="btn-primary" data-magnetic>Terokah Korea <span>→</span></a>
         <a href="#budaya" class="btn-ghost" data-magnetic>Temui Budaya</a>
       </div>
     </div>
-    <aside class="glance" aria-label="Korea secara ringkas">
+    <aside class="glance hero-enter" style="--d:.56s" aria-label="Korea secara ringkas">
       <div class="glance-item"><strong data-count="51.7" data-decimals="1">0</strong><small>Juta Penduduk</small></div>
       <div class="glance-item"><strong data-count="17">0</strong><small>Wilayah &amp; Bandaraya</small></div>
       <div class="glance-item"><strong data-count="4">0</strong><small>Musim Berbeza</small></div>
       <div class="glance-item"><strong data-count="5000" data-suffix="+">0</strong><small>Tahun Sejarah</small></div>
     </aside>
   </div>
-  <div class="hero-scroll" aria-hidden="true"><i></i>Skrol</div>
+  <div class="hero-scroll hero-enter" style="--d:.9s" aria-hidden="true"><i></i>Skrol</div>
 </section>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <div class="ticker-set">
+      <span>Seoul <b>서울</b> <i>✦</i></span><span>Busan <b>부산</b> <i>✦</i></span><span>Jeju <b>제주</b> <i>✦</i></span><span>Gyeongju <b>경주</b> <i>✦</i></span><span>Jeonju <b>전주</b> <i>✦</i></span><span>Daegu <b>대구</b> <i>✦</i></span><span>Gwangju <b>광주</b> <i>✦</i></span><span>Gangneung <b>강릉</b> <i>✦</i></span><span>Andong <b>안동</b> <i>✦</i></span><span>Yeosu <b>여수</b> <i>✦</i></span>
+    </div>
+    <div class="ticker-set">
+      <span>Seoul <b>서울</b> <i>✦</i></span><span>Busan <b>부산</b> <i>✦</i></span><span>Jeju <b>제주</b> <i>✦</i></span><span>Gyeongju <b>경주</b> <i>✦</i></span><span>Jeonju <b>전주</b> <i>✦</i></span><span>Daegu <b>대구</b> <i>✦</i></span><span>Gwangju <b>광주</b> <i>✦</i></span><span>Gangneung <b>강릉</b> <i>✦</i></span><span>Andong <b>안동</b> <i>✦</i></span><span>Yeosu <b>여수</b> <i>✦</i></span>
+    </div>
+  </div>
+</div>
 
 <!-- DESTINASI -->
 <section class="sec" id="destinasi">
@@ -1649,6 +1690,7 @@ function runCounters(){if(countersDone)return;countersDone=true;$$('strong[data-
   Promise.all([min,loaded]).then(function(){
     loader.classList.add('done');
     document.body.classList.remove('locked');
+    document.body.classList.add('site-ready');
     setTimeout(runCounters,250);
     setTimeout(function(){if(loader&&loader.parentNode)loader.parentNode.removeChild(loader)},800);
   });
