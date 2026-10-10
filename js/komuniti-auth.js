@@ -225,6 +225,7 @@ function saveUserProfile(u){
       uid:u.uid,
       name:u.displayName||'',
       photo:u.photoURL||'',
+      about:'',
       createdAt:firebase.firestore.FieldValue.serverTimestamp()
     });
   }).catch(function(e){
