@@ -680,6 +680,42 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
 .foot-mark{position:absolute;right:-8px;bottom:-26px;z-index:0;font-family:'Noto Sans KR',sans-serif;font-weight:800;font-size:clamp(90px,12vw,170px);letter-spacing:-.04em;color:rgba(250,249,246,.05);pointer-events:none;user-select:none}
 @media (max-width:900px){.hero-glyph{display:none}#site-header{height:60px}}
 
+/* 21 — live data: AI dot, weather icons, rate card */
+.db-ask-badge{position:relative}
+.db-ask-badge .live-dot{position:absolute;top:-2px;right:-2px;width:13px;height:13px;border-radius:50%;background:#25d366;border:2px solid #12203a;animation:livePulse 1.9s var(--ease) infinite}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}55%{box-shadow:0 0 0 6px rgba(37,211,102,0)}}
+.weather-chip{transition:background .5s var(--ease),border-color .5s}
+.weather-chip.upd{background:rgba(0,45,110,.66);border-color:rgba(255,255,255,.42)}
+.weather-chip .w-rain{stroke:#bcd3ff;stroke-width:2;stroke-linecap:round;fill:none}
+.weather-chip .w-fog{stroke:#dfe7f5;stroke-width:2;stroke-linecap:round;fill:none}
+.weather-chip .w-bolt{fill:#ffd166}
+.rate-card{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:calc(var(--radius) + 4px);padding:26px 28px;box-shadow:0 24px 54px rgba(10,10,10,.08)}
+.rc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.rc-live{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:800;letter-spacing:.2em;color:#1a7f4b;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);padding:4px 11px;border-radius:999px}
+.rc-live i{width:8px;height:8px;border-radius:50%;background:#25d366;animation:livePulse 1.9s var(--ease) infinite}
+.rc-title h3{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-top:12px}
+.rc-title p{font-size:12.5px;color:var(--muted);margin-top:5px;max-width:440px}
+.rc-rate{text-align:right}
+.rc-rate strong{display:block;font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-.03em;line-height:1;background:linear-gradient(92deg,var(--red),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+.rc-rate small{display:block;margin-top:8px;font-size:12px;color:var(--muted);font-weight:600}
+.rc-graph{margin-top:20px}
+#rc-svg{width:100%;height:190px;display:block;overflow:visible}
+#rc-line{stroke-dasharray:2200;stroke-dashoffset:2200;animation:rcDraw 1.7s var(--ease) forwards}
+@keyframes rcDraw{to{stroke-dashoffset:0}}
+#rc-area{opacity:0;animation:rcFade 1s var(--ease) .5s forwards}
+@keyframes rcFade{to{opacity:.2}}
+#rc-grid line{stroke:var(--line);stroke-width:1}
+#rc-grid text{font-size:11px;fill:var(--muted);font-family:var(--font);font-weight:600}
+.rc-axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:600;margin-top:6px}
+.rc-axis .rc-mid{opacity:.55}
+.rc-conv{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:20px;padding-top:20px;border-top:1px dashed var(--line)}
+.rc-conv label{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:800;color:var(--ink)}
+.rc-conv input{width:132px;font:inherit;font-size:15px;font-weight:700;padding:11px 13px;border:1.5px solid var(--line);border-radius:11px;background:var(--bg);color:var(--ink);outline:none;transition:border-color .25s}
+.rc-conv input:focus{border-color:var(--red)}
+.rc-arrow{font-size:19px;color:var(--red);font-weight:800}
+.rc-note{font-size:12px;color:var(--muted);margin-left:auto}
+@media (max-width:640px){.rc-rate{text-align:left}.rc-note{margin-left:0;width:100%}}
+
 /* 18 — responsive + reduced motion */
 @media (max-width:1080px){
   .why-grid{grid-template-columns:1fr 1fr}
@@ -877,7 +913,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
     </div>
     <div id="dest-rail" data-reveal data-delay="80">
 
-      <article class="dest-card searchable" data-target="seoul">
+      <article class="dest-card searchable" data-target="seoul" data-lat="37.5665" data-lon="126.9780">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Lotte_World_Tower_In_Jamsil_%28144738473%29.jpeg/960px-Lotte_World_Tower_In_Jamsil_%28144738473%29.jpeg" alt="Lotte World Tower, Seoul">
         <div class="weather-chip"><svg class="w-cloud" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .8-7.92A5.5 5.5 0 0 0 7.2 8.6 4.5 4.5 0 0 0 7 18z"/></svg>14°C · Cerai Berawan</div>
         <div class="dest-body">
@@ -888,7 +924,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
         </div>
       </article>
 
-      <article class="dest-card searchable" data-target="busan">
+      <article class="dest-card searchable" data-target="busan" data-lat="35.1796" data-lon="129.0756">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Gwangalli_Beach_Busan_%2831877282978%29.jpg/960px-Gwangalli_Beach_Busan_%2831877282978%29.jpg" alt="Pantai Gwangalli, Busan">
         <div class="weather-chip"><svg class="w-sun" viewBox="0 0 24 24" aria-hidden="true"><circle class="core" cx="12" cy="12" r="4.6"/><g class="rays"><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19"/></g></svg>17°C · Cerah</div>
         <div class="dest-body">
@@ -899,7 +935,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
         </div>
       </article>
 
-      <article class="dest-card searchable" data-target="jeju">
+      <article class="dest-card searchable" data-target="jeju" data-lat="33.4996" data-lon="126.5312">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Seongsan_Ilchulbong%2C_Jeju_Island.jpg/960px-Seongsan_Ilchulbong%2C_Jeju_Island.jpg" alt="Seongsan Ilchulbong, Jeju">
         <div class="weather-chip"><svg class="w-sun" viewBox="0 0 24 24" aria-hidden="true"><circle class="core" cx="12" cy="12" r="4.6"/><g class="rays"><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19"/></g></svg>18°C · Cerah</div>
         <div class="dest-body">
@@ -910,7 +946,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
         </div>
       </article>
 
-      <article class="dest-card searchable" data-target="gyeongju">
+      <article class="dest-card searchable" data-target="gyeongju" data-lat="35.8300" data-lon="129.2100">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Bulguksa_temple_Gyeongju_South_Korea_20091111_104912.jpg/960px-Bulguksa_temple_Gyeongju_South_Korea_20091111_104912.jpg" alt="Kuil Bulguksa, Gyeongju">
         <div class="weather-chip"><svg class="w-cloud" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .8-7.92A5.5 5.5 0 0 0 7.2 8.6 4.5 4.5 0 0 0 7 18z"/></svg>15°C · Berawan</div>
         <div class="dest-body">
@@ -921,7 +957,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
         </div>
       </article>
 
-      <article class="dest-card searchable" data-target="seoraksan">
+      <article class="dest-card searchable" data-target="seoraksan" data-lat="38.1196" data-lon="128.4528">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Seoraksan_in_the_Fall_2-_%EC%84%A4%EC%95%85%EC%82%B0_%EB%8B%A8%ED%92%8D.jpg/960px-Seoraksan_in_the_Fall_2-_%EC%84%A4%EC%95%85%EC%82%B0_%EB%8B%A8%ED%92%8D.jpg" alt="Musim luruh di Seoraksan">
         <div class="weather-chip"><svg viewBox="0 0 24 24" class="w-snow" fill="none" aria-hidden="true"><path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9M12 3l-2.4 2.4M12 3l2.4 2.4M12 21l-2.4-2.4M12 21l2.4-2.4"/></svg>9°C · Sejuk</div>
         <div class="dest-body">
@@ -932,7 +968,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
         </div>
       </article>
 
-      <article class="dest-card searchable" data-target="jeonju">
+      <article class="dest-card searchable" data-target="jeonju" data-lat="35.8242" data-lon="127.1485">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/20240727_Jeonju_Hanok_Village_001.jpg/960px-20240727_Jeonju_Hanok_Village_001.jpg" alt="Kampung Hanok Jeonju">
         <div class="weather-chip"><svg class="w-cloud" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .8-7.92A5.5 5.5 0 0 0 7.2 8.6 4.5 4.5 0 0 0 7 18z"/></svg>13°C · Berawan</div>
         <div class="dest-body">
@@ -1352,8 +1388,40 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
           <div class="pr-total" id="pr-total">&#8361;0</div>
           <p class="pr-alt" id="pr-alt"></p>
           <div class="pr-bars" id="pr-bars"></div>
-          <p class="pr-note">Penerbangan tidak termasuk. Kadar anggaran: RM1 &asymp; &#8361;300 (semasa).</p>
+          <p class="pr-note">Penerbangan tidak termasuk. Kadar langsung: RM1 &asymp; <span id="pr-rate">&#8361;300</span><span id="pr-rate-src"></span>.</p>
           <div class="pr-tip" id="pr-tip"></div>
+        </div>
+      </div>
+      <div class="rate-card" data-reveal>
+        <div class="rc-head">
+          <div class="rc-title">
+            <span class="rc-live"><i></i>LANGSUNG</span>
+            <h3>Kadar Ringgit → Won</h3>
+            <p>MYR → KRW · sumber ECB (Bank Pusat Eropah), dikemas kini setiap hari bekerja.</p>
+          </div>
+          <div class="rc-rate">
+            <strong id="rc-big">&#8361;…</strong>
+            <small>setiap RM 1 · <span id="rc-date">memuatkan…</span></small>
+          </div>
+        </div>
+        <div class="rc-graph">
+          <svg id="rc-svg" viewBox="0 0 640 190" preserveAspectRatio="none" role="img" aria-label="Carta kadar MYR ke KRW 30 hari terkini">
+            <defs>
+              <linearGradient id="rcGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#CD2E3A"/><stop offset="1" stop-color="#0047A0"/></linearGradient>
+              <linearGradient id="rcArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CD2E3A" stop-opacity=".5"/><stop offset="1" stop-color="#0047A0" stop-opacity="0"/></linearGradient>
+            </defs>
+            <g id="rc-grid"></g>
+            <polygon id="rc-area" fill="url(#rcArea)" points=""/>
+            <polyline id="rc-line" fill="none" stroke="url(#rcGrad)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" points=""/>
+            <circle id="rc-dot" r="4.5" fill="#0047A0" stroke="#faf9f6" stroke-width="2"/>
+          </svg>
+          <div class="rc-axis"><span id="rc-min"></span><span class="rc-mid">30 hari lalu → hari ini</span><span id="rc-max"></span></div>
+        </div>
+        <div class="rc-conv">
+          <label>RM <input id="rc-rm" type="number" value="100" min="0" step="1" inputmode="decimal"></label>
+          <span class="rc-arrow">⇄</span>
+          <label>₩ <input id="rc-krw" type="number" value="" min="0" step="1" inputmode="numeric"></label>
+          <span class="rc-note" id="rc-note">Taip mana-mana lado untuk tukar serta-merta.</span>
         </div>
       </div>
       <div class="pl-itin-wrap">
@@ -1385,10 +1453,10 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
     <div class="db-grid" id="db-grid"></div>
     <div class="db-ask" data-reveal>
       <div class="db-ask-head">
-        <span class="db-ask-badge" aria-hidden="true">AI</span>
+        <span class="db-ask-badge" aria-hidden="true">AI<i class="live-dot"></i></span>
         <div>
-          <h3>Tanya Panduan <small>여행 도우미</small></h3>
-          <p>Pembantu perjalanan mini ini membaca pangkalan data dan mencadangkan tempat ikut citarasa anda — dijawab terus dari pelayar, tanpa internet.</p>
+          <h3>Tanya Jelajah AI <small>여행 도우미 · langsung</small></h3>
+          <p>Pembantu AI sebenar yang menjana jawapan dalam Bahasa Melayu secara langsung, disemak silang dengan pangkalan data kami. Perlu internet; jika terputus, ia bertukar ke mod pintaran automatik.</p>
         </div>
       </div>
       <form class="db-ask-form" id="db-ask-form">
@@ -2229,6 +2297,7 @@ $$('.pr-currency button').forEach(function(b){
   });
 });
 renderPlanner();
+window.__setLiveRate=function(r){if(r>0){PL_RATE=r;renderPlanner();var pr=$('#pr-rate');if(pr)pr.textContent='₩'+Math.round(r);var ps=$('#pr-rate-src');if(ps)ps.textContent=' (langsung)';}};
 /* carousel */
 var carIdx=[6,7,8,9,10,2,3,0];
 var carTrack=$('#car-track'),carCount=$('#car-count'),carBar=$('#car-bar'),carEl=$('.carousel');
@@ -2404,11 +2473,12 @@ function dbAskEngine(q){
   return {list:scored,cats:cats,regs:regs,mon:mon,free:free,top:scored.length?scored[0].s:0};
 }
 var DB_STOP2=('tempat|best|mana|apa|yang|untuk|dengan|boleh|nak|saya|kita|tolong|cadang|cadangan|destinasi|bagus|cantik|lawat|lawatan|pergi|adakah|bagaimana|area|kawasan|sekitar|pengalaman|aktiviti|singgah|jalan').split('|');
+var DB_ESC=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
 function dbReply(q){
   var r=dbAskEngine(q);
-  dbAns.classList.add('show','thinking');
-  dbAns.innerHTML='<p class="dblead">Mencari dalam pangkalan data</p>';
-  setTimeout(function(){
+  var top=r.list.filter(function(x){return x.s>0}).slice(0,3);
+  var chips='<div class="dbmini">'+top.map(function(x){return '<button type="button" data-n="'+x.e.n+'">'+DB_DEC(x.e.n)+' <i>'+x.e.c+'</i></button>'}).join('')+'</div>';
+  function localReply(){
     dbAns.classList.remove('thinking');
     if(r.top<4){
       var sugg=['Istana Gyeongbokgung','Everland','Pasar Gwangjang'].map(function(n){return dbFind(n)}).filter(Boolean);
@@ -2423,11 +2493,24 @@ function dbReply(q){
     var lead=bits.length?'Pilihan terbaik untuk '+bits.join(' di ')+':':'Cadangan istimewa untuk anda:';
     if(r.free)lead+=' (fokus tempat murah/percuma)';
     if(r.mon)lead+=' — sesuai sekitar '+r.mon;
-    var top=r.list.filter(function(x){return x.s>0}).slice(0,3);
-    dbAns.innerHTML='<p class="dblead">'+lead+'</p>'+
-      '<div class="dbmini">'+top.map(function(x){return '<button type="button" data-n="'+x.e.n+'">'+DB_DEC(x.e.n)+' <i>'+x.e.c+'</i></button>'}).join('')+'</div>'+
+    dbAns.innerHTML='<p class="dblead">'+lead+'</p>'+chips+
       '<p class="dbfoot">'+top.length+' cadangan daripada '+KOREA_DB.length+' tempat · klik untuk butiran penuh.</p>';
-  },550);
+  }
+  dbAns.classList.add('show','thinking');
+  dbAns.innerHTML='<p class="dblead">Jelajah AI sedang berfikir</p>';
+  var settled=false;
+  var timer=setTimeout(function(){if(!settled){settled=true;localReply();}},22000);
+  fetch('/functions/v1/app?action=ask',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({q:DB_DEC(q)})})
+    .then(function(res){return res.ok?res.json():Promise.reject(new Error('http '+res.status));})
+    .then(function(data){
+      if(settled)return;settled=true;clearTimeout(timer);
+      var clean=(data&&data.ok===true&&typeof data.answer==='string')?data.answer.replace(/\r?\n+/g,' ').replace(/\s+/g,' ').trim():'';
+      if(!clean||clean.length<3){localReply();return;}
+      dbAns.classList.remove('thinking');
+      dbAns.innerHTML='<p class="dblead">Jelajah AI</p><p>'+DB_ESC(clean)+'</p>'+(top.length?chips:'')+
+        '<p class="dbfoot">Dijana oleh AI secara langsung · disemak silang dengan '+KOREA_DB.length+' tempat dalam pangkalan data.</p>';
+    })
+    .catch(function(){clearTimeout(timer);if(!settled){settled=true;localReply();}});
 }
 $('#db-ask-form').addEventListener('submit',function(ev){
   ev.preventDefault();
@@ -2466,6 +2549,9 @@ document.addEventListener('keydown',function(e){
 });
 })();
 </script>
+
+<!-- Data langsung: cuaca (Open-Meteo) + kadar MYR→KRW (ECB) -->
+<script src="js/live.js"></script>
 
 <!-- Firebase (awan) + komuniti — lihat README-FIREBASE.md -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
