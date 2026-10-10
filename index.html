@@ -565,7 +565,9 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
 .km-google:hover{border-color:var(--ink);transform:translateY(-1px);box-shadow:0 8px 20px rgba(20,24,40,.08)}
 .km-google svg{width:17px;height:17px}
 .km-auth-card[data-mode=demo] .km-tabs,.km-auth-card[data-mode=demo] .km-f-fb,.km-auth-card[data-mode=demo] .km-div,.km-auth-card[data-mode=demo] .km-google,.km-auth-card[data-mode=demo] .km-reset{display:none}
-.km-user{display:flex;align-items:center;gap:13px}
+.km-user{display:flex;align-items:center;gap:13px;cursor:pointer}
+.km-user[href]{cursor:pointer}
+.km-user:hover b{text-decoration:underline}
 .km-ava{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;flex:none;overflow:hidden}
 .km-ava img{width:100%;height:100%;object-fit:cover}
 .km-user b{display:block;font-size:15px;letter-spacing:-.01em}
@@ -594,6 +596,10 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
 .km-item{display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:12px;animation:kmIn .5s var(--ease)}
 @keyframes kmIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .km-item .km-ava{width:38px;height:38px;font-size:15px}
+.km-prof{display:inline-flex;text-decoration:none;color:inherit;transition:opacity .25s}
+.km-prof:hover{opacity:.65}
+.km-prof .km-ava{transition:transform .25s var(--ease)}
+.km-prof:hover .km-ava{transform:scale(1.06)}
 .km-body{flex:1;min-width:0}
 .km-meta{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
 .km-meta b{font-size:13.5px}
@@ -1357,10 +1363,10 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
             </button>
           </div>
           <div id="km-auth-in" hidden>
-            <div class="km-user">
+            <a class="km-user" id="km-user" target="_blank" rel="noopener" title="Lihat halaman profil awam anda">
               <span class="km-ava" id="km-ava">A</span>
               <div><b id="km-uname">—</b><small id="km-umail"></small></div>
-            </div>
+            </a>
             <span class="km-badge cloud" id="km-badge">Firebase</span>
             <button class="km-out" id="km-out" type="button">Log keluar</button>
           </div>

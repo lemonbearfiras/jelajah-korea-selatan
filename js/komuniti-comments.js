@@ -22,6 +22,7 @@ var mode='demo', user=null, unsubs=null;
 var items=[];
 
 /* ---------- util ---------- */
+var PROFILE_BASE='https://lemonbearfiras.github.io/jelajah-korea-selatan/profile?v=';
 var BM_M=['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function ago(ts){
@@ -54,9 +55,11 @@ function render(){
   }
   list.innerHTML=items.map(function(c){
     var own=user&&c.uid===user.uid;
-    return '<article class="km-item">'+avaHTML(c)+
+    var prof=c.uid?'<a class="km-prof" href="'+esc(PROFILE_BASE+encodeURIComponent(c.uid))+'" target="_blank" rel="noopener" title="Lihat halaman profil '+esc(c.name)+'">':'';
+    var profEnd=c.uid?'</a>':'';
+    return '<article class="km-item">'+prof+avaHTML(c)+profEnd+
       '<div class="km-body">'+
-        '<div class="km-meta"><b>'+esc(c.name)+'</b><time>'+ago(c.ts)+'</time>'+
+        '<div class="km-meta"><b>'+(c.uid?'<a class="km-prof" href="'+esc(PROFILE_BASE+encodeURIComponent(c.uid))+'" target="_blank" rel="noopener">'+esc(c.name)+'</a>':esc(c.name))+'</b><time>'+ago(c.ts)+'</time>'+
         (own?'<button class="km-del" type="button" data-id="'+esc(c.id)+'">Padam</button>':'')+
         '</div>'+
         '<p class="km-text">'+esc(c.text).replace(/\n/g,'<br>')+'</p>'+

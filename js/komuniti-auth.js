@@ -80,6 +80,15 @@ function paintNav(){
 }
 function paintUser(){
   paintNav();
+  var userLink=$('#km-user');
+  if(userLink){
+    if(user&&mode==='firebase'){
+      userLink.href='https://lemonbearfiras.github.io/jelajah-korea-selatan/profile?v='+encodeURIComponent(user.uid);
+      userLink.title='Lihat halaman profil awam anda — buka di tetingkap baharu';
+    }else{
+      userLink.removeAttribute('href');
+    }
+  }
   if(!user){inBox.hidden=true;outBox.hidden=false;return}
   inBox.hidden=false;outBox.hidden=true;
   unameEl.textContent=user.name;
@@ -202,7 +211,6 @@ function saveUserProfile(u){
     return ref.set({
       uid:u.uid,
       name:u.displayName||'',
-      email:u.email||'',
       photo:u.photoURL||'',
       createdAt:firebase.firestore.FieldValue.serverTimestamp()
     });
