@@ -205,10 +205,18 @@ body.cursor-hover #cursor-ring{width:56px;height:56px;margin:-28px 0 0 -28px;bac
 .map-ktx{margin-top:18px;padding:14px 18px;background:var(--blue-soft);border-left:3px solid var(--blue);border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:13px;color:#2c4a76}
 .map-legend{display:flex;gap:18px;margin-top:18px;font-size:12px;color:var(--muted);align-items:center;flex-wrap:wrap}
 .map-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-right:7px}
+.map-legend i.lg-city{width:6px;height:6px;background:#4a4a4a}
 .map-legend .lg-line{width:22px;height:0;border-top:2px dashed var(--blue);display:inline-block;margin-right:7px;vertical-align:middle}
 .korea-svg{width:100%;height:auto}
-.korea-path{fill:var(--blue-soft);stroke:var(--blue);stroke-width:2.4;stroke-linejoin:round}
-.jeju-shape{fill:var(--blue-soft);stroke:var(--blue);stroke-width:2.4}
+.map-north path{fill:var(--bg-soft);stroke:none}
+.korea-path{fill:var(--blue-soft);stroke:var(--blue);stroke-width:1.6;stroke-linejoin:round}
+.jeju-shape,.korea-isl{fill:var(--blue-soft);stroke:var(--blue);stroke-width:1.2}
+.ktx-line{fill:none;stroke:var(--blue);stroke-width:2.2;stroke-dasharray:7 5;stroke-linecap:round;opacity:0;transition:opacity .9s var(--ease)}
+.ktx-line.on{opacity:.85}
+.map-city{opacity:0;transition:opacity .6s var(--ease)}
+.map-city.on{opacity:1}
+.map-city circle{fill:#4a4a4a}
+.map-city text{font-family:var(--font);font-size:9.5px;font-weight:600;fill:#5a5a5a;paint-order:stroke;stroke:#faf9f6;stroke-width:3;stroke-linejoin:round}
 .map-pin{cursor:pointer;opacity:0;transition:opacity .5s var(--ease)}
 .map-pin.on{opacity:1}
 .map-pin .pin-ring{fill:none;stroke:var(--red);stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:pinPulse 2.2s ease-out infinite}
@@ -874,20 +882,71 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
         <p class="map-ktx">🚄 KTX menghubungkan Seoul–Busan dalam lebih kurang 2 jam 30 minit — dan hampir semua destinasi di halaman ini boleh dilawati dalam satu perjalanan 7 hari.</p>
         <div class="map-legend">
           <span><i></i>Destinasi</span>
-          <span><span class="lg-line"></span>Laluan KTX</span>
+          <span><span class="lg-line"></span>Laluan KTX / kereta api</span>
+          <span><i class="lg-city"></i>Bandar lain</span>
           <span>Klik pin pada peta untuk maklumat</span>
         </div>
       </div>
-      <svg class="korea-svg" viewBox="0 0 400 380" role="img" aria-label="Peta ringkas Semenanjung Korea">
-        <path class="korea-path" id="korea-path" d="M125 45 C150 25,190 30,205 55 C230 60,250 75,262 95 C285 120,300 150,302 180 C305 210,312 235,300 258 C285 275,262 282,240 278 C220 292,195 288,178 296 C158 290,140 300,122 292 C100 285,88 272,92 255 C78 240,82 220,72 205 C80 185,70 165,84 148 C74 128,84 108,98 100 C90 80,104 60,125 45 Z"/>
-        <ellipse class="jeju-shape" cx="145" cy="330" rx="28" ry="15"/>
-        <g class="map-pin" data-pin="seoraksan" transform="translate(247,86)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="12" y="4">Seoraksan</text></g>
-        <g class="map-pin" data-pin="seoul" transform="translate(150,128)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="12" y="4">Seoul</text></g>
-        <g class="map-pin" data-pin="gyeongju" transform="translate(287,238)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="-12" y="4" text-anchor="end">Gyeongju</text></g>
-        <g class="map-pin" data-pin="busan" transform="translate(297,254)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="12" y="16">Busan</text></g>
-        <g class="map-pin" data-pin="jeonju" transform="translate(118,222)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="-12" y="4" text-anchor="end">Jeonju</text></g>
-        <g class="map-pin" data-pin="jeju" transform="translate(145,330)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="14" y="4">Jeju</text></g>
-      </svg>
+      <svg class="korea-svg" viewBox="0 0 480 470" role="img" aria-label="Peta Semenanjung Korea dengan laluan kereta api">
+  <g class="map-north"><path d="M343.6 -265.9L337.5 -262.6L338.6 -259.5L332.2 -245.7L334.8 -242.4L331.5 -240.2L333.4 -237.4L330.9 -235.1L331.3 -227.3L329 -224.5L323.5 -227L319.9 -219.7L314.4 -225.5L311.2 -226.2L310.4 -224.2L308.5 -226.3L308.7 -223.1L306.2 -224.2L307 -221.5L302.5 -221.1L303.4 -217.5L299.7 -216.5L302.1 -216.1L298.7 -212L301.3 -208.6L286.5 -200.8L283.8 -194.8L274 -197.7L263.6 -193.9L249.6 -196.8L235.7 -193.5L237.3 -179.2L249.1 -165.7L242.9 -152L237.3 -148.6L236.9 -151.1L233.3 -150.6L231.9 -154.5L229.9 -152.4L227.4 -155.4L225.9 -153.2L223.9 -154.5L223.5 -151.4L218.5 -153.1L210.9 -151.6L205.7 -153.6L204.8 -156.7L188.5 -156.8L189.7 -159.3L179.4 -161.6L184.1 -165.1L175.6 -170.6L178.3 -172.8L176.6 -175.7L170 -177.7L170.5 -180.4L166.7 -178.8L164.6 -174.2L162.6 -176.1L161.9 -172.1L156.1 -176.3L158.1 -173.2L153.7 -169.5L151.5 -170.7L148.5 -166.6L150 -162.3L145.2 -153.7L146.9 -148.1L141.2 -147.9L133 -134.6L123.2 -129.2L122.4 -123L120 -122.6L118.4 -117.5L114.9 -116.8L117.6 -115.6L112.3 -114.1L111.4 -116.5L108.9 -116.1L105.5 -113L103.1 -115.2L95.4 -109.3L98 -105.9L91.5 -106.8L89.7 -102.9L82.6 -99.3L82.7 -96.2L75.3 -98.4L73.8 -95.4L59.4 -89L61.1 -84.3L54.4 -84L53.1 -85.9L44.1 -78.2L43 -74.4L31.7 -68.1L21.3 -56.9L22.8 -48.3L24.7 -48.2L19.8 -44.4L23.7 -42.9L25.7 -37.1L28 -39.7L32.4 -37.8L34.2 -39.4L33.2 -35.2L35.3 -33.3L33.5 -31.3L38.8 -28.2L36.5 -22.1L44.4 -25.7L43.5 -34.6L45.4 -35.5L47.7 -31.1L52.7 -30.4L53.4 -27L55.5 -25.7L56.5 -28.2L57.3 -25.3L64.6 -24.3L66.2 -20.8L74.2 -25.7L71.3 -21.4L74.8 -17.4L81.6 -21.4L84.5 -20.3L78.4 -12.6L81.5 -12.4L79.2 -10.5L80.4 -7.4L83.1 -2.5L85.3 -3.3L82 -0.6L83.9 1.5L82.3 0.7L82.1 4L79.6 3.4L76.4 7.3L76.3 11.9L66.2 29L71.1 38.2L71.3 33L74.4 35.7L72 39.6L75.2 41.8L76.4 39.1L79.8 39.9L80.5 37.4L81.4 40L83.6 37.1L91.3 41.1L88.5 43.1L83.9 40.3L83.8 42.3L78 42.7L76.9 46.5L74.2 43.3L68.8 43.5L68.6 46.8L65.9 43.3L67.1 50.3L63.9 49.8L63.2 52.5L59 49.3L59.8 55.7L50.8 66.6L53 75.3L58.9 75.2L54.2 77.4L51.4 73.9L49.2 77.9L39.1 81.6L47 84.1L52.5 81.1L59.4 86.4L74 85L72.7 89.6L69.8 86.8L65.5 87.6L66.4 92.7L69 91.9L67.7 94.2L62.5 92.1L57.7 95.9L68.3 100.4L72.1 98.6L72.8 94.8L76.5 99.9L71.9 104.5L75.3 105.3L73.9 103.2L78.9 103.7L80.9 101L78.9 100L84.6 101.9L80.5 97.7L84 98.4L85.1 95.9L85 98.8L88.3 98.5L85.4 100.5L87.6 103.8L89.6 101.8L87.3 105.2L84.4 102.8L79.4 106.7L84.4 106.9L79.2 108L77 111.3L78.5 114L80.2 110.4L85.9 110.6L88.7 104.7L89.3 107.6L91.1 105.3L91.6 107.8L94.3 107.9L94.9 95.8L97.8 98.7L101.2 96.3L98.2 95.7L100.2 94.2L97.7 94.2L98.4 91.7L96 93.4L93.5 91.7L91.2 89L92.7 87.9L97.8 89L99.1 91.6L101.7 89.6L105.3 91.5L104.8 94.5L110.8 102.3L115.1 102.9L115.1 98.6L118.2 101.8L119.7 99.9L124 109.3L125.8 109.2L125.2 102.6L128 99.9L131.6 102.2L139.9 97.2L140.7 101.3L150.6 107.2L155.3 103.5L155.8 94.2L161.1 93.4L172.2 80.6L172.4 76.6L181.8 68.9L196.3 67.1L202.5 69.6L207.2 67.1L219.2 66.6L221.5 69.4L225 67.4L233.9 69.1L247.4 60.4L251.7 42.4L246.5 37.4L242.6 39.9L238.2 32.7L230.6 29.2L216.6 10.5L212.2 12.4L208.5 8.4L204.1 11.3L201.1 5.7L199.3 8.7L194.8 1.2L197 -1.3L196 -4.2L198.8 -1.7L200.6 -5.6L195.6 -5.4L198.3 -9.3L192.9 -9.2L202.6 -10.9L204.9 -6.1L203.3 -2.2L205.8 -1.2L203.4 -16.5L206.9 -22.1L201.9 -29.3L206.8 -37.1L206.2 -40.2L207.5 -37.3L210.3 -39.1L211.4 -37.1L219.2 -41.4L218.1 -43.9L224.4 -43.3L224.2 -48.5L228.9 -52L249.4 -51.4L252.3 -58.4L269.1 -65.1L267.6 -73.7L277.7 -76.7L287.4 -84.6L293.2 -85.5L301.3 -101.4L306.1 -99.8L312.6 -106.7L330.8 -112.5L332.6 -118.5L330.1 -121.8L330.1 -136.8L335.1 -149.6L327.7 -154.2L326 -162L332.2 -176.7L337.3 -176.9L340.1 -187.1L343.4 -186.4L344.8 -192.6L346.8 -195.2L347.8 -193.4L350.7 -199.8L356 -199.3L354.3 -201L357.1 -201L358 -206.8L363.3 -210.9L363.9 -206.9L369.1 -212L368.2 -217.5L379.1 -216.4L379.9 -212.2L384.8 -214.3L383.7 -221.6L378.4 -225.5L379.5 -228.4L375.6 -237.9L373.2 -238L373.4 -233.7L371.4 -233.1L371.1 -237.2L367.8 -236.8L360.5 -244.5L359.1 -250.4L361.2 -258.3L352.3 -259L354.2 -263.9L344.3 -263.4L343.6 -265.9Z"/></g>
+  <path class="korea-path" id="korea-path" d="M258.5 60.4L252.2 46.3L247.4 49.2L247.4 56.3L244.2 62.3L233.5 69.1L219.8 69.8L217.1 67.6L200.9 69.7L195.5 68.1L179 70.4L172.2 75.2L160.2 92.3L154.7 95.2L154.8 103L156.6 102.9L155.4 113.1L159.8 116.6L154.4 114.1L154.4 108L147.1 107.3L150.9 125.9L153.4 126.1L150.6 128.4L153.1 132.5L151.8 135L157.6 134.7L156 138.3L166.4 142.9L163.5 142.5L161.3 146.3L160.5 143.9L154.2 143.9L157.7 146.8L154.6 149.5L157 150.3L155.8 152.7L162.5 148.8L164.1 150.7L166.1 149.2L166 151.3L160.3 153.6L159.8 158.5L165.7 159.1L167.6 155.2L168.7 161L163.8 161.8L168.8 167L172.1 166.8L172.8 163.4L176.3 162.5L173.5 164.4L173.2 167.8L165.8 171.3L168.4 174.7L166 174.2L165.3 179.5L164.1 168.4L161.3 169.8L160.9 163.9L154.6 162.8L152.7 168.3L152.4 162.3L145.2 158.1L149.3 163.6L144.8 162.2L149.9 169.3L146.2 165.7L144.2 173.3L143.6 165.6L141.3 164.7L142 161.8L136.7 162L135.7 162.9L138.1 163.8L136.8 165.2L140.5 167.5L138.1 170.8L139.7 172.2L135.3 172.9L136.9 177L132.7 176L135 170.3L134.2 164.4L131.9 171.2L129.6 171L129.9 168.8L127.5 170.1L127.9 174.6L130.2 175.1L127.5 175.6L128.7 177.6L126 175.1L123.8 179L124.1 183.1L125.5 179L128.7 181.5L125.5 183.2L126.6 185.3L132.2 182L133.4 191.7L136.1 189.8L133.8 183.4L136.1 180.5L138.1 183.2L137.5 188.4L140.8 190L141.6 182.2L144 180L145.2 182L143.7 184.2L145.6 185.5L144.2 187L146.3 188.6L145.9 190.3L142.7 190.8L143.4 194.7L145.9 195.6L144.2 197.8L145 201.3L151.9 199.5L145.1 203.3L146.3 206.6L149.9 208.1L145.9 210.2L149.9 212.2L147.1 217.6L151.1 221L146.9 220.8L144.8 223.9L146.8 222.3L150.3 223.9L156.2 233.2L166.4 228.8L159.2 234L146.4 235.3L146.6 237.5L151.4 238.1L151.6 241L158.5 241.4L162.9 239.5L164.5 240.8L156.8 244L161.8 248.1L161.3 250.3L158.5 248L154.5 248L150.7 253.6L143.3 258.9L143.1 261.6L145.9 263.4L154.9 262.5L156.2 266.4L153.3 263.6L144.7 267L140.5 276.4L142.8 279.8L140.1 278.1L136.9 285.9L138.1 286.4L134.2 287.8L137.3 287.4L137.7 292.1L142.4 297.3L140.8 303L140.1 300.1L136.2 297.6L136.1 293.3L134.5 296.2L133 294.5L131 295.6L133 300.7L134.9 298.5L137.9 303.2L136.5 306.4L133.8 306.4L134.5 308.9L137.3 309.6L137.7 306.7L141.5 305.8L139.3 307.9L140.8 312.2L137.9 319.3L144.4 317.7L145.9 319.9L149 311.5L149.5 317.1L154.6 318.1L147.7 319L147.1 322.5L142.9 320.2L137.3 322.3L145.6 324.5L152.2 330.8L146.2 329.3L147.2 331.3L142.4 327.9L142.2 325.4L138.2 325L138.6 330.4L140.3 329.2L143.1 334L137.7 332.3L136.9 325.9L133.1 322.2L132 329.9L135 332.3L133.5 333.8L136.3 334L138.9 337.6L147.4 335.6L145.9 337.6L147.5 339.1L144.6 339.4L143.2 342L146.2 346.2L144 350.8L146.7 351.3L146.4 354.7L151.1 354.3L152.8 347.5L158.2 344.8L157.1 343.6L160.2 341.5L158.6 339L160.4 338.4L161.1 333.9L162.7 335.2L162.9 343.5L168 345.9L167.9 343.6L170.4 343.3L170.3 340.3L173.5 337.2L174.4 332L181.7 326.7L185.3 326.4L188.1 321.1L190.5 324.3L192.9 322.9L194.4 325.9L191.9 329.2L189.6 325.4L187.7 327.9L188 334.1L184.9 334.7L186.1 330.3L181 337.2L184.1 339.1L186.7 336.7L193.6 344L192.7 341.9L199.1 337.2L194.4 336.2L193.9 333.9L202.7 333.5L199.8 330.3L201.8 330.3L200.6 328.5L197.1 325.8L196.5 321.8L194.4 321.6L198.3 318.6L194.8 317L201.6 315.9L203.8 312.3L207.4 322.5L206 328.5L210.6 331.6L209.7 325.9L211.5 323.6L216.4 324L218.4 315.2L211.5 317.8L206.9 310.6L207.8 308.3L211.8 311.1L214.6 308.7L215.1 305.1L216.6 307.3L225 308.2L227 303L228.6 305.9L231.6 305L231.3 302L235.2 298.6L234.4 309.3L243.1 312.2L243.5 309.2L248.6 311L250.5 308.2L250.8 313.5L255.1 314.2L253.2 315.9L256.2 315.6L258.5 312.2L256.1 312.2L255.3 305.7L259.5 304.7L259.3 300.8L252.6 303.5L253.6 300.9L258.9 299.1L258.7 297.4L268.7 300.1L264.4 291.7L265.8 289.2L266.7 294.2L270.3 296.2L271.2 294.2L271.4 297.6L275 298.8L276.1 296.5L276.7 298.5L281.9 298.6L282.8 295.8L284 298.6L286.2 294.7L286.3 300.9L288.7 301.2L288.5 299L289.9 300.2L292.3 295.8L294.4 297.9L295.5 293.8L299.8 293.4L304.1 281.9L309.3 279.3L309.2 272.3L311.1 270.6L310.1 266.5L312.3 270.8L314.7 267.9L315.5 261.7L314.1 259.1L322.3 232L320.5 227.3L314.7 233.7L310.5 230.3L313.4 226.3L310.6 218.8L310.8 210.2L313.9 204.2L312.9 189.3L315.8 181.2L312.3 160.7L313.6 157.6L310.4 152.7L307.6 141.9L292.8 118.3L292.3 113.7L271 86.2L258.5 60.4Z"/>
+  <path class="jeju-shape korea-isl" d="M163.7 407L153.7 407.5L134.3 413.8L127.7 420.8L125.7 425.5L126.3 427.7L131.9 432.8L135.6 429.9L148.9 430.3L164.7 424.8L171.2 413.8L163.7 407Z"/>
+  <path class="jeju-shape korea-isl" d="M272.8 307.7L272.9 303.1L271.6 302.1L271.1 305.4L266.3 307.7L268.3 312.2L264.2 310.8L259.6 313L261.6 318.1L265.9 316.2L265.2 319.3L263.4 320L264.2 322L265.9 321.1L266.7 324L264.8 325.4L271.1 323.2L269 321.7L270.6 318.1L273.8 319.3L272.6 315.7L273.9 315.5L274.2 312.6L272.2 313.2L272.8 307.7Z"/>
+  <path class="jeju-shape korea-isl" d="M134.6 337.3L130.7 334.7L131.8 338.5L129.5 338.1L123.1 344.6L122.4 347L125.5 348.4L124.8 350.4L128.5 350.1L134 347.1L134.2 345.5L136.3 346.5L138.3 340.2L136.5 336.7L134.6 337.3Z"/>
+  <path class="jeju-shape korea-isl" d="M228.4 316.9L226.3 315.5L227.7 310.6L225.6 308.7L221.4 313.8L223.3 323.6L225.9 324.9L227.7 321L229.8 325.8L234.5 325.9L235.2 317.6L229.1 318.2L228.4 316.9Z"/>
+  <path class="jeju-shape korea-isl" d="M146.8 117.5L146.1 107.4L139.8 103.5L137.9 105.3L137.5 110.2L140.4 115.6L137.7 117.1L140 119.1L145.2 119.5L146.8 117.5Z"/>
+  <path class="jeju-shape korea-isl" d="M139.7 199.1L137.1 189.8L134.5 191.8L135.3 199.7L137.3 199.5L136.1 202L138.1 201.4L137.3 203.9L141.3 204.2L139.7 199.1Z"/>
+  <path class="jeju-shape korea-isl" d="M149.5 126.2L146 123.9L144.8 125.8L136.9 128.8L137.4 130.5L141.9 132L149.5 126.2Z"/>
+  <path class="jeju-shape korea-isl" d="M219.6 334.4L220.8 330.7L219 324.5L217.6 324.9L218.4 326.4L216.1 331.1L219.6 334.4Z"/>
+  <path class="jeju-shape korea-isl" d="M137.1 314.5L134.8 314L136.3 311.8L133.5 310.3L133.2 312.9L129.7 314.8L134.3 314.8L136.1 317.1L137.1 314.5Z"/>
+  <path class="jeju-shape korea-isl" d="M397.5 129L398.9 123.9L392.8 124.8L393.5 128.4L397.5 129Z"/>
+  <path class="jeju-shape korea-isl" d="M185.9 345.5L187.7 343.9L187.3 341.5L180.2 342.5L182.6 345.8L185.9 345.5Z"/>
+  <path class="jeju-shape korea-isl" d="M159.2 352.6L157.2 347.7L154 347.5L153.9 352.2L160.5 355.1L159.2 352.6Z"/>
+  <path class="jeju-shape korea-isl" d="M123 300.2L124.8 298.6L123.8 295.9L125.9 294.2L120.4 297.1L119.7 300.1L123 300.2Z"/>
+  <path class="jeju-shape korea-isl" d="M43.7 92.2L37.5 92.2L36.9 94.7L41 96.5L42.1 95.6L40.6 94.2L43.4 94.6L43.7 92.2Z"/>
+  <path class="jeju-shape korea-isl" d="M137.7 115.1L138.2 113.7L134.5 108.9L132.6 112.2L137.7 115.1Z"/>
+  <path class="jeju-shape korea-isl" d="M149.4 142.1L147.5 141.8L148.6 145L147.4 147.9L152 144.8L149.4 142.1Z"/>
+  <path class="jeju-shape korea-isl" d="M132.3 104.2L129.9 104.9L129.3 107.8L135.7 106.8L135.6 105L132.3 104.2Z"/>
+  <path class="jeju-shape korea-isl" d="M165.8 347.3L163.7 344.3L159.7 348.1L161 350.4L165.8 347.3Z"/>
+  <path class="jeju-shape korea-isl" d="M176.5 350.2L175.3 348.5L173.4 350.3L176.5 351.8L176.1 353.4L179.4 351.6L176.5 350.2Z"/>
+  <path class="jeju-shape korea-isl" d="M124.6 313L120.3 315.1L122 318.8L124.6 316.3L124.6 313Z"/>
+  <path class="jeju-shape korea-isl" d="M232 313.8L232.3 310.4L229.5 313.3L229.7 315.4L236 316.1L233.9 312L232 313.8Z"/>
+  <path class="jeju-shape korea-isl" d="M116.4 327.4L115.1 323.8L111.6 326.7L114.1 328.9L116.4 327.4Z"/>
+  <path class="jeju-shape korea-isl" d="M164.9 350.7L159.9 351.7L164.7 354.1L166.8 353.4L167.7 351.4L164.9 350.7Z"/>
+  <path class="jeju-shape korea-isl" d="M149 363.6L146 363.6L146.2 366.6L151.7 364.8L149 363.6Z"/>
+  <path class="jeju-shape korea-isl" d="M154.6 367.2L155.1 362.8L153.5 361.6L153.1 366.5L154.6 367.2Z"/>
+  <path class="jeju-shape korea-isl" d="M169.2 363.8L168.1 360.7L165.9 361.3L165.6 364.5L169.2 363.8Z"/>
+  <path class="jeju-shape korea-isl" d="M150.2 362.9L151.8 360.5L148.6 359L147.9 361.8L150.2 362.9Z"/>
+  <path class="jeju-shape korea-isl" d="M201.8 342.6L200.1 342L199.8 343.4L202.2 346.2L204.6 344.3L203.1 342.2L201.8 342.6Z"/>
+  <path class="jeju-shape korea-isl" d="M119.8 337.7L122.4 334.4L120.3 331.1L121.1 334.3L118.2 336L119.8 337.7Z"/>
+  <path class="jeju-shape korea-isl" d="M84 326.1L81.6 328.7L82.5 330.9L85.4 326.7L84 326.1Z"/>
+  <path class="jeju-shape korea-isl" d="M123.2 320.8L120.4 320.8L122.4 324.2L126.3 325.5L126.2 322.2L123.2 320.8Z"/>
+  <path class="jeju-shape korea-isl" d="M116.9 320L111.4 320.3L110.6 324L112.4 324.2L113.7 321.6L116.9 321.6L116.9 320Z"/>
+  <path class="jeju-shape korea-isl" d="M253 317.1L250.3 316.9L253.1 317.9L252.4 318.9L255.5 321.3L256.4 317.3L253 317.1Z"/>
+  <path class="jeju-shape korea-isl" d="M121.6 310.8L119.9 309.6L115.7 314.2L120.4 314.2L121.6 310.8Z"/>
+  <path class="jeju-shape korea-isl" d="M127.3 297.2L125.6 297.7L126.2 299.2L130 300.7L131.2 302.9L131.1 300.4L129 299L130 297.4L127.3 297.2Z"/>
+  <path class="jeju-shape korea-isl" d="M125.6 145.5L122.5 142.9L121.5 145.9L123.4 147L125.6 145.5Z"/>
+  <path class="jeju-shape korea-isl" d="M143.9 144.8L144.8 142.5L141.9 142.6L141.5 145L143.9 144.8Z"/>
+  <path class="ktx-line" id="ktx-gyeongbu" d="M172.6 121.7L181.4 176.6L189.3 198.3L195.9 208.1L250.2 225.2L265.4 242.1L295 232.4L293 291.6"/>
+  <path class="ktx-line" id="ktx-honam" d="M172.6 121.7L181.4 176.6L195.9 208.1L172.4 237.2L182.4 245.8L165.3 293"/>
+  <path class="ktx-line" id="rail-gyeonggang" d="M172.6 121.7L226.9 137.8L243.6 145.1L281.5 108.5"/>
+  <g class="map-city" transform="translate(156.9,129.5)"><circle r="2.6"/><text x="-6" y="3" text-anchor="end">Incheon</text></g>
+  <g class="map-city" transform="translate(195.9,208.1)"><circle r="2.6"/><text x="0" y="-8" text-anchor="middle">Daejeon</text></g>
+  <g class="map-city" transform="translate(265.4,242.1)"><circle r="2.6"/><text x="6" y="3" text-anchor="start">Daegu</text></g>
+  <g class="map-city" transform="translate(165.3,293)"><circle r="2.6"/><text x="0" y="13" text-anchor="middle">Gwangju</text></g>
+  <g class="map-city" transform="translate(281.5,108.5)"><circle r="2.6"/><text x="6" y="3" text-anchor="start">Gangneung</text></g>
+  <g class="map-city" transform="translate(306.5,266)"><circle r="2.6"/><text x="6" y="3" text-anchor="start">Ulsan</text></g>
+  <g class="map-city" transform="translate(226.9,137.8)"><circle r="2.6"/><text x="6" y="3" text-anchor="start">Wonju</text></g>
+  <g class="map-city" transform="translate(273.1,192.7)"><circle r="2.6"/><text x="6" y="3" text-anchor="start">Andong</text></g>
+  <g class="map-city" transform="translate(139,317.9)"><circle r="2.6"/><text x="0" y="13" text-anchor="middle">Mokpo</text></g>
+  <g class="map-city" transform="translate(212,321.2)"><circle r="2.6"/><text x="6" y="3" text-anchor="start">Yeosu</text></g>
+  <g class="map-pin" data-pin="seoraksan" transform="translate(258.1,82.7)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="12" y="4" text-anchor="start">Seoraksan</text></g>
+  <g class="map-pin" data-pin="seoul" transform="translate(172.6,121.7)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="12" y="4" text-anchor="start">Seoul</text></g>
+  <g class="map-pin" data-pin="jeonju" transform="translate(182.4,245.8)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="-12" y="4" text-anchor="end">Jeonju</text></g>
+  <g class="map-pin" data-pin="gyeongju" transform="translate(300.8,245.3)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="-12" y="4" text-anchor="end">Gyeongju</text></g>
+  <g class="map-pin" data-pin="busan" transform="translate(293,291.6)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="12" y="16" text-anchor="start">Busan</text></g>
+  <g class="map-pin" data-pin="jeju" transform="translate(146.9,411.3)"><circle class="pin-ring" r="9"/><circle class="pin-dot" r="5.5"/><text x="14" y="4" text-anchor="start">Jeju</text></g>
+</svg>
     </div>
   </div>
 </section>
@@ -1622,7 +1681,9 @@ function drawMap(){
     path.style.transition='stroke-dashoffset 3.2s cubic-bezier(.22,1,.36,1)';
     path.style.strokeDashoffset='0';
   }
-  $$('.map-pin').forEach(function(p,i){setTimeout(function(){p.classList.add('on')},reducedMotion?0:2300+i*260)});
+  $$('.ktx-line').forEach(function(l,i){setTimeout(function(){l.classList.add('on')},reducedMotion?0:1500+i*450)});
+  $$('.map-city').forEach(function(c,i){setTimeout(function(){c.classList.add('on')},reducedMotion?0:2100+i*90)});
+  $$('.map-pin').forEach(function(p,i){setTimeout(function(){p.classList.add('on')},reducedMotion?0:2600+i*260)});
 }
 var revealEls=$$('[data-reveal]');
 revealEls.forEach(function(el){var d=el.getAttribute('data-delay');if(d)el.style.transitionDelay=d+'ms'});
