@@ -1,0 +1,97 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() > 0
+                    && request.resource.data.text.size() <= 600;
+      allow update, delete: if request.auth != null
+                    && resource.data.uid == request.auth.uid;
+    }
+
+    match /users/{userId} {
+      allow read: if true;
+      allow delete: if request.auth != null
+                    && request.auth.uid == userId;
+      allow create, update: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.about is string
+                    && request.resource.data.about.size() <= 500;
+    }
+
+    /* satu dokumen setiap ikutan: ID = <pengikut>_<diikuti> */
+    match /follows/{followId} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.data.follower == request.auth.uid
+                    && request.resource.data.following != request.auth.uid;
+      allow delete: if request.auth != null
+                    && resource.data.follower == request.auth.uid;
+    }
+
+    /* permintaan rakan: ID = <penghantar>_<penerima>, status pending/accepted */
+    match /friendRequests/{reqId} {
+      allow read: if request.auth != null
+                  && (request.auth.uid == resource.data.from
+                      || request.auth.uid == resource.data.to);
+      allow create: if request.auth != null
+                    && request.resource.data.from == request.auth.uid
+                    && request.resource.data.to != request.auth.uid
+                    && request.resource.data.status == 'pending';
+      allow update: if request.auth != null
+                    && request.auth.uid == resource.data.to
+                    && resource.data.status == 'pending'
+                    && request.resource.data.status == 'accepted'
+                    && request.resource.data.from == resource.data.from
+                    && request.resource.data.to == resource.data.to;
+      allow delete: if request.auth != null
+                    && (request.auth.uid == resource.data.from
+                        || request.auth.uid == resource.data.to);
+    }
+
+    /* persahabatan: ID = kedua-dua uid tersusun a-z; dicipta oleh
+       penerima selepas permintaan diterima sahaja */
+    match /friends/{fid} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.data.participants is list
+                    && request.resource.data.participants.size() == 2
+                    && request.auth.uid in request.resource.data.participants
+                    && request.resource.data.reqId is string
+                    && exists(/databases/$(database)/documents/friendRequests/$(request.resource.data.reqId))
+                    && get(/databases/$(database)/documents/friendRequests/$(request.resource.data.reqId)).data.status == 'accepted'
+                    && get(/databases/$(database)/documents/friendRequests/$(request.resource.data.reqId)).data.to == request.auth.uid
+                    && request.resource.data.participants.hasOnly([
+                         get(/databases/$(database)/documents/friendRequests/$(request.resource.data.reqId)).data.from,
+                         get(/databases/$(database)/documents/friendRequests/$(request.resource.data.reqId)).data.to
+                       ]);
+      allow delete: if request.auth != null
+                    && request.auth.uid in resource.data.participants;
+    }
+
+    /* chat peribadi: chatId = kedua-dua uid tersusun a-z, hanya rakan.
+       Keahlian diperiksa melalui dokumen friends (rules tiada .split()) */
+    match /chats/{chatId}/messages/{msgId} {
+      allow read: if request.auth != null
+                  && exists(/databases/$(database)/documents/friends/$(chatId))
+                  && request.auth.uid in get(/databases/$(database)/documents/friends/$(chatId)).data.participants;
+      allow create: if request.auth != null
+                  && exists(/databases/$(database)/documents/friends/$(chatId))
+                  && request.auth.uid in get(/databases/$(database)/documents/friends/$(chatId)).data.participants
+                  && request.resource.data.from == request.auth.uid
+                  && request.resource.data.to in get(/databases/$(database)/documents/friends/$(chatId)).data.participants
+                  && request.resource.data.to != request.auth.uid
+                  && request.resource.data.text is string
+                  && request.resource.data.text.size() > 0
+                  && request.resource.data.text.size() <= 1000;
+      allow delete: if request.auth != null
+                    && resource.data.from == request.auth.uid;
+    }
+  }
+}

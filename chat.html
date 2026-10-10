@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sembang · Jelajah Korea Selatan</title>
+<meta name="description" content="Sembang peribadi antara rakan dalam komuniti Jelajah Korea Selatan.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf9f6; --bg-soft:#f2f0ea; --ink:#0a0a0a; --muted:#8a8a8a;
+  --line:rgba(10,10,10,.14); --red:#CD2E3A; --blue:#0047A0;
+  --red-soft:rgba(205,46,58,.08); --blue-soft:rgba(0,71,160,.08);
+  --radius:20px; --radius-sm:12px;
+  --font:'Plus Jakarta Sans','Noto Sans KR',Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button,textarea{font-family:var(--font)}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 5%;border-bottom:1px solid var(--line);gap:12px}
+.topbar .brand{font-weight:800;font-size:15px;letter-spacing:-.02em}
+.topbar .brand em{font-style:normal;color:var(--red)}
+.topbar .links{display:flex;gap:10px}
+.topbar a.back,.topbar a.pill-link{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;padding:9px 18px;border-radius:999px;background:var(--ink);color:#fff;transition:background .3s}
+.topbar a.back:hover{background:var(--red)}
+.topbar a.pill-link{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.topbar a.pill-link:hover{border-color:var(--ink)}
+.wrap{width:min(720px,94%);margin:26px auto 30px;flex:1;display:flex;flex-direction:column;min-height:0}
+.state{display:none;text-align:center;padding:70px 20px}
+.state.show{display:block}
+.state .big{font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1.1}
+.state .big i{font-style:normal;color:var(--red)}
+.state p{color:var(--muted);margin-top:14px;font-size:15px}
+.state .act{display:inline-flex;align-items:center;gap:8px;margin-top:26px;padding:12px 24px;border-radius:999px;background:var(--ink);color:#fff;font-size:13px;font-weight:700;transition:background .3s}
+.state .act:hover{background:var(--red)}
+.skeleton{display:none;animation:pulse 1.3s ease-in-out infinite}
+.skeleton.show{display:block}
+.skeleton .sk-line{height:34px;border-radius:16px;background:var(--bg-soft);margin:12px 0;max-width:65%}
+.skeleton .sk-line.right{margin-left:auto;max-width:55%}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+#room{display:none;flex-direction:column;flex:1;min-height:0;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 14px 38px rgba(20,24,40,.06);overflow:hidden}
+#room.show{display:flex}
+.who{display:flex;align-items:center;gap:14px;padding:16px 22px;border-bottom:1px solid var(--line);background:var(--bg)}
+.ava{width:48px;height:48px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;overflow:hidden;flex:0 0 auto}
+.ava img{width:100%;height:100%;object-fit:cover;display:block}
+.who .nm{font-weight:800;font-size:16px;line-height:1.2}
+.who .sub{font-size:12px;color:var(--muted);font-weight:600}
+.who .sub i{font-style:normal;color:#0b7a52}
+.msgs{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:10px;background:var(--bg);min-height:240px;max-height:58vh}
+.msg{max-width:78%;padding:11px 16px;border-radius:18px;font-size:14.5px;white-space:pre-wrap;word-wrap:break-word;box-shadow:0 2px 8px rgba(20,24,40,.05)}
+.msg time{display:block;font-size:10px;opacity:.65;margin-top:4px;font-weight:600}
+.msg.them{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:6px}
+.msg.me{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:6px}
+.msg-sys{align-self:center;background:var(--bg-soft);color:var(--muted);font-size:12px;font-weight:600;padding:8px 16px;border-radius:999px;text-align:center}
+.form{display:flex;gap:10px;padding:14px 18px;border-top:1px solid var(--line);background:#fff;align-items:flex-end}
+.form textarea{flex:1;border:1.5px solid var(--line);border-radius:16px;padding:12px 16px;font-size:14.5px;resize:none;max-height:120px;background:var(--bg);line-height:1.45}
+.form textarea:focus{outline:none;border-color:var(--blue)}
+.send{width:48px;height:48px;border-radius:50%;border:0;background:var(--ink);color:#fff;font-size:18px;cursor:pointer;transition:background .3s;flex:0 0 auto}
+.send:hover{background:var(--red)}
+.send[disabled]{opacity:.45;cursor:not-allowed}
+footer{border-top:1px solid var(--line);padding:16px 5%;text-align:center;font-size:12px;color:var(--muted)}
+@media (max-width:640px){
+  .msgs{padding:14px;max-height:none}
+  .who{padding:12px 14px}
+  .form{padding:10px 12px}
+  .topbar{padding:12px 4%}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html">Jelajah&nbsp;<em>Korea</em> <span style="font-weight:500;color:var(--muted)">· Sembang</span></a>
+  <div class="links">
+    <a class="pill-link" id="lnk-profile" href="#" hidden>Profil ↔</a>
+    <a class="back" href="index.html#komuniti">← Komuniti</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="skeleton show" id="st-load" aria-label="Memuatkan sembang">
+    <div class="sk-line"></div>
+    <div class="sk-line right"></div>
+    <div class="sk-line"></div>
+    <div class="sk-line right"></div>
+  </div>
+
+  <div class="state" id="st-param">
+    <div class="big">Tiada <i>rakan</i> dipilih</div>
+    <p>Halaman sembang memerlukan ID rakan — buka melalui butang "Rakan ✓ · Chat" pada profil mereka.</p>
+    <a class="act" href="index.html#komuniti">Ke Ruang Komuniti →</a>
+  </div>
+
+  <div class="state" id="st-config">
+    <div class="big">Belum <i>bersambung</i></div>
+    <p>Firebase belum dikonfigurasi. Isi <b>js/firebase-config.js</b> mengikut panduan dalam README-FIREBASE.md.</p>
+    <a class="act" href="index.html">Kembali ke laman utama →</a>
+  </div>
+
+  <div class="state" id="st-login">
+    <div class="big">Log masuk <i>terlebih dahulu</i></div>
+    <p>Sembang peribadi hanya tersedia untuk ahli yang telah log masuk dengan akaun sebenar (bukan mod demo).</p>
+    <a class="act" href="index.html#komuniti">Log masuk / Daftar →</a>
+  </div>
+
+  <div class="state" id="st-notfriend">
+    <div class="big">Belum jadi <i>rakan</i></div>
+    <p>Anda perlu menjadi rakan untuk berbual. Hantar permintaan rakan pada profil ahli ini, dan terima apabila mereka menjawab.</p>
+    <a class="act" id="act-toprofile" href="#">Buka Profil →</a>
+  </div>
+
+  <div class="state" id="st-err">
+    <div class="big">Tidak dapat <i>dimuatkan</i></div>
+    <p id="err-msg">Ralat semasa memuatkan sembang.</p>
+    <a class="act" href="index.html#komuniti">Ke Ruang Komuniti →</a>
+  </div>
+
+  <div id="room">
+    <div class="who">
+      <div class="ava" id="c-ava">?</div>
+      <div>
+        <p class="nm" id="c-name">—</p>
+        <p class="sub" id="c-sub"><i>●</i> Sembang peribadi · hanya anda berdua</p>
+      </div>
+    </div>
+    <div class="msgs" id="msgs" aria-live="polite"></div>
+    <form class="form" id="chat-form" autocomplete="off">
+      <textarea id="chat-input" rows="1" maxlength="1000" placeholder="Taip mesej… (Enter = hantar, Shift+Enter = baris baharu)"></textarea>
+      <button class="send" id="chat-send" type="submit" aria-label="Hantar">➤</button>
+    </form>
+  </div>
+
+</div>
+
+<footer>Jelajah Korea Selatan · 대한민국 — sembang peribadi antara rakan</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/chat.js"></script>
+</body>
+</html>
