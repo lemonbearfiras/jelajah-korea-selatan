@@ -632,6 +632,8 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
 .km-del:hover{color:var(--red);background:rgba(205,46,58,.08)}
 .km-text{margin-top:5px;font-size:13.5px;line-height:1.7;color:#3c3c3c;word-break:break-word}
 .km-empty{border:1px dashed var(--line);border-radius:var(--radius-sm);padding:28px 20px;text-align:center;color:var(--muted);font-size:13px}
+#km-list{max-height:min(560px,70vh);overflow-y:auto;overflow-x:hidden;padding:2px 8px 2px 2px;overscroll-behavior:contain;scroll-behavior:smooth}
+@media (max-width:640px){#km-list{max-height:420px}}
 .km-hint.km-ok{background:rgba(11,122,82,.08);border-color:rgba(11,122,82,.35);color:#0b7a52}
 .km-replyrow{display:flex;align-items:center;gap:8px;margin:8px 0 0;padding:8px 12px;background:var(--bg-soft);border-radius:10px;font-size:12.5px;font-weight:600;color:var(--muted)}
 .km-replyrow b{color:var(--ink)}
