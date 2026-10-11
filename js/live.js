@@ -174,12 +174,12 @@ function loadRange(days){
   fxSeries(days).then(function(pts){
     renderGraph(pts);
     applyRate(pts[pts.length-1].v);
-    var dateEl=$('#rc-date');if(dateEl)dateEl.textContent=fmtDate(pts[pts.length-1].d);
+    var dateEl=$('#rc-date');if(dateEl)dateEl.textContent=fmtFull(pts[pts.length-1].d);
     setupConverter();
-    var mid=$('#rc-mid');if(mid)mid.textContent=RANGE_LABEL[days]+' · setiap titik = 1 hari kadar (ECB)';
+    var mid=$('#rc-mid');if(mid)mid.textContent=RANGE_LABEL[days]+' · setiap titik = 1 hari kadar (ECB · Isn–Jum)';
   }).catch(function(){
-    if(!fxLastPts){applyRate(RATE);setupConverter();var dateEl=$('#rc-date');if(dateEl)dateEl.textContent='terputung · anggaran';}
-    var mid=$('#rc-mid');if(mid)mid.textContent='terputung · data julat ini tidak tersedia';
+    if(!fxLastPts){applyRate(RATE);setupConverter();var dateEl=$('#rc-date');if(dateEl)dateEl.textContent='terputus · anggaran';}
+    var mid=$('#rc-mid');if(mid)mid.textContent='terputus · data julat ini tidak tersedia';
   });
 }
 function bindRanges(){
