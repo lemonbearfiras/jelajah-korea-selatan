@@ -103,7 +103,7 @@ function renderGraph(pts){
       h+='<circle class="rc-pt" cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="2.4"><title>'+fmtFull(p.d)+' · RM1 = ₩'+p.v.toFixed(2)+'</title></circle>';
     });
     var lp=pts[n-1];
-    h+='<circle class="rc-pt hot" cx="'+X(n-1).toFixed(1)+'" cy="'+Y(lp.v).toFixed(1)+'" r="3.4"><title>'+fmtFull(lp.d)+' · RM1 = ₩'+lp.v.toFixed(2)+' (kadar terkini)</title></circle>';
+    h+='<circle class="rc-pt hot" cx="'+X(n-1).toFixed(1)+'" cy="'+Y(lp.v).toFixed(1)+'" r="3.4"><title>'+fmtFull(lp.d)+' · RM1 = ₩'+lp.v.toFixed(2)+(lp.live?' (langsung · pasaran)':' (kadar terkini)')+'</title></circle>';
     ptsG.innerHTML=h;
   }
   var minEl=$('#rc-min'),maxEl=$('#rc-max');
@@ -156,6 +156,18 @@ function bindHover(){
   svg.addEventListener('touchend',hide);
 }
 var RANGE_LABEL={7:'1 minggu',30:'1 bulan',92:'3 bulan',182:'6 bulan',365:'1 tahun'};
+var liveP=null;
+function fetchLive(){
+  if(liveP)return liveP;
+  liveP=fetch('https://api.exchangerate.fun/latest').then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){
+    if(!d||d.base!=='USD'||!d.rates||!(d.rates.MYR>0)||!(d.rates.KRW>0))throw new Error('bad payload');
+    var dt=new Date((d.timestamp?d.timestamp*1000:Date.now()));
+    var isoD=dt.getUTCFullYear()+'-'+('0'+(dt.getUTCMonth()+1)).slice(-2)+'-'+('0'+dt.getUTCDate()).slice(-2);
+    return {d:isoD,v:d.rates.KRW/d.rates.MYR,live:true};
+  });
+  liveP.catch(function(){liveP=null;});
+  return liveP;
+}
 function fxSeries(days){
   if(fxCache[days])return fxCache[days];
   var end=new Date(),start=new Date();start.setDate(end.getDate()-days-3);
@@ -172,11 +184,23 @@ function fxSeries(days){
 }
 function loadRange(days){
   fxSeries(days).then(function(pts){
+    return fetchLive().then(function(live){
+      if(live){
+        var lastD=pts[pts.length-1].d;
+        if(live.d===lastD){pts[pts.length-1]={d:live.d,v:live.v,live:true};}
+        else if(live.d>lastD){pts.push({d:live.d,v:live.v,live:true});if(pts.length>366)pts=pts.slice(pts.length-366);}
+      }
+      return pts;
+    }).catch(function(){return pts;});
+  }).then(function(pts){
     renderGraph(pts);
     applyRate(pts[pts.length-1].v);
-    var dateEl=$('#rc-date');if(dateEl)dateEl.textContent=fmtFull(pts[pts.length-1].d);
+    var liveNow=pts[pts.length-1].live;
+    var dateEl=$('#rc-date');
+    if(dateEl)dateEl.textContent=fmtFull(pts[pts.length-1].d)+(liveNow?' · langsung':'');
     setupConverter();
-    var mid=$('#rc-mid');if(mid)mid.textContent=RANGE_LABEL[days]+' · setiap titik = 1 hari kadar (ECB · Isn–Jum)';
+    var mid=$('#rc-mid');
+    if(mid)mid.textContent=RANGE_LABEL[days]+' · Isn–Jum ECB'+(liveNow?' + titik langsung (kini)':' · setiap titik = 1 hari (ECB)');
   }).catch(function(){
     if(!fxLastPts){applyRate(RATE);setupConverter();var dateEl=$('#rc-date');if(dateEl)dateEl.textContent='terputus · anggaran';}
     var mid=$('#rc-mid');if(mid)mid.textContent='terputus · data julat ini tidak tersedia';

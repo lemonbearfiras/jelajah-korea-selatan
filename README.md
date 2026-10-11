@@ -68,7 +68,7 @@ Laman web interaktif berbahasa Melayu untuk merancang percutian ke Korea Selatan
 ## Data & kredit
 
 - Cuaca: Open-Meteo (bekanan, tanpa kunci API).
-- Kadar tukaran: Bank Tengah Eropah melalui Frankfurter API.
+- Kadar tukaran: kadar langsung terkini dari [exchangerate.fun](https://api.exchangerate.fun/latest); siri harian melalui Bank Tengah Eropah (API Frankfurter).
 - Fakta ekonomi: Bank Korea, KDI, OECD (setakat Oktober 2026).
 - Imej: Wikimedia Commons (thumb 1280/1920px).
 - Direka dan dibina sebagai projek penilaian pelajar.

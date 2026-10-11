@@ -1423,7 +1423,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
           <div class="rc-title">
             <span class="rc-live"><i></i>LANGSUNG</span>
             <h3>Kadar Ringgit → Won</h3>
-            <p>MYR → KRW · sumber ECB (Bank Pusat Eropah), dikemas kini setiap hari bekerja.</p>
+            <p>MYR → KRW · kadar terkini langsung dari exchangerate.fun · sejarah harian ECB (Bank Pusat Eropah), Isn–Jum.</p>
           </div>
           <div class="rc-rate">
             <strong id="rc-big">&#8361;…</strong>
@@ -1439,7 +1439,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
             <button type="button" data-days="365">1 Tahun</button>
           </div>
           <div class="rc-wrap">
-            <svg id="rc-svg" viewBox="0 0 640 190" preserveAspectRatio="none" role="img" aria-label="Carta kadar MYR ke KRW, satu titik setiap hari kadar ECB">
+            <svg id="rc-svg" viewBox="0 0 640 190" preserveAspectRatio="none" role="img" aria-label="Carta kadar MYR ke KRW, satu titik setiap hari kadar ECB dengan titik langsung terkini">
               <defs>
                 <linearGradient id="rcGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#CD2E3A"/><stop offset="1" stop-color="#0047A0"/></linearGradient>
                 <linearGradient id="rcArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CD2E3A" stop-opacity=".5"/><stop offset="1" stop-color="#0047A0" stop-opacity="0"/></linearGradient>
@@ -1452,7 +1452,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
             </svg>
             <div id="rc-tip"></div>
           </div>
-          <div class="rc-axis"><span id="rc-min"></span><span class="rc-mid" id="rc-mid">setiap titik = 1 hari kadar (ECB · Isn–Jum)</span><span id="rc-max"></span></div>
+          <div class="rc-axis"><span id="rc-min"></span><span class="rc-mid" id="rc-mid">sejarah ECB Isn–Jum + titik langsung terkini</span><span id="rc-max"></span></div>
         </div>
         <div class="rc-conv">
           <label>RM <input id="rc-rm" type="number" value="100" min="0" step="1" inputmode="decimal"></label>
@@ -2624,7 +2624,7 @@ document.addEventListener('keydown',function(e){
 })();
 </script>
 
-<!-- Data langsung: cuaca (Open-Meteo) + kadar MYR→KRW (ECB) -->
+<!-- Data langsung: cuaca (Open-Meteo) + kadar MYR→KRW (exchangerate.fun terkini + ECB sejarah) -->
 <script src="js/live.js"></script>
 
 <!-- Firebase (awan) + komuniti — lihat README-FIREBASE.md -->
