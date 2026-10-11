@@ -640,7 +640,7 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
 .km-replyrow button{margin-left:auto;border:none;background:none;color:var(--muted);font-weight:800;cursor:pointer;font-size:13px;padding:2px 6px;border-radius:6px;transition:.25s}
 .km-replyrow button:hover{color:var(--red);background:rgba(205,46,58,.1)}
 .km-replytag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:var(--blue);background:rgba(0,71,160,.08);padding:2px 9px;border-radius:999px}
-.km-acts{display:flex;align-items:center;gap:8px;margin-top:9px}
+.km-acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:9px}
 .km-acts button{border:1px solid var(--line);background:none;border-radius:999px;padding:5px 13px;font:inherit;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.25s var(--ease)}
 .km-acts button:hover{border-color:var(--ink);color:var(--ink)}
 .km-like i{font-style:normal;font-weight:800}
@@ -665,7 +665,7 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
 .km-board li:first-child .km-rank{background:var(--red);color:#fff}
 .km-board li:nth-child(2) .km-rank{background:var(--blue);color:#fff}
 .km-ava.km-ava-xs{width:26px;height:26px;font-size:11px;flex:none}
-.km-bscore{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted)}
+.km-bscore{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;flex:none}
 @media (max-width:640px){.km-replies{padding-left:8px}}
 @media (max-width:1150px){.main-nav a{padding:9px 9px}.main-nav{gap:0}}
 @media (max-width:900px){.km-grid{grid-template-columns:1fr}.km-auth-card{position:static}}
