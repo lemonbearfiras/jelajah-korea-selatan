@@ -80,10 +80,19 @@ function threadHTML(c){
   var reps=threads[c.id];
   if(!reps||!reps.length)return '';
   reps.sort(function(a,b){return a.ts-b.ts});
-  return '<button class="km-toggle" type="button" data-id="'+esc(c.id)+'" aria-expanded="false">Buka balasan ('+reps.length+')</button>'+
-    '<div class="km-replies" id="rep-'+esc(c.id)+'" hidden>'+reps.map(function(r){return itemHTML(r,true)}).join('')+'</div>';
+  var open=!!openThreads[c.id];
+  return '<button class="km-toggle" type="button" data-id="'+esc(c.id)+'" aria-expanded="'+(open?'true':'false')+'">'+(open?'Tutup':'Buka')+' balasan ('+reps.length+')</button>'+
+    '<div class="km-replies" id="rep-'+esc(c.id)+'"'+(open?'':' hidden')+'>'+reps.map(function(r){return itemHTML(r,true)}).join('')+'</div>';
 }
 var threads={};
+var openThreads={};  /* id utas yang sedang dibuka — kekal rentang render semula */
+function rootOf(cid){
+  var ids={};items.forEach(function(c){ids[c.id]=c});
+  var cur=ids[cid];if(!cur)return cid;
+  var guard=0;
+  while(cur.replyTo&&ids[cur.replyTo]&&guard<20){cur=ids[cur.replyTo];guard++}
+  return cur.id;
+}
 function buildThreads(){
   threads={};
   var ids={},roots=[];
@@ -124,6 +133,7 @@ function tryJump(){
 function openThread(box){
   var tg=box.parentNode.querySelector('.km-toggle');
   box.hidden=false;
+  openThreads[box.id.slice(4)]=true;
   if(tg){tg.setAttribute('aria-expanded','true');tg.textContent='Tutup balasan ('+box.querySelectorAll('.km-item').length+')'}
 }
 window.addEventListener('hashchange',tryJump);
@@ -272,6 +282,7 @@ compose.addEventListener('submit',function(ev){
   if(!text)return;
   sendBtn.disabled=true;
   var rt=replyTarget;
+  if(rt)openThreads[rootOf(rt.id)]=true; /* utas kekal terbuka selepas membalas */
   var clear=function(){
     textEl.value='';charsEl.textContent='0 / 600';
     sendBtn.disabled=false;cancelReply();
@@ -363,6 +374,7 @@ list.addEventListener('click',function(ev){
     if(rbox.hidden){openThread(rbox)}
     else{
       rbox.hidden=true;
+      delete openThreads[tg.getAttribute('data-id')];
       tg.setAttribute('aria-expanded','false');
       tg.textContent='Buka balasan ('+rbox.querySelectorAll('.km-item').length+')';
     }
