@@ -64,6 +64,17 @@ function fmtDate(s){var p=s.split('-');return parseInt(p[2],10)+' '+MONTHS[parse
 function fmtShort(s){var p=s.split('-');return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1];}
 function fmtFull(s){var dt=new Date(parseInt(s.slice(0,4),10),parseInt(s.slice(5,7),10)-1,parseInt(s.slice(8,10),10));return DAYS[dt.getDay()]+', '+fmtDate(s);}
 var FXGEO=null,fxLastPts=null,fxCache={};
+function smoothPath(p){
+  if(p.length<3)return 'M'+p.map(function(q){return q.x.toFixed(1)+' '+q.y.toFixed(1)}).join(' L');
+  var d='M'+p[0].x.toFixed(1)+' '+p[0].y.toFixed(1);
+  for(var i=0;i<p.length-1;i++){
+    var p0=p[i-1]||p[i],p1=p[i],p2=p[i+1],p3=p[i+2]||p2;
+    d+=' C'+(p1.x+(p2.x-p0.x)/6).toFixed(1)+' '+(p1.y+(p2.y-p0.y)/6).toFixed(1)+
+      ','+(p2.x-(p3.x-p1.x)/6).toFixed(1)+' '+(p2.y-(p3.y-p1.y)/6).toFixed(1)+
+      ','+p2.x.toFixed(1)+' '+p2.y.toFixed(1);
+  }
+  return d;
+}
 function renderGraph(pts){
   var svg=$('#rc-svg');if(!svg)return;
   var W=Math.max(320,Math.round(svg.clientWidth||640)),H=190,padX=10,padT=16,padB=30,n=pts.length;
@@ -73,11 +84,12 @@ function renderGraph(pts){
   if(mn===mx){mn-=1;mx+=1;}
   function X(i){return padX+(i/(n>1?n-1:1))*(W-2*padX);}
   function Y(v){return padT+(1-(v-mn)/(mx-mn))*(H-padT-padB);}
-  var line=pts.map(function(p,i){return X(i).toFixed(1)+','+Y(p.v).toFixed(1);}).join(' ');
-  var area=line+' '+X(n-1).toFixed(1)+','+(H-padB)+' '+X(0).toFixed(1)+','+(H-padB);
+  var xy=pts.map(function(p,i){return {x:X(i),y:Y(p.v)}});
+  var lineD=smoothPath(xy);
+  var areaD=lineD+' L'+X(n-1).toFixed(1)+' '+(H-padB)+' L'+X(0).toFixed(1)+' '+(H-padB)+' Z';
   var ln=$('#rc-line'),ar=$('#rc-area'),dot=$('#rc-dot');
-  if(ln)ln.setAttribute('points',line);
-  if(ar)ar.setAttribute('points',area);
+  if(ln)ln.setAttribute('d',lineD);
+  if(ar)ar.setAttribute('d',areaD);
   if(dot){dot.setAttribute('cx',X(n-1).toFixed(1));dot.setAttribute('cy',Y(pts[n-1].v).toFixed(1));}
   if(ln&&!reduce&&ln.getTotalLength){
     var L=Math.ceil(ln.getTotalLength());
@@ -92,6 +104,7 @@ function renderGraph(pts){
   ticks.forEach(function(i){
     if(seen[i])return;seen[i]=1;
     var x=X(i),anc=i===0?'start':(i===n-1?'end':'middle');
+    grid+='<line class="rc-vline" x1="'+x.toFixed(1)+'" y1="'+padT+'" x2="'+x.toFixed(1)+'" y2="'+(H-padB)+'"/>';
     grid+='<text x="'+x.toFixed(1)+'" y="'+(H-8)+'" text-anchor="'+anc+'">'+fmtShort(pts[i].d)+'</text>';
   });
   var g=$('#rc-grid');if(g)g.innerHTML=grid;
@@ -100,7 +113,7 @@ function renderGraph(pts){
     var h='';
     pts.forEach(function(p,i){
       if(i===n-1)return;
-      h+='<circle class="rc-pt" cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="2.4"><title>'+fmtFull(p.d)+' · RM1 = ₩'+p.v.toFixed(2)+'</title></circle>';
+      h+='<circle class="rc-pt" cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="1.7"><title>'+fmtFull(p.d)+' · RM1 = ₩'+p.v.toFixed(2)+'</title></circle>';
     });
     var lp=pts[n-1];
     h+='<circle class="rc-pt hot" cx="'+X(n-1).toFixed(1)+'" cy="'+Y(lp.v).toFixed(1)+'" r="3.4"><title>'+fmtFull(lp.d)+' · RM1 = ₩'+lp.v.toFixed(2)+(lp.live?' (langsung · pasaran)':' (kadar terkini)')+'</title></circle>';
