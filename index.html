@@ -656,6 +656,9 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
 .km-item.flash{animation:kmItemFlash 2.2s var(--ease)}
 @keyframes kmItemFlash{0%,55%{box-shadow:0 0 0 3px rgba(201,164,92,.55)}100%{box-shadow:none}}
 .km-board{background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px 20px;margin-top:18px}
+.km-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}
+.km-cols:has(.km-board:not([hidden])){grid-template-columns:minmax(0,1fr) 260px}
+@media (max-width:900px){.km-cols:has(.km-board:not([hidden])){grid-template-columns:minmax(0,1fr)}.km-board{margin-top:0}}
 .km-board h4{font-size:13px;letter-spacing:.04em;margin-bottom:12px}
 .km-board h4 small{font-weight:600;color:var(--muted);font-size:10.5px;margin-left:6px}
 .km-board ol{list-style:none;display:flex;flex-direction:column;gap:9px}
@@ -1716,12 +1719,14 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
             <button class="km-send" id="km-send" type="submit" disabled>Hantar komen</button>
           </div>
         </form>
-        <div class="km-board" id="km-board" hidden>
-          <h4>Paling aktif <small>50 komen terkini</small></h4>
-          <ol id="km-board-list"></ol>
-        </div>
         <div class="km-head"><h3>Komen terkini</h3><span id="km-count"></span></div>
-        <div id="km-list" aria-live="polite"></div>
+        <div class="km-cols" id="km-cols">
+          <div id="km-list" aria-live="polite"></div>
+          <div class="km-board" id="km-board" hidden>
+            <h4>Paling aktif <small>50 komen terkini</small></h4>
+            <ol id="km-board-list"></ol>
+          </div>
+        </div>
       </div>
     </div>
   </div>
