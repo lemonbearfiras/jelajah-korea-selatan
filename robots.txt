@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /profile.html
+Disallow: /chat.html
+
+Sitemap: https://lemonbearfiras.github.io/jelajah-korea-selatan/sitemap.xml
