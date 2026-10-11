@@ -33,24 +33,42 @@ function loadWeather(){
   cards.forEach(function(card){
     var chip=card.querySelector('.weather-chip');if(!chip)return;
     var lat=card.getAttribute('data-lat'),lon=card.getAttribute('data-lon');
-    var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,weather_code&timezone=Asia%2FSeoul';
+    var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
+      +'&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code'
+      +'&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=1'
+      +'&timezone=Asia%2FSeoul';
     fetch(url).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){
       var cur=d&&d.current;if(!cur)return;
       var m=wmo(cur.weather_code);
-      chip.innerHTML=ICON[m[1]]+'<span>'+Math.round(cur.temperature_2m)+'°C · '+m[0]+'</span>';
+      var dy=d.daily||{},one=function(k,i){return Array.isArray(dy[k])?dy[k][i]:null;};
+      var tmin=one('temperature_2m_min',0),tmax=one('temperature_2m_max',0),rainp=one('precipitation_probability_max',0);
+      var extra=[];
+      if(cur.apparent_temperature!=null)extra.push('rasa '+Math.round(cur.apparent_temperature)+'°');
+      if(tmin!=null&&tmax!=null)extra.push('↕'+Math.round(tmin)+'–'+Math.round(tmax)+'°');
+      if(cur.relative_humidity_2m!=null)extra.push('💧'+Math.round(cur.relative_humidity_2m)+'%');
+      if(cur.wind_speed_10m!=null)extra.push('💨'+Math.round(cur.wind_speed_10m)+' km/j');
+      if(rainp!=null)extra.push('☔'+Math.round(rainp)+'%');
+      chip.innerHTML=ICON[m[1]]+'<span>'+Math.round(cur.temperature_2m)+'°C · '+m[0]+'</span>'
+        +(extra.length?'<span class="w-x">'+extra.join(' · ')+'</span>':'');
       chip.classList.add('upd');
-      chip.title='Cuaca langsung · Open-Meteo';
+      chip.title='Cuaca langsung (Open-Meteo) · '+cur.time.replace('T',' ');
     }).catch(function(){});
   });
 }
 
 /* ---------- KADAR LANGSUNG MYR→KRW ---------- */
 var RATE=328, MONTHS=['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
+var DAYS=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
 function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 function fmtDate(s){var p=s.split('-');return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1]+' '+p[0];}
+function fmtShort(s){var p=s.split('-');return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1];}
+function fmtFull(s){var dt=new Date(parseInt(s.slice(0,4),10),parseInt(s.slice(5,7),10)-1,parseInt(s.slice(8,10),10));return DAYS[dt.getDay()]+', '+fmtDate(s);}
 function renderGraph(pts){
-  var W=640,H=190,padX=6,padT=16,padB=28,n=pts.length;
-  var vs=pts.map(function(p){return p.v;});var mn=Math.min.apply(0,vs),mx=Math.max.apply(0,vs);
+  var svg=$('#rc-svg');if(!svg)return;
+  var W=Math.max(320,Math.round(svg.clientWidth||640)),H=190,padX=10,padT=16,padB=30,n=pts.length;
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  var vs=pts.map(function(p){return p.v;});
+  var mn=Math.min.apply(0,vs),mx=Math.max.apply(0,vs),mnI=vs.indexOf(mn),mxI=vs.indexOf(mx);
   if(mn===mx){mn-=1;mx+=1;}
   function X(i){return padX+(i/(n>1?n-1:1))*(W-2*padX);}
   function Y(v){return padT+(1-(v-mn)/(mx-mn))*(H-padT-padB);}
@@ -60,11 +78,36 @@ function renderGraph(pts){
   if(ln)ln.setAttribute('points',line);
   if(ar)ar.setAttribute('points',area);
   if(dot){dot.setAttribute('cx',X(n-1).toFixed(1));dot.setAttribute('cy',Y(pts[n-1].v).toFixed(1));}
-  var grid='';[mx,(mx+mn)/2,mn].forEach(function(v){var y=Y(v);grid+='<line x1="0" y1="'+y.toFixed(1)+'" x2="'+W+'" y2="'+y.toFixed(1)+'"/><text x="4" y="'+(y-4).toFixed(1)+'">'+Math.round(v)+'</text>';});
+  if(ln&&!reduce&&ln.getTotalLength){
+    var L=Math.ceil(ln.getTotalLength());
+    ln.style.strokeDasharray=L;ln.style.strokeDashoffset=L;
+    void ln.getBoundingClientRect();
+    ln.style.transition='stroke-dashoffset 1.7s cubic-bezier(.22,1,.36,1)';
+    ln.style.strokeDashoffset='0';
+  }
+  var grid='';
+  [mx,(mx+mn)/2,mn].forEach(function(v){var y=Y(v);grid+='<line x1="0" y1="'+y.toFixed(1)+'" x2="'+W+'" y2="'+y.toFixed(1)+'"/><text x="4" y="'+(y-4).toFixed(1)+'">'+Math.round(v)+'</text>';});
+  var ticks=[0,Math.round((n-1)*.25),Math.round((n-1)*.5),Math.round((n-1)*.75),n-1],seen={};
+  ticks.forEach(function(i){
+    if(seen[i])return;seen[i]=1;
+    var x=X(i),anc=i===0?'start':(i===n-1?'end':'middle');
+    grid+='<text x="'+x.toFixed(1)+'" y="'+(H-8)+'" text-anchor="'+anc+'">'+fmtShort(pts[i].d)+'</text>';
+  });
   var g=$('#rc-grid');if(g)g.innerHTML=grid;
+  var ptsG=$('#rc-pts');
+  if(ptsG){
+    var h='';
+    pts.forEach(function(p,i){
+      if(i===n-1)return;
+      h+='<circle class="rc-pt" cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="2.4"><title>'+fmtFull(p.d)+' · RM1 = ₩'+p.v.toFixed(2)+'</title></circle>';
+    });
+    var lp=pts[n-1];
+    h+='<circle class="rc-pt hot" cx="'+X(n-1).toFixed(1)+'" cy="'+Y(lp.v).toFixed(1)+'" r="3.4"><title>'+fmtFull(lp.d)+' · RM1 = ₩'+lp.v.toFixed(2)+' (kadar terkini)</title></circle>';
+    ptsG.innerHTML=h;
+  }
   var minEl=$('#rc-min'),maxEl=$('#rc-max');
-  if(minEl)minEl.textContent='▼ Min ₩'+Math.round(mn);
-  if(maxEl)maxEl.textContent='▲ Max ₩'+Math.round(mx);
+  if(minEl)minEl.textContent='▼ ₩'+mn.toFixed(1)+' · '+fmtShort(pts[mnI].d);
+  if(maxEl)maxEl.textContent='▲ ₩'+mx.toFixed(1)+' · '+fmtShort(pts[mxI].d);
 }
 function setupConverter(){
   var rm=$('#rc-rm'),krw=$('#rc-krw'),note=$('#rc-note');
@@ -82,13 +125,13 @@ function applyRate(v){
 }
 function loadFx(){
   if(!window.fetch)return;
-  var end=new Date(),start=new Date();start.setDate(end.getDate()-38);
+  var end=new Date(),start=new Date();start.setDate(end.getDate()-92);
   var url='https://api.frankfurter.dev/v1/'+iso(start)+'..'+iso(end)+'?base=MYR&symbols=KRW';
   fetch(url).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){
     var rates=(d&&d.rates)||{},dates=Object.keys(rates).sort();
     var pts=[];dates.forEach(function(dt){var v=rates[dt]&&rates[dt].KRW;if(v>0)pts.push({d:dt,v:v});});
     if(!pts.length)return;
-    if(pts.length>31)pts=pts.slice(pts.length-31);
+    if(pts.length>70)pts=pts.slice(pts.length-70);
     renderGraph(pts);
     applyRate(pts[pts.length-1].v);
     var dateEl=$('#rc-date');if(dateEl)dateEl.textContent=fmtDate(pts[pts.length-1].d);
