@@ -56,6 +56,48 @@ function avaHTML(p,cls){
 }
 
 /* ---------- render ---------- */
+function itemHTML(c,inThread){
+  var own=user&&c.uid===user.uid;
+  var li=likeInfo[c.id]||{n:0,mine:false};
+  var prof=c.uid?'<a class="km-prof" href="'+esc(PROFILE_BASE+encodeURIComponent(c.uid))+'" target="_blank" rel="noopener" title="Lihat halaman profil '+esc(c.name)+'">':'';
+  var profEnd=c.uid?'</a>':'';
+  var replyTag=(!inThread&&c.replyTo)?'<span class="km-replytag">↩ mem balas '+esc(c.replyName||'@'+c.replyTo.slice(0,8))+'</span>':'';
+  return '<article class="km-item'+(inThread?' km-inthread':'')+'" id="komen-'+esc(c.id)+'">'+prof+avaHTML(c)+profEnd+
+    '<div class="km-body">'+
+      '<div class="km-meta"><b>'+(c.uid?'<a class="km-prof" href="'+esc(PROFILE_BASE+encodeURIComponent(c.uid))+'" target="_blank" rel="noopener">'+esc(c.name)+'</a>':esc(c.name))+'</b><time>'+ago(c.ts)+'</time>'+replyTag+
+      (own?'<button class="km-del" type="button" data-id="'+esc(c.id)+'">Padam</button>':'')+
+      '</div>'+
+      '<p class="km-text">'+esc(c.text).replace(/\n/g,'<br>')+'</p>'+
+      '<div class="km-acts">'+
+        '<button class="km-like'+(li.mine?' on':'')+'" type="button" data-id="'+esc(c.id)+'" aria-pressed="'+(li.mine?'true':'false')+'" aria-label="Suka komen">♥<i>'+li.n+'</i></button>'+
+        '<button class="km-replyb" type="button" data-id="'+esc(c.id)+'" data-name="'+esc(c.name)+'">Balas</button>'+
+        '<button class="km-shareb" type="button" data-id="'+esc(c.id)+'">Kongsi</button>'+
+      '</div>'+
+      (!inThread?threadHTML(c):'')+
+    '</div></article>';
+}
+function threadHTML(c){
+  var reps=threads[c.id];
+  if(!reps||!reps.length)return '';
+  reps.sort(function(a,b){return a.ts-b.ts});
+  return '<button class="km-toggle" type="button" data-id="'+esc(c.id)+'" aria-expanded="false">Buka balasan ('+reps.length+')</button>'+
+    '<div class="km-replies" id="rep-'+esc(c.id)+'" hidden>'+reps.map(function(r){return itemHTML(r,true)}).join('')+'</div>';
+}
+var threads={};
+function buildThreads(){
+  threads={};
+  var ids={},roots=[];
+  items.forEach(function(c){ids[c.id]=c});
+  items.forEach(function(c){
+    if(!c.replyTo||!ids[c.replyTo]){roots.push(c);return}
+    /* cari induk tahap-1 (rantai balasan diratakan ke punca) */
+    var cur=c,guard=0;
+    while(cur.replyTo&&ids[cur.replyTo]&&guard<20){cur=ids[cur.replyTo];guard++}
+    (threads[cur.id]=threads[cur.id]||[]).push(c);
+  });
+  roots.sort(function(a,b){return b.ts-a.ts});
+  return roots;
+}
 function render(){
   items.sort(function(a,b){return b.ts-a.ts});
   countEl.textContent=items.length?items.length+' komen':'';
@@ -63,25 +105,7 @@ function render(){
     list.innerHTML='<div class="km-empty">Masih tiada komen — jadilah orang pertama berkongsi cerita perjalanan anda!</div>';
     renderBoard();paintNote();return;
   }
-  list.innerHTML=items.map(function(c){
-    var own=user&&c.uid===user.uid;
-    var li=likeInfo[c.id]||{n:0,mine:false};
-    var prof=c.uid?'<a class="km-prof" href="'+esc(PROFILE_BASE+encodeURIComponent(c.uid))+'" target="_blank" rel="noopener" title="Lihat halaman profil '+esc(c.name)+'">':'';
-    var profEnd=c.uid?'</a>':'';
-    var replyTag=c.replyTo?'<span class="km-replytag">↩ mem balas '+esc(c.replyName||'@'+c.replyTo.slice(0,8))+'</span>':'';
-    return '<article class="km-item'+(c.replyTo?' km-is-reply':'')+'" id="komen-'+esc(c.id)+'">'+prof+avaHTML(c)+profEnd+
-      '<div class="km-body">'+
-        '<div class="km-meta"><b>'+(c.uid?'<a class="km-prof" href="'+esc(PROFILE_BASE+encodeURIComponent(c.uid))+'" target="_blank" rel="noopener">'+esc(c.name)+'</a>':esc(c.name))+'</b><time>'+ago(c.ts)+'</time>'+replyTag+
-        (own?'<button class="km-del" type="button" data-id="'+esc(c.id)+'">Padam</button>':'')+
-        '</div>'+
-        '<p class="km-text">'+esc(c.text).replace(/\n/g,'<br>')+'</p>'+
-        '<div class="km-acts">'+
-          '<button class="km-like'+(li.mine?' on':'')+'" type="button" data-id="'+esc(c.id)+'" aria-pressed="'+(li.mine?'true':'false')+'" aria-label="Suka komen">♥<i>'+li.n+'</i></button>'+
-          '<button class="km-replyb" type="button" data-id="'+esc(c.id)+'" data-name="'+esc(c.name)+'">Balas</button>'+
-          '<button class="km-shareb" type="button" data-id="'+esc(c.id)+'">Kongsi</button>'+
-        '</div>'+
-      '</div></article>';
-  }).join('');
+  list.innerHTML=buildThreads().map(function(c){return itemHTML(c,false)}).join('');
   renderBoard();paintNote();
   if(pendingJump&&tryJump())pendingJump=false;
 }
@@ -90,10 +114,17 @@ function tryJump(){
   if(!m)return true;
   var el=d.getElementById('komen-'+m[1]);
   if(!el)return false;
+  var box=el.closest('.km-replies');
+  if(box)openThread(box);
   el.classList.add('flash');
   try{el.scrollIntoView({behavior:'smooth',block:'center'})}catch(e){el.scrollIntoView()}
   setTimeout(function(){el.classList.remove('flash')},2200);
   return true;
+}
+function openThread(box){
+  var tg=box.parentNode.querySelector('.km-toggle');
+  box.hidden=false;
+  if(tg){tg.setAttribute('aria-expanded','true');tg.textContent='Tutup balasan ('+box.querySelectorAll('.km-item').length+')'}
 }
 window.addEventListener('hashchange',tryJump);
 
@@ -325,6 +356,18 @@ function shareComment(c,btn){
 /* ---------- delegasi klik pada senarai ---------- */
 list.addEventListener('click',function(ev){
   var t=ev.target;
+  var tg=t.closest('.km-toggle');
+  if(tg){
+    var rbox=d.getElementById('rep-'+tg.getAttribute('data-id'));
+    if(!rbox)return;
+    if(rbox.hidden){openThread(rbox)}
+    else{
+      rbox.hidden=true;
+      tg.setAttribute('aria-expanded','false');
+      tg.textContent='Buka balasan ('+rbox.querySelectorAll('.km-item').length+')';
+    }
+    return;
+  }
   var like=t.closest('.km-like');
   if(like){toggleLike(like.getAttribute('data-id'));return}
   var rb=t.closest('.km-replyb');
