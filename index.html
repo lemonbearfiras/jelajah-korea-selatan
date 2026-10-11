@@ -701,6 +701,16 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
 .rc-rate strong{display:block;font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-.03em;line-height:1;background:linear-gradient(92deg,var(--red),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
 .rc-rate small{display:block;margin-top:8px;font-size:12px;color:var(--muted);font-weight:600}
 .rc-graph{margin-top:20px}
+.rc-ranges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.rc-ranges button{cursor:pointer;font:inherit;font-size:11.5px;font-weight:700;color:var(--muted);background:var(--bg-soft);border:1px solid var(--line);border-radius:999px;padding:6px 15px;transition:.25s var(--ease)}
+.rc-ranges button:hover{color:var(--ink);border-color:var(--ink);transform:translateY(-1px)}
+.rc-ranges button.on{color:#fff;background:linear-gradient(92deg,var(--red),var(--blue));border-color:transparent;box-shadow:0 6px 16px rgba(0,71,160,.25)}
+.rc-wrap{position:relative}
+#rc-tip{position:absolute;display:none;pointer-events:none;z-index:3;background:var(--ink);color:#fff;font-size:13px;font-weight:800;letter-spacing:-.01em;padding:8px 13px;border-radius:11px;box-shadow:0 10px 26px rgba(10,10,10,.3);white-space:nowrap;transform:translate(-50%,-135%)}
+#rc-tip small{display:block;font-weight:600;font-size:10.5px;opacity:.72;margin-top:2px}
+#rc-cross{display:none}
+#rc-cross line{stroke:var(--ink);stroke-width:1;stroke-dasharray:3 4;opacity:.35}
+#rc-cross circle{fill:var(--red);stroke:#fff;stroke-width:2.5}
 #rc-svg{width:100%;height:190px;display:block;overflow:visible}
 #rc-pts{opacity:0;animation:rcPtsIn 1s var(--ease) 1.1s forwards}
 #rc-svg .rc-pt{fill:var(--blue);opacity:.5;transition:opacity .2s}
@@ -1411,18 +1421,28 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
           </div>
         </div>
         <div class="rc-graph">
-          <svg id="rc-svg" viewBox="0 0 640 190" preserveAspectRatio="none" role="img" aria-label="Carta kadar MYR ke KRW 90 hari terkini, satu titik setiap hari kadar ECB">
-            <defs>
-              <linearGradient id="rcGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#CD2E3A"/><stop offset="1" stop-color="#0047A0"/></linearGradient>
-              <linearGradient id="rcArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CD2E3A" stop-opacity=".5"/><stop offset="1" stop-color="#0047A0" stop-opacity="0"/></linearGradient>
-            </defs>
-            <g id="rc-grid"></g>
-            <polygon id="rc-area" fill="url(#rcArea)" points=""/>
-            <polyline id="rc-line" fill="none" stroke="url(#rcGrad)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" points=""/>
-            <g id="rc-pts"></g>
-            <circle id="rc-dot" r="4.5" fill="#0047A0" stroke="#faf9f6" stroke-width="2"/>
-          </svg>
-          <div class="rc-axis"><span id="rc-min"></span><span class="rc-mid">90 hari · setiap titik = 1 hari kadar (ECB)</span><span id="rc-max"></span></div>
+          <div class="rc-ranges" id="rc-ranges" role="group" aria-label="Julat carta kadar">
+            <button type="button" data-days="7">1 Minggu</button>
+            <button type="button" data-days="30">1 Bulan</button>
+            <button type="button" data-days="92" class="on">3 Bulan</button>
+            <button type="button" data-days="182">6 Bulan</button>
+            <button type="button" data-days="365">1 Tahun</button>
+          </div>
+          <div class="rc-wrap">
+            <svg id="rc-svg" viewBox="0 0 640 190" preserveAspectRatio="none" role="img" aria-label="Carta kadar MYR ke KRW, satu titik setiap hari kadar ECB">
+              <defs>
+                <linearGradient id="rcGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#CD2E3A"/><stop offset="1" stop-color="#0047A0"/></linearGradient>
+                <linearGradient id="rcArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CD2E3A" stop-opacity=".5"/><stop offset="1" stop-color="#0047A0" stop-opacity="0"/></linearGradient>
+              </defs>
+              <g id="rc-grid"></g>
+              <polygon id="rc-area" fill="url(#rcArea)" points=""/>
+              <polyline id="rc-line" fill="none" stroke="url(#rcGrad)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" points=""/>
+              <g id="rc-pts"></g>
+              <circle id="rc-dot" r="4.5" fill="#0047A0" stroke="#faf9f6" stroke-width="2"/>
+            </svg>
+            <div id="rc-tip"></div>
+          </div>
+          <div class="rc-axis"><span id="rc-min"></span><span class="rc-mid" id="rc-mid">setiap titik = 1 hari kadar (ECB)</span><span id="rc-max"></span></div>
         </div>
         <div class="rc-conv">
           <label>RM <input id="rc-rm" type="number" value="100" min="0" step="1" inputmode="decimal"></label>

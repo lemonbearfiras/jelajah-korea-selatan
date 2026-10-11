@@ -63,6 +63,7 @@ function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+
 function fmtDate(s){var p=s.split('-');return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1]+' '+p[0];}
 function fmtShort(s){var p=s.split('-');return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1];}
 function fmtFull(s){var dt=new Date(parseInt(s.slice(0,4),10),parseInt(s.slice(5,7),10)-1,parseInt(s.slice(8,10),10));return DAYS[dt.getDay()]+', '+fmtDate(s);}
+var FXGEO=null,fxLastPts=null,fxCache={};
 function renderGraph(pts){
   var svg=$('#rc-svg');if(!svg)return;
   var W=Math.max(320,Math.round(svg.clientWidth||640)),H=190,padX=10,padT=16,padB=30,n=pts.length;
@@ -108,13 +109,94 @@ function renderGraph(pts){
   var minEl=$('#rc-min'),maxEl=$('#rc-max');
   if(minEl)minEl.textContent='▼ ₩'+mn.toFixed(1)+' · '+fmtShort(pts[mnI].d);
   if(maxEl)maxEl.textContent='▲ ₩'+mx.toFixed(1)+' · '+fmtShort(pts[mxI].d);
+  if(!$('#rc-cross')){
+    var cross=document.createElementNS('http://www.w3.org/2000/svg','g');
+    cross.setAttribute('id','rc-cross');
+    cross.innerHTML='<line x1="0" y1="16" x2="0" y2="160"/><circle r="4.5" cx="0" cy="0"/>';
+    svg.appendChild(cross);
+  }
+  FXGEO={pts:pts,W:W,H:H,padX:padX,padT:padT,padB:padB,X:X,Y:Y};
+  fxLastPts=pts;
+}
+function bindHover(){
+  var svg=$('#rc-svg'),tip=$('#rc-tip');
+  if(!svg||!tip||svg._rcBound)return;
+  svg._rcBound=1;
+  function show(ev){
+    if(!FXGEO)return;
+    var g=FXGEO,rect=svg.getBoundingClientRect();
+    if(!rect.width)return;
+    var clientX=(ev.touches&&ev.touches[0])?ev.touches[0].clientX:ev.clientX;
+    var x=(clientX-rect.left)*(g.W/rect.width);
+    var i=Math.round((x-g.padX)/(g.W-2*g.padX)*(g.pts.length-1));
+    i=Math.max(0,Math.min(g.pts.length-1,i));
+    var p=g.pts[i],px=g.X(i),py=g.Y(p.v);
+    var cross=$('#rc-cross');
+    if(cross){
+      var cl=cross.querySelector('line'),cc=cross.querySelector('circle');
+      cl.setAttribute('x1',px.toFixed(1));cl.setAttribute('x2',px.toFixed(1));
+      cl.setAttribute('y1',g.padT);cl.setAttribute('y2',g.H-g.padB);
+      cc.setAttribute('cx',px.toFixed(1));cc.setAttribute('cy',py.toFixed(1));
+      cross.style.display='block';
+    }
+    tip.innerHTML='RM1 = \u20A9'+p.v.toFixed(2)+'<small>'+fmtFull(p.d)+'</small>';
+    tip.style.display='block';
+    var sx=rect.width/g.W,sy=rect.height/g.H;
+    tip.style.left=Math.min(rect.width-84,Math.max(84,px*sx))+'px';
+    tip.style.top=(py*sy)+'px';
+  }
+  function hide(){
+    var cross=$('#rc-cross');if(cross)cross.style.display='none';
+    tip.style.display='none';
+  }
+  svg.addEventListener('mousemove',show);
+  svg.addEventListener('mouseleave',hide);
+  svg.addEventListener('touchstart',show,{passive:true});
+  svg.addEventListener('touchmove',show,{passive:true});
+  svg.addEventListener('touchend',hide);
+}
+var RANGE_LABEL={7:'1 minggu',30:'1 bulan',92:'3 bulan',182:'6 bulan',365:'1 tahun'};
+function fxSeries(days){
+  if(fxCache[days])return fxCache[days];
+  var end=new Date(),start=new Date();start.setDate(end.getDate()-days-3);
+  var url='https://api.frankfurter.dev/v1/'+iso(start)+'..'+iso(end)+'?base=MYR&symbols=KRW';
+  var pr=fetch(url).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){
+    var rates=(d&&d.rates)||{},dates=Object.keys(rates).sort();
+    var pts=[];dates.forEach(function(dt){var v=rates[dt]&&rates[dt].KRW;if(v>0)pts.push({d:dt,v:v});});
+    if(!pts.length)throw new Error('empty');
+    return pts;
+  });
+  pr.catch(function(){delete fxCache[days];});
+  fxCache[days]=pr;
+  return pr;
+}
+function loadRange(days){
+  fxSeries(days).then(function(pts){
+    renderGraph(pts);
+    applyRate(pts[pts.length-1].v);
+    var dateEl=$('#rc-date');if(dateEl)dateEl.textContent=fmtDate(pts[pts.length-1].d);
+    setupConverter();
+    var mid=$('#rc-mid');if(mid)mid.textContent=RANGE_LABEL[days]+' · setiap titik = 1 hari kadar (ECB)';
+  }).catch(function(){
+    if(!fxLastPts){applyRate(RATE);setupConverter();var dateEl=$('#rc-date');if(dateEl)dateEl.textContent='terputung · anggaran';}
+    var mid=$('#rc-mid');if(mid)mid.textContent='terputung · data julat ini tidak tersedia';
+  });
+}
+function bindRanges(){
+  var wrap=$('#rc-ranges');
+  if(!wrap||wrap._bound)return;
+  wrap._bound=1;
+  wrap.addEventListener('click',function(ev){
+    var b=ev.target.closest('button[data-days]');if(!b)return;
+    Array.prototype.forEach.call(wrap.querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);});
+    loadRange(parseInt(b.getAttribute('data-days'),10));
+  });
 }
 function setupConverter(){
   var rm=$('#rc-rm'),krw=$('#rc-krw'),note=$('#rc-note');
   function fromRM(){var r=parseFloat(rm.value);if(isNaN(r)||r<0)r=0;krw.value=Math.round(r*RATE);}
   function fromKRW(){var k=parseFloat(String(krw.value).replace(/[^0-9.]/g,''));if(isNaN(k)||k<0)k=0;rm.value=(k/RATE).toFixed(2);}
-  if(rm)rm.addEventListener('input',fromRM);
-  if(krw)krw.addEventListener('input',fromKRW);
+  if(!rm._bound){rm._bound=1;rm.addEventListener('input',fromRM);krw.addEventListener('input',fromKRW);}
   fromRM();
   if(note)note.innerHTML='Kadar kini: <b>1 RM = ₩'+RATE.toFixed(2)+'</b> · <b>1,000 ₩ = RM'+(1000/RATE).toFixed(2)+'</b>';
 }
@@ -123,25 +205,11 @@ function applyRate(v){
   var big=$('#rc-big');if(big)big.textContent='₩'+v.toFixed(2);
   if(typeof window.__setLiveRate==='function'){try{window.__setLiveRate(v);}catch(e){}}
 }
-function loadFx(){
-  if(!window.fetch)return;
-  var end=new Date(),start=new Date();start.setDate(end.getDate()-92);
-  var url='https://api.frankfurter.dev/v1/'+iso(start)+'..'+iso(end)+'?base=MYR&symbols=KRW';
-  fetch(url).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){
-    var rates=(d&&d.rates)||{},dates=Object.keys(rates).sort();
-    var pts=[];dates.forEach(function(dt){var v=rates[dt]&&rates[dt].KRW;if(v>0)pts.push({d:dt,v:v});});
-    if(!pts.length)return;
-    if(pts.length>70)pts=pts.slice(pts.length-70);
-    renderGraph(pts);
-    applyRate(pts[pts.length-1].v);
-    var dateEl=$('#rc-date');if(dateEl)dateEl.textContent=fmtDate(pts[pts.length-1].d);
-    setupConverter();
-  }).catch(function(){
-    applyRate(RATE);setupConverter();
-    var dateEl=$('#rc-date');if(dateEl)dateEl.textContent='terputung · anggaran';
-  });
-}
+var rzT;
+window.addEventListener('resize',function(){clearTimeout(rzT);rzT=setTimeout(function(){if(fxLastPts)renderGraph(fxLastPts);},200);});
 
 loadWeather();
-loadFx();
+bindHover();
+bindRanges();
+loadRange(92);
 })();
