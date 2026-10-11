@@ -107,7 +107,7 @@ function paintUser(){
   unameEl.textContent=user.name;
   umailEl.textContent=user.email||'';
   if(user.photo){
-    avaEl.innerHTML='<img src="'+user.photo+'" alt="">';
+    avaEl.innerHTML='<img src="'+esc(user.photo)+'" alt="">';
   }else{
     avaEl.textContent=initials(user.name);
     var g=['linear-gradient(135deg,#CD2E3A,#8e1f28)','linear-gradient(135deg,#0047A0,#2e6fd8)','linear-gradient(135deg,#c9a45c,#8a6d2f)','linear-gradient(135deg,#5b8def,#0047A0)','linear-gradient(135deg,#3d7a4f,#6b9c5a)','linear-gradient(135deg,#7a3dd1,#4a2a8e)'];

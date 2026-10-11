@@ -617,6 +617,34 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
 .km-del:hover{color:var(--red);background:rgba(205,46,58,.08)}
 .km-text{margin-top:5px;font-size:13.5px;line-height:1.7;color:#3c3c3c;word-break:break-word}
 .km-empty{border:1px dashed var(--line);border-radius:var(--radius-sm);padding:28px 20px;text-align:center;color:var(--muted);font-size:13px}
+.km-hint.km-ok{background:rgba(11,122,82,.08);border-color:rgba(11,122,82,.35);color:#0b7a52}
+.km-replyrow{display:flex;align-items:center;gap:8px;margin:8px 0 0;padding:8px 12px;background:var(--bg-soft);border-radius:10px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.km-replyrow b{color:var(--ink)}
+.km-replyrow button{margin-left:auto;border:none;background:none;color:var(--muted);font-weight:800;cursor:pointer;font-size:13px;padding:2px 6px;border-radius:6px;transition:.25s}
+.km-replyrow button:hover{color:var(--red);background:rgba(205,46,58,.1)}
+.km-replytag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:var(--blue);background:rgba(0,71,160,.08);padding:2px 9px;border-radius:999px}
+.km-acts{display:flex;align-items:center;gap:8px;margin-top:9px}
+.km-acts button{border:1px solid var(--line);background:none;border-radius:999px;padding:5px 13px;font:inherit;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.25s var(--ease)}
+.km-acts button:hover{border-color:var(--ink);color:var(--ink)}
+.km-like i{font-style:normal;font-weight:800}
+.km-like.on{color:var(--red);border-color:rgba(205,46,58,.45);background:rgba(205,46,58,.07)}
+.km-like.on:hover{color:var(--red);border-color:var(--red)}
+.km-acts .done{color:#0b7a52;border-color:rgba(11,122,82,.45);background:rgba(11,122,82,.07)}
+.km-is-reply{margin-left:26px;border-left:3px solid rgba(0,71,160,.25)}
+.km-item.flash{animation:kmItemFlash 2.2s var(--ease)}
+@keyframes kmItemFlash{0%,55%{box-shadow:0 0 0 3px rgba(201,164,92,.55)}100%{box-shadow:none}}
+.km-board{background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px 20px;margin-top:18px}
+.km-board h4{font-size:13px;letter-spacing:.04em;margin-bottom:12px}
+.km-board h4 small{font-weight:600;color:var(--muted);font-size:10.5px;margin-left:6px}
+.km-board ol{list-style:none;display:flex;flex-direction:column;gap:9px}
+.km-board li{display:flex;align-items:center;gap:10px;font-size:13px}
+.km-board li b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.km-rank{width:20px;height:20px;border-radius:50%;background:var(--bg-soft);color:var(--muted);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.km-board li:first-child .km-rank{background:var(--red);color:#fff}
+.km-board li:nth-child(2) .km-rank{background:var(--blue);color:#fff}
+.km-ava.km-ava-xs{width:26px;height:26px;font-size:11px;flex:none}
+.km-bscore{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted)}
+@media (max-width:640px){.km-is-reply{margin-left:10px}}
 @media (max-width:1150px){.main-nav a{padding:9px 9px}.main-nav{gap:0}}
 @media (max-width:900px){.km-grid{grid-template-columns:1fr}.km-auth-card{position:static}}
 
@@ -1633,8 +1661,10 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
           Log masuk dahulu untuk menulis komen.
         </p>
+        <p class="km-hint km-ok" id="km-replynote" hidden></p>
         <form class="km-compose" id="km-compose">
           <textarea id="km-text" rows="3" maxlength="600" placeholder="Kongsi pengalaman anda…"></textarea>
+          <div class="km-replyrow" id="km-replyrow" hidden>↩ Mem balas <b id="km-replyname"></b><button type="button" id="km-replycancel" aria-label="Batal membalas">✕</button></div>
           <div class="km-compose-foot">
             <span id="km-chars">0 / 600</span>
             <button class="km-send" id="km-send" type="submit" disabled>Hantar komen</button>
@@ -1642,6 +1672,10 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
         </form>
         <div class="km-head"><h3>Komen terkini</h3><span id="km-count"></span></div>
         <div id="km-list" aria-live="polite"></div>
+        <div class="km-board" id="km-board" hidden>
+          <h4>Paling aktif <small>50 komen terkini</small></h4>
+          <ol id="km-board-list"></ol>
+        </div>
       </div>
     </div>
   </div>

@@ -98,7 +98,8 @@ Kemudian buka <http://localhost:8000>.
 ## Data yang disimpan
 
 - **Firebase mode:** koleksi dalam Firestore
-  - `comments` → `{ uid, name, photo, text, createdAt }` — kemas kini masa nyata (tanpa muat semula).
+  - `comments` → `{ uid, name, photo, text, replyTo, replyName, createdAt }` — kemas kini masa nyata (tanpa muat semula). `replyTo`/`replyName` kosong (`''`) untuk komen biasa; diisi ID & nama asal apabila membalas.
+  - `likes` → `{ commentId, uid, createdAt }` — satu dokumen setiap tanda suka; ID dokumen mestilah `<commentId>_<uid>` supaya seorang ahli hanya boleh suka sekali (dan boleh batal).
   - `users` → profil awam setiap akaun: `{ uid, name, photo, about, createdAt }` — dicipta automatik semasa daftar/masuk; `about` (max 500 aksara) boleh disunting pemilik dalam halaman profil. Emel tidak disimpan di sini (privasi — dokumen ini boleh dibaca umum).
   - `follows` → `{ follower, following }` — ID dokumen `pengikut_diikuti`; untuk kiraan Pengikut/Mengikut.
   - `friendRequests` → `{ from, to, status }` — ID `penghantar_penerima`; status `pending` / `accepted`.
