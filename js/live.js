@@ -11,11 +11,11 @@ var ICON={
   rain:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14h9a3.5 3.5 0 0 0 .6-6.94A5 5 0 0 0 7.3 6.1 4.2 4.2 0 0 0 7 14z" fill="#dfe7f5"/><path d="M8.5 16.5l-1 3.2M12.5 16.5l-1 3.2M16.5 16.5l-1 3.2" stroke="#bcd3ff" stroke-width="2" stroke-linecap="round" fill="none"/></svg>',
   snow:'<svg viewBox="0 0 24 24" aria-hidden="true"><g stroke="#bfe0ff" stroke-width="2" stroke-linecap="round" fill="none"><path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9"/></g></svg>',
   fog:'<svg viewBox="0 0 24 24" aria-hidden="true"><g stroke="#dfe7f5" stroke-width="2" stroke-linecap="round" fill="none"><path d="M4 10h16M4 14h16M7 18h11M6 6h12"/></g></svg>',
-  bolt:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6z" fill="#ffd166"/></svg>'
+  bolt:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6z" fill="#ffd166"/></svg>',
+  moon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="#cdd9f2"/></svg>'
 };
 function wmo(c){
-  if(c===0)return['Cerah','sun'];
-  if(c===1)return['Cerai Berawan','sun'];
+  if(c===0||c===1)return['Cerah','sun'];
   if(c===2)return['Berawan Separa','cloud'];
   if(c===3)return['Berawan','cloud'];
   if(c===45||c===48)return['Berkabus','fog'];
@@ -35,20 +35,23 @@ function loadWeather(){
     var lat=card.getAttribute('data-lat'),lon=card.getAttribute('data-lon');
     var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
       +'&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code'
-      +'&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=1'
+      +'&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&forecast_days=1'
       +'&timezone=Asia%2FSeoul';
     fetch(url).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){
       var cur=d&&d.current;if(!cur)return;
       var m=wmo(cur.weather_code);
       var dy=d.daily||{},one=function(k,i){return Array.isArray(dy[k])?dy[k][i]:null;};
       var tmin=one('temperature_2m_min',0),tmax=one('temperature_2m_max',0),rainp=one('precipitation_probability_max',0);
+      var sunrise=one('sunrise',0),sunset=one('sunset',0);
+      var night=!!(sunrise&&sunset&&cur.time&&(cur.time<sunrise||cur.time>sunset));
+      if(night&&m[1]==='sun')m=['Cerah','moon'];
       var extra=[];
       if(cur.apparent_temperature!=null)extra.push('rasa '+Math.round(cur.apparent_temperature)+'°');
-      if(tmin!=null&&tmax!=null)extra.push('↕'+Math.round(tmin)+'–'+Math.round(tmax)+'°');
+      if(tmax!=null&&tmin!=null)extra.push('☀ siang '+Math.round(tmax)+'° · ☾ malam '+Math.round(tmin)+'°');
       if(cur.relative_humidity_2m!=null)extra.push('💧'+Math.round(cur.relative_humidity_2m)+'%');
       if(cur.wind_speed_10m!=null)extra.push('💨'+Math.round(cur.wind_speed_10m)+' km/j');
       if(rainp!=null)extra.push('☔'+Math.round(rainp)+'%');
-      chip.innerHTML=ICON[m[1]]+'<span>'+Math.round(cur.temperature_2m)+'°C · '+m[0]+'</span>'
+      chip.innerHTML=ICON[m[1]]+'<span>'+Math.round(cur.temperature_2m)+'°C · '+m[0]+(night?' (malam)':'')+'</span>'
         +(extra.length?'<span class="w-x">'+extra.join(' · ')+'</span>':'');
       chip.classList.add('upd');
       chip.title='Cuaca langsung (Open-Meteo) · '+cur.time.replace('T',' ');
