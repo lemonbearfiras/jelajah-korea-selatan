@@ -85,6 +85,15 @@ button{font-family:var(--font)}
 .about-edit:focus{outline:none;border-color:var(--blue)}
 .about-foot{display:flex;gap:10px;justify-content:flex-end;margin-top:12px;align-items:center}
 .about-chars{font-size:12px;color:var(--muted);margin-right:auto}
+.about-chars.ok{color:#0b7a52}
+.about-chars.bad{color:var(--red)}
+
+/* ---- tetapan profil ---- */
+.set-field{display:block;margin-bottom:16px}
+.set-field>span{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:.02em}
+.set-input{width:100%;border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:13px 14px;font:inherit;font-size:14.5px;background:var(--bg);color:var(--ink)}
+.set-input:focus{outline:none;border-color:var(--blue)}
+.set-hint{font-size:12px;color:var(--muted);margin-top:6px}
 
 /* ---- permintaan rakan ---- */
 .req-item{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px dashed var(--line)}
@@ -198,6 +207,24 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
           <button class="pill" id="about-cancel" type="button">Batal</button>
           <button class="pill solid" id="about-save" type="button">Simpan</button>
         </div>
+      </div>
+    </div>
+
+    <div class="blk" id="settings-blk" hidden>
+      <h2>Tetapan <span class="spacer"></span><span style="font-weight:600;color:var(--muted);font-size:12px">maklumat peribadi anda</span></h2>
+      <label class="set-field">
+        <span>Nama paparan</span>
+        <input class="set-input" id="set-name" maxlength="40" placeholder="cth. Nur Aisyah" autocomplete="name">
+      </label>
+      <label class="set-field">
+        <span>URL foto profil <span style="font-weight:500">(pilihan)</span></span>
+        <input class="set-input" id="set-photo" maxlength="500" placeholder="https://… — kosongkan untuk guna inisial" autocomplete="off">
+        <span class="set-hint">Guna pautan gambar langsung (contoh: URL foto Google/awam). Saiz sesuai segi empat.</span>
+      </label>
+      <div class="about-foot">
+        <span class="about-chars" id="set-note"></span>
+        <button class="pill" id="set-reset" type="button">Pulihkan</button>
+        <button class="pill solid" id="set-save" type="button">Simpan</button>
       </div>
     </div>
 
