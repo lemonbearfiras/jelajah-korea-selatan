@@ -181,6 +181,7 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
           <button class="pill solid" id="btn-follow" type="button">Ikut</button>
           <button class="pill" id="btn-friend" type="button">Tambah Rakan</button>
           <span class="pill own" id="own-chip" hidden>Ini profil anda</span>
+          <button class="pill" id="btn-settings" type="button" hidden>⚙ Tetapan</button>
           <div class="menu-wrap">
             <button class="pill dot" id="btn-menu" type="button" aria-label="Menu lain">⋮</button>
             <div class="menu" id="menu"></div>
@@ -207,24 +208,6 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
           <button class="pill" id="about-cancel" type="button">Batal</button>
           <button class="pill solid" id="about-save" type="button">Simpan</button>
         </div>
-      </div>
-    </div>
-
-    <div class="blk" id="settings-blk" hidden>
-      <h2>Tetapan <span class="spacer"></span><span style="font-weight:600;color:var(--muted);font-size:12px">maklumat peribadi anda</span></h2>
-      <label class="set-field">
-        <span>Nama paparan</span>
-        <input class="set-input" id="set-name" maxlength="40" placeholder="cth. Nur Aisyah" autocomplete="name">
-      </label>
-      <label class="set-field">
-        <span>URL foto profil <span style="font-weight:500">(pilihan)</span></span>
-        <input class="set-input" id="set-photo" maxlength="500" placeholder="https://… — kosongkan untuk guna inisial" autocomplete="off">
-        <span class="set-hint">Guna pautan gambar langsung (contoh: URL foto Google/awam). Saiz sesuai segi empat.</span>
-      </label>
-      <div class="about-foot">
-        <span class="about-chars" id="set-note"></span>
-        <button class="pill" id="set-reset" type="button">Pulihkan</button>
-        <button class="pill solid" id="set-save" type="button">Simpan</button>
       </div>
     </div>
 

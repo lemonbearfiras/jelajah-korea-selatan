@@ -236,45 +236,14 @@ function initAbout(){
 }
 
 /* ---------- tetapan profil sendiri ---------- */
-function initSettings(){
-  var blk=$('#settings-blk');
-  if(me!==uid){blk.hidden=true;return}
-  blk.hidden=false;
-  var nameIn=$('#set-name'),photoIn=$('#set-photo'),note=$('#set-note'),saveBtn=$('#set-save');
-  function fill(){
-    nameIn.value=(prof&&prof.name)||'';
-    photoIn.value=(prof&&prof.photo)||'';
-    note.textContent='';note.className='about-chars';
-  }
-  fill();
-  $('#set-reset').onclick=fill;
-  saveBtn.onclick=function(){
-    var n=nameIn.value.trim(),p=photoIn.value.trim();
-    if(n.length<2){note.textContent='Nama minima 2 huruf.';note.className='about-chars bad';return}
-    if(n.length>40){note.textContent='Nama terlalu panjang (maks 40).';note.className='about-chars bad';return}
-    if(p&&!/^https?:\/\/\S+$/i.test(p)){note.textContent='URL foto mesti bermula http:// atau https://';note.className='about-chars bad';return}
-    if(p.length>500){note.textContent='URL foto terlalu panjang (maks 500).';note.className='about-chars bad';return}
-    saveBtn.disabled=true;
-    note.textContent='Menyimpan…';note.className='about-chars';
-    db.collection('users').doc(me).set({uid:me,name:n,photo:p,about:(prof&&prof.about)||''},{merge:true}).then(function(){
-      prof.name=n;prof.photo=p;
-      paintAva($('#p-ava'),prof);
-      $('#p-name').textContent=n||'Ahli Komuniti';
-      return auth.currentUser?auth.currentUser.updateProfile({displayName:n,photoURL:p||null}):null;
-    }).then(function(){
-      note.textContent='✓ Perubahan disimpan.';note.className='about-chars ok';
-    }).catch(function(e){
-      note.textContent='Gagal menyimpan: '+(e.code||e.message);note.className='about-chars bad';
-    }).then(function(){saveBtn.disabled=false});
-  };
-}
+function settingsUrl(){return 'settings.html'}
 
 /* ---------- menu ⋮ ---------- */
 function initMenu(){
   var menu=$('#menu'),btn=$('#btn-menu');
   var items=[];
   if(me===uid){
-    items.push({t:'Tetapan profil',fn:function(){$('#settings-blk').scrollIntoView({behavior:'smooth',block:'center'});var n=$('#set-name');if(n)n.focus({preventScroll:true})}});
+    items.push({t:'Tetapan profil',fn:function(){location.href=settingsUrl()}});
     items.push({t:'Edit Tentang',fn:function(){var b=$('#btn-edit-about');if(!b.hidden)b.click()}});
   }
   items.push({t:'Salin Pautan Profil',fn:function(){
@@ -307,20 +276,20 @@ function logHint(){
 function paintCard(){
   paintAva($('#p-ava'),prof);
   $('#p-name').textContent=prof.name||'Ahli Komuniti';
-  $('#p-uid').textContent='id: '+uid;
+  $('#p-uid').textContent=(prof.username?'@'+prof.username+' · ':'')+'id: '+uid;
   var join=fmtDate(prof.createdAt);
   $('#st-member').textContent=join||'—';
   if(me===uid){
     $('#btn-follow').style.display='none';
     $('#btn-friend').style.display='none';
     $('#own-chip').hidden=false;
+    var sb=$('#btn-settings');sb.hidden=false;sb.onclick=function(){location.href=settingsUrl()};
   }else{
     paintFriendBtn();
     $('#btn-follow').onclick=function(){if(!me){needLogin();return}btnBusy($('#btn-follow'),toggleFollow)};
     paintFollowBtn();
   }
   initAbout();
-  initSettings();
   initMenu();
   logHint();
   loadStats();
@@ -343,9 +312,9 @@ Promise.all([
 
   if(snap.exists){
     var v=snap.data();
-    prof={name:v.name||'',photo:v.photo||'',about:v.about||'',createdAt:tsOf(v.createdAt)};
+    prof={name:v.name||'',photo:v.photo||'',about:v.about||'',username:v.username||'',createdAt:tsOf(v.createdAt)};
   }else if(items.length){
-    prof={name:items[0].name,photo:'',about:'',createdAt:null,fromComments:true};
+    prof={name:items[0].name,photo:'',about:'',username:'',createdAt:null,fromComments:true};
   }else{
     show('#st-404');return;
   }

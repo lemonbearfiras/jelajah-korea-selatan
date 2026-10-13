@@ -52,14 +52,15 @@ var FIREBASE_CONFIG = {
    tampal di tab Rules → klik **Publish**.
 
 > ⚠️ Peraturan versi ini menambah koleksi baharu: `follows`, `friendRequests`,
-> `friends`, `chats` dan medan `about` dalam `users`. Tanpa menerbitkannya,
+> `friends`, `chats`, serta medan `about` dan `username` (pilihan, ≤ 20 aksara)
+> dalam `users`. Tanpa menerbitkannya,
 > halaman profil masih loads (nama, komen, tarikh) tetapi kiraan Pengikut /
 > Mengikut / Rakan paparkan "—" dan butang Ikut / Tambah Rakan / Chat gagal.
 
 Maksud peraturan ringkas:
 
 - `comments` — sesiapa boleh baca; hanya ahli log masuk boleh tulis; padam milik sendiri.
-- `users` — profil awam (nama, foto, `about` ≤ 500 aksara, `createdAt`); hanya pemilik boleh ubah/padam. Emel tidak disimpan di sini.
+- `users` — profil awam (nama, foto, `about` ≤ 500 aksara, `username` ≤ 20 aksara, `createdAt`); hanya pemilik boleh ubah/padam. Emel tidak disimpan di sini. Boleh dikemas kini melalui halaman **settings.html** (butang ⚙ Tetapan pada profil sendiri).
 - `follows` — satu dokumen `ID = saya_dia`; siapa pun boleh baca kiraan; hanya pengikut boleh cipta/padam ikutan sendiri.
 - `friendRequests` — `ID = penghantar_penerima`; hanya dua orang terlibat boleh baca; penerima sahaja boleh terima (pending → accepted).
 - `friends` — `ID = dua uid tersusun a-z`; awam boleh baca (bukti persahabatan); hanya dicipta oleh penerima selepas permintaan diterima.
@@ -100,7 +101,7 @@ Kemudian buka <http://localhost:8000>.
 - **Firebase mode:** koleksi dalam Firestore
   - `comments` → `{ uid, name, photo, text, replyTo, replyName, createdAt }` — kemas kini masa nyata (tanpa muat semula). `replyTo`/`replyName` kosong (`''`) untuk komen biasa; diisi ID & nama asal apabila membalas.
   - `likes` → `{ commentId, uid, createdAt }` — satu dokumen setiap tanda suka; ID dokumen mestilah `<commentId>_<uid>` supaya seorang ahli hanya boleh suka sekali (dan boleh batal).
-  - `users` → profil awam setiap akaun: `{ uid, name, photo, about, createdAt }` — dicipta automatik semasa daftar/masuk; `about` (max 500 aksara) boleh disunting pemilik dalam halaman profil. Emel tidak disimpan di sini (privasi — dokumen ini boleh dibaca umum).
+  - `users` → profil awam setiap akaun: `{ uid, name, photo, about, username, createdAt }` — dicipta automatik semasa daftar/masuk; `about` (max 500 aksara) dan `username` (max 20 aksara) boleh disunting pemilik melalui butang **⚙ Tetapan** di halaman profil (halaman `settings.html`). Emel tidak disimpan di sini (privasi — dokumen ini boleh dibaca umum).
   - `follows` → `{ follower, following }` — ID dokumen `pengikut_diikuti`; untuk kiraan Pengikut/Mengikut.
   - `friendRequests` → `{ from, to, status }` — ID `penghantar_penerima`; status `pending` / `accepted`.
   - `friends` → `{ participants: [uidA, uidB] tersusun a-z, reqId }` — bukti persahabatan; ID = `uidA_uidB`.

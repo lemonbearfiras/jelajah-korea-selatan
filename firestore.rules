@@ -46,7 +46,10 @@ service cloud.firestore {
                     && request.resource.data.photo is string
                     && request.resource.data.photo.size() <= 500
                     && request.resource.data.about is string
-                    && request.resource.data.about.size() <= 500;
+                    && request.resource.data.about.size() <= 500
+                    && (!('username' in request.resource.data)
+                        || (request.resource.data.username is string
+                            && request.resource.data.username.size() <= 20));
     }
 
     /* satu dokumen setiap ikutan: ID = <pengikut>_<diikuti> */
