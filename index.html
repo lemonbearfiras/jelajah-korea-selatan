@@ -2628,19 +2628,37 @@ function dbReply(q){
     dbAns.innerHTML='<p class="dblead">'+lead+'</p>'+chips+
       '<p class="dbfoot">'+top.length+' suggestions from '+KOREA_DB.length+' places · click for full details.</p>';
   }
+  function showAi(clean){
+    dbAns.classList.remove('thinking');
+    dbAns.innerHTML='<p class="dblead">Jelajah AI</p><p>'+DB_ESC(clean)+'</p>'+(top.length?chips:'')+
+      '<p class="dbfoot">Generated live by AI · cross-checked against '+KOREA_DB.length+' places in the database.</p>';
+  }
+  /* Lapisan 1: Gemini melalui Firebase AI Logic (js/ai-logic.js). */
+  function viaGemini(){
+    if(!window.JelajahAI)return Promise.reject(new Error('AI Logic tidak dimuat'));
+    return window.JelajahAI.ask(DB_DEC(q)).then(function(t){
+      return typeof t==='string'&&t.trim().length>=3?t.trim():Promise.reject(new Error('jawapan pendek'));
+    });
+  }
+  /* Lapisan 2: Function sisi pelayan (kunci API tidak dilihat pelayar). */
+  function viaFunction(){
+    return fetch('/functions/v1/app?action=ask',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({q:DB_DEC(q)})})
+      .then(function(res){return res.ok?res.json():Promise.reject(new Error('http '+res.status));})
+      .then(function(data){
+        var clean=(data&&data.ok===true&&typeof data.answer==='string')?data.answer.replace(/\r?\n+/g,' ').replace(/\s+/g,' ').trim():'';
+        if(clean.length<3)return Promise.reject(new Error('jawapan kosong'));
+        return clean;
+      });
+  }
   dbAns.classList.add('show','thinking');
   dbAns.innerHTML='<p class="dblead">Jelajah AI is thinking</p>';
   var settled=false;
   var timer=setTimeout(function(){if(!settled){settled=true;localReply();}},22000);
-  fetch('/functions/v1/app?action=ask',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({q:DB_DEC(q)})})
-    .then(function(res){return res.ok?res.json():Promise.reject(new Error('http '+res.status));})
-    .then(function(data){
+  viaGemini()
+    .catch(function(){return viaFunction();})
+    .then(function(clean){
       if(settled)return;settled=true;clearTimeout(timer);
-      var clean=(data&&data.ok===true&&typeof data.answer==='string')?data.answer.replace(/\r?\n+/g,' ').replace(/\s+/g,' ').trim():'';
-      if(!clean||clean.length<3){localReply();return;}
-      dbAns.classList.remove('thinking');
-      dbAns.innerHTML='<p class="dblead">Jelajah AI</p><p>'+DB_ESC(clean)+'</p>'+(top.length?chips:'')+
-        '<p class="dbfoot">Generated live by AI · cross-checked against '+KOREA_DB.length+' places in the database.</p>';
+      showAi(clean);
     })
     .catch(function(){clearTimeout(timer);if(!settled){settled=true;localReply();}});
 }
@@ -2690,6 +2708,7 @@ document.addEventListener('keydown',function(e){
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="js/firebase-config.js"></script>
+<script type="module" src="js/ai-logic.js"></script>
 <script src="js/komuniti-auth.js"></script>
 <script src="js/komuniti-comments.js"></script>
 </body>

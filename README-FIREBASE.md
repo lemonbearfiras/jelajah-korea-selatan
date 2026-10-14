@@ -41,7 +41,7 @@ var FIREBASE_CONFIG = {
 
 > **Google sign-in note:** Google is only allowed from registered domains.
 > `file://` (opening index.html directly) is **not** allowed — use `localhost`
-> (Step 5). Email/password work both through `file://` and through localhost.
+> (Step 6). Email/password work both through `file://` and through localhost.
 
 ## Step 4 — Create the Firestore database + rules
 
@@ -67,7 +67,20 @@ What the rules mean in short:
 - `friends` — `ID = the two uids sorted a-z`; anyone can read (proof of friendship); created only by the recipient after the request is accepted.
 - `chats` — messages in `chats/<pairId>/messages`; only the two friends involved can read or send; text 1–1000 characters; you can delete only your own messages.
 
-## Step 5 — Open the site through localhost (recommended)
+## Step 5 — Enable the AI answers (Firebase AI Logic)
+
+"Ask Jelajah AI" calls Gemini through **Firebase AI Logic** straight from the browser (`js/ai-logic.js`), so it works on GitHub Pages too — no API key is ever put in the code. It uses the same project as Step 2.
+
+1. Open [the Firebase console](https://console.firebase.google.com) and pick **jelajah-korea**.
+2. In the left menu, under **Build**, click **Gemini AI** (it may be labelled *AI Logic* / *Vertex AI in Firebase*), then click **Get started** / **Enable**.
+3. Choose the **Gemini Developer API** free tier when it asks which backend to use. Confirmation appears after a minute or two; the site then answers for visitors immediately — nothing to publish again.
+4. If the console instead shows an error saying AI Logic works best with **App Check**, do this extra bit:
+   - Open [Google Cloud reCAPTCHA](https://www.google.com/recaptcha/admin/create), choose **reCAPTCHA v3**, add both domains — `lemonbearfiras.github.io` and your `*.qoder.website` host — and accept.
+   - Copy the **site key** it shows and paste it into `APP_CHECK_SITE_KEY` at the top of `js/ai-logic.js`. (The site key is public by design; the secret key is not needed by this site.)
+   - Back in the Firebase console → **App Check** → **Get started for Web** → register this web app with that site key → save.
+5. The free tier is rate-limited (roughly 10 requests/minute). When the limit is hit, the ask box automatically falls back to the Qoder Sites Function and then to the offline matching engine, so the button never breaks.
+
+## Step 6 — Open the site through localhost (recommended)
 
 For Google sign-in (and testing that most closely matches the real site):
 
@@ -96,6 +109,7 @@ Then open <http://localhost:8000>.
 | `js/firebase-config.js` | **You fill in** the project configuration here |
 | `js/komuniti-auth.js` | Sign up / sign in / Google / log out (two modes) |
 | `js/komuniti-comments.js` | Display, send & delete comments (Firestore / demo) |
+| `js/ai-logic.js` | Ask Jelajah AI → Gemini through Firebase AI Logic (ES modules, Step 5) |
 | `firestore.rules` | Firestore security rules (paste into the Console — Step 4) |
 | `destinations-korea.json` | Backup copy of the 68-place database |
 
@@ -104,7 +118,7 @@ Then open <http://localhost:8000>.
 - **Firebase mode:** collections in Firestore
   - `comments` → `{ uid, name, photo, text, replyTo, replyName, createdAt }` — real-time updates (no reload). `replyTo`/`replyName` are empty (`''`) for ordinary comments; filled with the original ID & name when replying.
   - `likes` → `{ commentId, uid, createdAt }` — one document per like; the document ID must be `<commentId>_<uid>` so a member can like only once (and can undo it).
-  - `users` → public profile of each account: `{ uid, name, photo, about, username, createdAt }` — created automatically during sign up/sign in; the **Username** field on the Sign up form is optional (max 20 characters: lowercase letters, numbers, `_`, `.`) and is saved here as `username`. `about`, `username` and the profile photo (uploaded file, stored as a `data:image/...` string, or an image link) can be edited later by the owner through the **⚙ Settings** button on the profile page (the `settings.html` page). Email is not stored here (privacy — this document is publicly readable).
+  - `users` → public profile of each account: `{ uid, name, photo, about, username, createdAt }` — created automatically during sign up/sign in; the **Username** field on the Sign up form is **required** (3–20 characters: lowercase letters, numbers, `_`, `.`) and is saved here as `username`. For Google sign-in a handle is derived from the email and can be changed in Settings. `about` and the profile photo (uploaded file, stored as a `data:image/...` string, or an image link) can be edited later by the owner through the **⚙ Settings** button on the profile page (the `settings.html` page). Email is not stored here (privacy — this document is publicly readable).
   - `follows` → `{ follower, following }` — document ID `follower_following`; used for the Follower/Following counts.
   - `friendRequests` → `{ from, to, status }` — ID `sender_receiver`; status `pending` / `accepted`.
   - `friends` → `{ participants: [uidA, uidB] sorted a-z, reqId }` — proof of friendship; ID = `uidA_uidB`.
