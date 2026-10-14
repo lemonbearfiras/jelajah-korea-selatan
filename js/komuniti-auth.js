@@ -237,6 +237,18 @@ function saveUserProfile(u){
 function setUser(u){
   user=u?{uid:u.uid,name:u.displayName||(u.email||'').split('@')[0],email:u.email||'',photo:u.photoURL||''}:null;
   paintUser();setNote();emit();
+  if(u&&fb)loadProfileDoc(u.uid);
+}
+var profileUid=null;
+function loadProfileDoc(uid){
+  profileUid=uid;
+  fb.collection('users').doc(uid).get().then(function(snap){
+    if(!snap.exists||!user||user.uid!==uid||profileUid!==uid)return;
+    var v=snap.data()||{};
+    if(v.name)user.name=v.name;
+    if(typeof v.photo==='string')user.photo=v.photo;
+    paintUser();emit();
+  }).catch(function(){});
 }
 function cfgReady(){
   if(typeof FIREBASE_CONFIG==='undefined')return false;

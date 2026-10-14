@@ -1,15 +1,17 @@
 /* ============================================================
    TETAPAN PROFIL — js/settings.js
    settings.html — hanya pemilik akaun (auth.currentUser).
-   Username, nama, foto (URL), tentang + maklumat akaun
-   bacaan sahaja. Simpan menulis dokumen users (merge) dan
-   segerakkan profil Auth (displayName / photoURL).
+   Username, nama, foto (muat naik fail / URL), tentang +
+   maklumat akaun bacaan sahaja. Simpan menulis dokumen users
+   (merge) — dokumen menjadi sumber foto untuk seluruh laman.
    ============================================================ */
 (function(){
 'use strict';
 var $=function(s){return document.querySelector(s)};
 var BM_M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var GRADS=['linear-gradient(135deg,#CD2E3A,#8e1f28)','linear-gradient(135deg,#0047A0,#2e6fd8)','linear-gradient(135deg,#c9a45c,#8a6d2f)','linear-gradient(135deg,#5b8def,#0047A0)','linear-gradient(135deg,#3d7a4f,#6b9c5a)','linear-gradient(135deg,#7a3dd1,#4a2a8e)'];
+var AVA_PX=160, AVA_MAX_CHARS=100000, AVA_MAX_BYTES=6*1024*1024;
+var PHOTO_RE=/^(https?:\/\/\S+|data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+)$/i;
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function show(id){
@@ -32,7 +34,7 @@ function gradFor(s){
   return GRADS[h%GRADS.length];
 }
 function paintAva(el,p){
-  if(p&&p.photo&&/^https?:\/\/\S+$/i.test(p.photo)){el.innerHTML='<img src="'+esc(p.photo)+'" alt="">';el.style.background='';}
+  if(p&&p.photo&&PHOTO_RE.test(p.photo)){el.innerHTML='<img src="'+esc(p.photo)+'" alt="">';el.style.background='';}
   else{el.textContent=initials(p&&p.name);el.style.background=gradFor(p&&p.name);}
 }
 
@@ -45,19 +47,100 @@ var db=firebase.firestore(), auth=firebase.auth();
 var me=null, prof=null;
 
 var nameIn=$('#s-name'), userIn=$('#s-username'), photoIn=$('#s-photo'),
-    aboutIn=$('#s-about'), noteEl=$('#save-note'), saveBtn=$('#btn-save'), avaEl=$('#s-ava');
+    aboutIn=$('#s-about'), noteEl=$('#save-note'), saveBtn=$('#btn-save'), avaEl=$('#s-ava'),
+    fileIn=$('#photo-file'), upState=$('#up-state');
 
 function note(msg,cls){noteEl.textContent=msg;noteEl.className='note'+(cls?' '+cls:'')}
 
+/* ---------- foto: nilai sebenar (data URL / URL) ---------- */
+var photoVal='';
+function isDataUrl(s){return /^data:image\//i.test(s||'')}
+function syncPhotoUI(){
+  photoIn.value=isDataUrl(photoVal)?'':photoVal;
+  if(!photoVal)upState.textContent='No photo — initials are used.';
+  else if(isDataUrl(photoVal))upState.textContent='✓ Uploaded photo ('+AVA_PX+' × '+AVA_PX+')';
+  else upState.textContent='✓ Using a linked image';
+  upState.className='up-state'+(photoVal?' ok':'');
+  previewAva();
+}
+function setPhoto(v){photoVal=String(v||'');syncPhotoUI()}
+
 /* ---------- pratonton avatar masa nyata ---------- */
 function previewAva(){
-  paintAva(avaEl,{name:nameIn.value.trim(),photo:photoIn.value.trim()});
+  paintAva(avaEl,{name:nameIn.value.trim(),photo:photoVal});
 }
 function bindPreview(){
-  [nameIn,photoIn].forEach(function(el){el.addEventListener('input',previewAva)});
+  nameIn.addEventListener('input',previewAva);
+  photoIn.addEventListener('input',function(){setPhoto(photoIn.value.trim())});
 }
 
-/* ---------- muat dokumen pengguna ---------- */
+/* ---------- muat naik fail: potong segi empat + kecilkan ---------- */
+function resizeImage(file){
+  return new Promise(function(resolve,reject){
+    if(!file){reject(new Error('empty'));return}
+    if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type||'')){reject(new Error('type'));return}
+    if(file.size>AVA_MAX_BYTES){reject(new Error('big'));return}
+    var fr=new FileReader();
+    fr.onerror=function(){reject(new Error('read'))};
+    fr.onload=function(){
+      var img=new Image();
+      img.onerror=function(){reject(new Error('decode'))};
+      img.onload=function(){
+        var side=Math.min(img.width,img.height);
+        var sx=Math.round((img.width-side)/2), sy=Math.round((img.height-side)/2);
+        var cv=document.createElement('canvas');cv.width=AVA_PX;cv.height=AVA_PX;
+        var ctx=cv.getContext('2d');
+        ctx.fillStyle='#fff';ctx.fillRect(0,0,AVA_PX,AVA_PX);
+        ctx.imageSmoothingEnabled=true;
+        if('imageSmoothingQuality' in ctx)ctx.imageSmoothingQuality='high';
+        ctx.drawImage(img,sx,sy,side,side,0,0,AVA_PX,AVA_PX);
+        var out=cv.toDataURL('image/jpeg',.78);
+        if(out.length>AVA_MAX_CHARS){reject(new Error('too_big'));return}
+        resolve(out);
+      };
+      img.src=fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+var UP_ERR={
+  empty:'No file selected.',
+  type:'That file is not a JPG, PNG, WEBP or GIF image.',
+  big:'Image is too large (max 6 MB).',
+  too_big:'Image could not be compressed enough — try a smaller or simpler photo.',
+  read:'Could not read that file. Try again.',
+  decode:'Could not open that image. The file may be damaged.'
+};
+fileIn.addEventListener('change',function(){
+  var file=fileIn.files&&fileIn.files[0];
+  fileIn.value='';
+  if(!file)return;
+  note('Processing image…','');
+  resizeImage(file).then(function(dataUrl){
+    setPhoto(dataUrl);
+    note('✓ Photo ready — press "Save changes" to save it.','ok');
+  }).catch(function(e){
+    note(UP_ERR[e.message]||'Could not use that image.','bad');
+  });
+});
+function openPicker(){fileIn.click()}
+$('#btn-upload').addEventListener('click',openPicker);
+$('#ava-badge').addEventListener('click',openPicker);
+avaEl.addEventListener('click',openPicker);
+avaEl.addEventListener('keydown',function(ev){
+  if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openPicker()}
+});
+$('#s-photo-clear').addEventListener('click',function(){
+  setPhoto('');
+  note('Photo removed — press "Save changes" to save.','');
+  photoIn.focus();
+});
+$('#i-copy').addEventListener('click',function(){
+  var link=$('#i-link').textContent;
+  if(navigator.clipboard)navigator.clipboard.writeText(link).then(function(){note('✓ Profile link copied.','ok')});
+  else prompt('Copy this link:',link);
+});
+
 function loadDoc(){
   return db.collection('users').doc(me).get().then(function(snap){
     var v=snap.exists?snap.data():{};
@@ -65,7 +148,7 @@ function loadDoc(){
     prof={
       username:v.username||'',
       name:v.name||u.displayName||u.email.split('@')[0]||'',
-      photo:v.photo||u.photoURL||'',
+      photo:(typeof v.photo==='string'?v.photo:(u.photoURL||'')),
       about:v.about||'',
       createdAt:tsOf(v.createdAt)
     };
@@ -85,32 +168,14 @@ function loadDoc(){
 function fill(){
   userIn.value=prof.username;
   nameIn.value=prof.name;
-  photoIn.value=prof.photo;
   aboutIn.value=prof.about;
   $('#s-about-chars').textContent=prof.about.length+' / 500';
-  previewAva();
+  setPhoto(prof.photo);
   note('');
 }
 
 /* ---------- logik borang ---------- */
 aboutIn.addEventListener('input',function(){$('#s-about-chars').textContent=aboutIn.value.length+' / 500'});
-
-$('#ava-badge').addEventListener('click',function(){
-  photoIn.scrollIntoView({behavior:'smooth',block:'center'});
-  setTimeout(function(){photoIn.focus({preventScroll:true})},350);
-});
-avaEl.addEventListener('keydown',function(ev){
-  if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();$('#ava-badge').click()}
-});
-$('#s-photo-clear').addEventListener('click',function(){
-  photoIn.value='';previewAva();photoIn.focus();
-  note('Photo cleared — press "Save changes" to save.','');
-});
-$('#i-copy').addEventListener('click',function(){
-  var link=$('#i-link').textContent;
-  if(navigator.clipboard)navigator.clipboard.writeText(link).then(function(){note('✓ Profile link copied.','ok')});
-  else prompt('Copy this link:',link);
-});
 
 userIn.addEventListener('input',function(){
   var p=userIn.selectionStart;
@@ -119,11 +184,11 @@ userIn.addEventListener('input',function(){
 });
 
 function validate(){
-  var un=userIn.value.trim(), n=nameIn.value.trim(), p=photoIn.value.trim(), a=aboutIn.value.trim();
+  var un=userIn.value.trim(), n=nameIn.value.trim(), p=photoVal, a=aboutIn.value.trim();
   if(un&&!/^[a-z0-9._]{3,20}$/.test(un)){note('Username: 3–20 characters, lowercase letters, numbers, _ or . only.','bad');return null}
   if(n.length<2||n.length>40){note('Display name must be 2–40 characters.','bad');return null}
-  if(p&&!/^https?:\/\/\S+$/i.test(p)){note('Photo URL must start with http:// or https://','bad');return null}
-  if(p.length>500){note('Photo URL is too long (max 500).','bad');return null}
+  if(p&&!PHOTO_RE.test(p)){note('Photo must be an uploaded image or a link starting with http:// or https://','bad');return null}
+  if(p.length>AVA_MAX_CHARS){note('Photo is too large — upload a smaller image instead.','bad');return null}
   if(a.length>500){note('About is too long (max 500).','bad');return null}
   return {username:un,name:n,photo:p,about:a};
 }
@@ -137,9 +202,12 @@ saveBtn.addEventListener('click',function(){
   db.collection('users').doc(me).set(data,{merge:true}).then(function(){
     prof.username=data.username;prof.name=data.name;prof.photo=data.photo;prof.about=data.about;
     var u=auth.currentUser;
-    return u.updateProfile({displayName:data.name,photoURL:data.photo||null});
-  }).then(function(){
-    note('✓ Changes saved.','ok');
+    /* Firebase Auth hadla data URL panjang — foto muat naik hanya dalam dokumen */
+    return u.updateProfile({displayName:data.name,photoURL:isDataUrl(data.photo)?null:(data.photo||null)})
+      .then(function(){return null},function(pe){return pe});
+  }).then(function(authErr){
+    if(authErr)note('✓ Profile saved, but the photo could not be attached to your account ('+(authErr.code||authErr.message)+').','bad');
+    else note('✓ Changes saved.','ok');
   }).catch(function(e){
     var msg='Could not save: '+(e.code||e.message);
     if(e.code==='permission-denied'){
@@ -150,6 +218,7 @@ saveBtn.addEventListener('click',function(){
 });
 
 /* ---------- boot ---------- */
+bindPreview();
 var un=auth.onAuthStateChanged(function(u){
   un();
   if(!u){show('#st-auth');return}

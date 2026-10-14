@@ -54,7 +54,7 @@ button{font-family:var(--font)}
 .ava-stage{display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 0 4px}
 .ava-edit-wrap{position:relative;width:112px;height:112px;border-radius:50%}
 .ava-ring{width:112px;height:112px;border-radius:50%;padding:4px;background:conic-gradient(var(--red) 0 50%,var(--blue) 50% 100%)}
-.ava{width:100%;height:100%;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:34px;overflow:hidden}
+.ava{width:100%;height:100%;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:34px;overflow:hidden;cursor:pointer}
 .ava img{width:100%;height:100%;object-fit:cover;display:block}
 .ava-badge{position:absolute;right:-2px;bottom:-2px;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;border:3px solid #fff;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transform:scale(.7);transition:opacity .22s var(--ease),transform .22s var(--ease);box-shadow:0 4px 14px rgba(20,24,40,.22)}
 .ava-badge svg{width:18px;height:18px}
@@ -73,6 +73,15 @@ button{font-family:var(--font)}
 .set-row{display:flex;gap:8px;align-items:flex-start}
 .set-row .set-input{flex:1}
 .set-hint{font-size:12px;color:var(--muted);margin-top:6px}
+.up-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.up-state{font-size:12px;font-weight:600;color:var(--muted)}
+.up-state.ok{color:#0b7a52}
+.url-alt{margin-top:10px}
+.url-alt summary{font-size:12.5px;font-weight:700;color:var(--blue);cursor:pointer;list-style:none}
+.url-alt summary::-webkit-details-marker{display:none}
+.url-alt summary::before{content:'▸ ';font-weight:700}
+.url-alt[open] summary::before{content:'▾ '}
+.url-alt summary:hover{text-decoration:underline}
 .pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;padding:11px 20px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;transition:border-color .25s,background .25s;white-space:nowrap}
 .pill:hover{border-color:var(--ink)}
 .pill.solid{background:var(--ink);border-color:var(--ink);color:#fff}
@@ -147,7 +156,7 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
           </button>
         </div>
-        <p class="ava-hint">Hover your mouse over the circle to change the photo. Photos are linked via an image URL.</p>
+        <p class="ava-hint">Click the circle (or hover and press the edit button) to upload a new photo.</p>
       </div>
     </div>
 
@@ -163,12 +172,20 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
         <input class="set-input" id="s-name" maxlength="40" placeholder="e.g. Nur Aisyah" autocomplete="name">
       </label>
       <div class="set-field">
-        <span class="lbl" style="display:block;font-size:12px;font-weight:700;color:#333;margin-bottom:6px">Profile photo URL <i style="font-style:normal;color:var(--muted);font-weight:500">(optional)</i></span>
-        <div class="set-row">
-          <input class="set-input" id="s-photo" maxlength="500" placeholder="https://… — leave blank to use initials" autocomplete="off">
+        <span class="lbl" style="display:block;font-size:12px;font-weight:700;color:#333;margin-bottom:6px">Profile photo</span>
+        <div class="up-row">
+          <button class="pill mini" id="btn-upload" type="button">Upload photo</button>
           <button class="pill mini" id="s-photo-clear" type="button">Clear</button>
+          <span class="up-state" id="up-state">No photo — initials are used.</span>
         </div>
-        <span class="set-hint">Use a direct image link (e.g. a public photo URL). A square size works best.</span>
+        <input type="file" id="photo-file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+        <details class="url-alt">
+          <summary>Or use an image link</summary>
+          <div class="set-row" style="margin-top:8px">
+            <input class="set-input" id="s-photo" maxlength="500" placeholder="https://… — direct image link" autocomplete="off">
+          </div>
+        </details>
+        <span class="set-hint">JPG, PNG, WEBP or GIF up to 6 MB. Cropped to a square and resized automatically.</span>
       </div>
     </div>
 
