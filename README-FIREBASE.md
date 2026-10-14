@@ -23,12 +23,16 @@ but accounts & comments are stored only in your browser.
 var FIREBASE_CONFIG = {
   apiKey:            "AIzaSy... (from Firebase)",
   authDomain:        "jelajah-korea.firebaseapp.com",
+  databaseURL:       "https://jelajah-korea-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId:         "jelajah-korea",
-  storageBucket:     "jelajah-korea.appspot.com",
+  storageBucket:     "jelajah-korea.firebasestorage.app",
   messagingSenderId: "123456789012",
-  appId:             "1:123456789012:web:abc123"
+  appId:             "1:123456789012:web:abc123",
+  measurementId:     "G-XXXXXXXXXX"
 };
 ```
+
+> Extra fields are harmless: the site only ever talks to **Firestore**, **Authentication** and **AI Logic**. `databaseURL` (Realtime Database) and `measurementId` (Analytics) are kept so the block matches what the console shows — the Realtime Database is not used and its rules stay closed, so no data lives there.
 
 5. Save the file. As soon as the values are filled in, the site switches from Demo Mode to Firebase automatically.
 
