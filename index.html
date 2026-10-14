@@ -85,17 +85,13 @@ body.cursor-hover #cursor-ring{width:56px;height:56px;margin:-28px 0 0 -28px;bac
 }
 
 /* 6 — header, nav, search, mobile menu */
-#site-header{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);--hc:#fff;--pill:rgba(255,255,255,.18);color:var(--hc);transition:background .4s var(--ease),color .4s,box-shadow .4s,border-color .4s;border-bottom:1px solid transparent}
-#site-header.scrolled{--hc:var(--ink);--pill:var(--ink);background:rgba(250,249,246,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom-color:var(--line);box-shadow:0 8px 30px rgba(10,10,10,.06)}
+#site-header{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);--hc:#fff;color:var(--hc);transition:background .4s var(--ease),color .4s,box-shadow .4s,border-color .4s;border-bottom:1px solid transparent}
+#site-header.scrolled{--hc:var(--ink);background:rgba(250,249,246,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom-color:var(--line);box-shadow:0 8px 30px rgba(10,10,10,.06)}
 .nav-wrap{width:min(1280px,92%);margin:auto;height:100%;display:flex;align-items:center;justify-content:space-between;gap:18px}
 .logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:17px;letter-spacing:-.01em;white-space:nowrap}
 .logo-mark{width:26px;height:26px;border-radius:50%;flex:none;background:conic-gradient(from 210deg,var(--red),#e2564b 32%,var(--blue) 55%,#3a72c4 80%,var(--red));-webkit-mask:radial-gradient(circle,transparent 0 7px,#000 7.5px);mask:radial-gradient(circle,transparent 0 7px,#000 7.5px)}
 .logo em{font-style:normal;color:var(--red)}
 #site-header.scrolled .logo em{color:var(--red)}
-.main-nav{display:flex;gap:4px}
-.main-nav a{font-size:12.5px;font-weight:600;letter-spacing:.04em;padding:9px 13px;border-radius:999px;color:var(--hc);opacity:.85;transition:.25s}
-.main-nav a:hover{opacity:1}
-.main-nav a.active{background:var(--pill);color:#fff;opacity:1}
 .nav-actions{display:flex;align-items:center;gap:12px}
 #search-toggle{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--hc);transition:.25s}
 #search-toggle:hover{background:rgba(128,128,128,.18)}
@@ -108,7 +104,8 @@ body.cursor-hover #cursor-ring{width:56px;height:56px;margin:-28px 0 0 -28px;bac
 .nav-login .nl-ava{width:27px;height:27px;border-radius:50%;overflow:hidden;flex:none;display:flex;align-items:center;justify-content:center;background:var(--red);color:#fff;font-size:10.5px;font-weight:800;letter-spacing:.02em}
 .nav-login .nl-ava img{width:100%;height:100%;object-fit:cover;display:block}
 .nav-login svg{flex:none}
-#hamburger{display:none;width:40px;height:40px;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+#hamburger{width:40px;height:40px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:.25s}
+#hamburger:hover{background:rgba(128,128,128,.18)}
 #hamburger span{display:block;width:22px;height:2px;background:currentColor;border-radius:2px;transition:.35s var(--ease)}
 #hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 #hamburger.open span:nth-child(2){opacity:0}
@@ -668,7 +665,6 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
 .km-ava.km-ava-xs{width:26px;height:26px;font-size:11px;flex:none}
 .km-bscore{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;flex:none}
 @media (max-width:640px){.km-replies{padding-left:8px}}
-@media (max-width:1150px){.main-nav a{padding:9px 9px}.main-nav{gap:0}}
 @media (max-width:900px){.km-grid{grid-template-columns:1fr}.km-auth-card{position:static}}
 
 /* 19 — beautification pass */
@@ -805,8 +801,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
   .foot-grid{grid-template-columns:1fr 1fr}
 }
 @media (max-width:900px){
-  .main-nav,.nav-cta{display:none}
-  #hamburger{display:flex}
+  .nav-cta{display:none}
   .hero-inner{grid-template-columns:1fr;gap:34px}
   .glance{max-width:520px}
   .trad-gallery{grid-template-columns:repeat(3,1fr)}
@@ -910,17 +905,6 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       <span class="logo-mark" aria-hidden="true"></span>
       <span>Jelajah&nbsp;<em>Korea</em></span>
     </a>
-    <nav class="main-nav" aria-label="Main navigation">
-      <a href="#utama" class="active">Home</a>
-      <a href="#destinasi">Destinations</a>
-      <a href="#makanan">Food</a>
-      <a href="#budaya">Culture</a>
-      <a href="#tradisi">Traditions</a>
-      <a href="#rancang">Plan</a>
-      <a href="#tempat">Database</a>
-      <a href="#galeri">Gallery</a>
-      <a href="#komuniti">Community</a>
-    </nav>
     <div class="nav-actions">
       <button id="search-toggle" aria-label="Search" title="Search (Ctrl+K)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.8-4.8"/></svg>
@@ -930,7 +914,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
         <span class="nl-name">Log in</span>
       </a>
       <a href="#rancang" class="nav-cta" data-magnetic>Explore Korea <span>→</span></a>
-      <button id="hamburger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      <button id="hamburger" aria-label="Open menu" aria-expanded="false" title="Menu"><span></span><span></span><span></span></button>
     </div>
   </div>
 </header>
@@ -2036,17 +2020,6 @@ if(finePointer&&!reducedMotion){
     el.addEventListener('mouseleave',function(){el.style.transform=''});
   });
 }
-/* scroll-spy */
-var navLinks=$$('.main-nav a');
-var spySections=navLinks.map(function(a){return $(a.getAttribute('href'))}).filter(Boolean);
-if('IntersectionObserver' in window){
-  var spy=new IntersectionObserver(function(entries){
-    entries.forEach(function(en){
-      if(en.isIntersecting){navLinks.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+en.target.id)})}
-    });
-  },{rootMargin:'-40% 0px -55% 0px'});
-  spySections.forEach(function(s){spy.observe(s)});
-}
 /* mobile menu */
 function toggleMenu(force){
   var open=typeof force==='boolean'?force:!mobileMenu.classList.contains('open');
@@ -2058,9 +2031,6 @@ function toggleMenu(force){
 }
 hamburger.addEventListener('click',function(){toggleMenu()});
 $$('.mm-link',mobileMenu).forEach(function(a){a.addEventListener('click',function(){toggleMenu(false)})});
-var mqDesktop=window.matchMedia('(min-width: 901px)');
-function mqHandler(){if(mqDesktop.matches&&mobileMenu.classList.contains('open'))toggleMenu(false)}
-if(mqDesktop.addEventListener)mqDesktop.addEventListener('change',mqHandler);else mqDesktop.addListener(mqHandler);
 /* search */
 function searchQuery(){return searchInput.value.trim().toLowerCase()}
 function syncFoodEmpty(){
