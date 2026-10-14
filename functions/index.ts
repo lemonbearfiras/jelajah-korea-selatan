@@ -17,7 +17,7 @@ const AGENT_SYSTEM = 'You are "Jelajah AI", a South Korea travel assistant for M
 // Gemini (Secret GEMINI_API_KEY) answers first. The OpenAI-compatible gateway
 // (Secret A2AGENT_API_KEY) is the backup, then Qoder Cloud Agents.
 const GEMINI_ORIGIN = 'https://generativelanguage.googleapis.com';
-const GEMINI_MODEL = 'gemini-2.5-flash';
+const GEMINI_MODEL = 'gemini-3.8-flash';
 const GATEWAY_ORIGIN = 'https://api.a2agent.me';
 const PROVIDER_TIMEOUT_MS = 12000;
 const ASK_DEADLINE_MS = 20000;
@@ -92,7 +92,7 @@ function cleanAnswer(raw) {
 }
 
 function pickGeminiId(ids) {
-  const ranks = [/gemini-2\.5-flash/, /gemini.*flash/i, /gemini/i];
+  const ranks = [/gemini-3\.8-flash/, /gemini-3.*flash/i, /gemini.*flash/i, /gemini/i];
   for (let i = 0; i < ranks.length; i++) {
     const hit = ids.filter(function (id) { return ranks[i].test(id); }).sort();
     if (hit.length) return hit[0];
