@@ -2633,11 +2633,18 @@ function dbReply(q){
     dbAns.innerHTML='<p class="dblead">Jelajah AI</p><p>'+DB_ESC(clean)+'</p>'+(top.length?chips:'')+
       '<p class="dbfoot">Generated live by AI · cross-checked against '+KOREA_DB.length+' places in the database.</p>';
   }
-  /* Lapisan 1: Gemini melalui Firebase AI Logic (js/ai-logic.js). */
+  /* Lapisan 1: Gemini melalui Firebase AI Logic (js/ai-logic.js). SDK-nya cuba semula
+     sendiri bila kuota penuh, jadi lapisan ini diberi had 8s supaya lapisan 2 sempat menjawab. */
   function viaGemini(){
     if(!window.JelajahAI)return Promise.reject(new Error('AI Logic tidak dimuat'));
-    return window.JelajahAI.ask(DB_DEC(q)).then(function(t){
-      return typeof t==='string'&&t.trim().length>=3?t.trim():Promise.reject(new Error('jawapan pendek'));
+    return new Promise(function(resolve,reject){
+      var done=false;
+      var t=setTimeout(function(){if(done)return;done=true;reject(new Error('Gemini terlalu lama'));},8000);
+      window.JelajahAI.ask(DB_DEC(q)).then(function(text){
+        if(done)return;done=true;clearTimeout(t);
+        if(typeof text==='string'&&text.trim().length>=3)resolve(text.trim());
+        else reject(new Error('jawapan pendek'));
+      },function(e){if(done)return;done=true;clearTimeout(t);reject(e);});
     });
   }
   /* Lapisan 2: Function sisi pelayan (kunci API tidak dilihat pelayar). */

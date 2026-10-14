@@ -20,7 +20,9 @@ import { getAI, GoogleAIBackend, getGenerativeModel } from 'https://www.gstatic.
 /* Tampal kunci site reCAPTCHA v3 dari konsol Firebase di sini. */
 var APP_CHECK_SITE_KEY = '';
 
-var MODELS = ['gemini-3.8-flash', 'gemini-2.5-flash'];
+/* Gemini 2.5 dah tidak dibuka untuk projek baharu; alias latest sebagai penampan
+   kalau Google menamatkan nama model. Tier percuma = 20 permintaan/hari untuk projek ini. */
+var MODELS = ['gemini-3.8-flash', 'gemini-flash-latest'];
 
 var SYSTEM = 'You are "Jelajah AI", a South Korea travel assistant for Malaysian travellers. ' +
   'Answer in friendly, specific and concise English: maximum 4 sentences, no lists. ' +

@@ -78,7 +78,7 @@ What the rules mean in short:
    - Open [Google Cloud reCAPTCHA](https://www.google.com/recaptcha/admin/create), choose **reCAPTCHA v3**, add both domains — `lemonbearfiras.github.io` and your `*.qoder.website` host — and accept.
    - Copy the **site key** it shows and paste it into `APP_CHECK_SITE_KEY` at the top of `js/ai-logic.js`. (The site key is public by design; the secret key is not needed by this site.)
    - Back in the Firebase console → **App Check** → **Get started for Web** → register this web app with that site key → save.
-5. The free tier is rate-limited (roughly 10 requests/minute). When the limit is hit, the ask box automatically falls back to the Qoder Sites Function and then to the offline matching engine, so the button never breaks.
+5. **Free-tier limits.** Google's free tier for this project allows about **20 Gemini requests per day per model**, plus a per-minute cap, and the counter resets after roughly 12 hours of usage. `gemini-2.5-flash` (the name in older guides) is no longer open to new projects, so `js/ai-logic.js` asks for `gemini-3.8-flash` and falls back to the `gemini-flash-latest` alias. When the quota runs out the ask box does **not** break: it moves on to the Qoder Sites Function (your MiniMax gateway credit) and then to the offline matching engine. If you want more free quota for demo day, enable billing on the project — Google then charges per request instead of blocking at 20/day.
 
 ## Step 6 — Open the site through localhost (recommended)
 
