@@ -1,5 +1,5 @@
-// jelajah-ask — server-only bridge: browser -> this Function -> Qoder Cloud Agents.
-// QODER_PAT is read only inside the cloud client here; it never reaches the browser.
+// jelajah-ask — server-only bridge: browser -> this Function -> LLM gateway / Qoder Cloud Agents.
+// Secret values are read with Deno.env.get here only; they never reach the browser.
 import { createCloudAgentsClient, CloudAgentsError } from './cloud-agents.mjs';
 
 // Copied from sites.get_runtime_context cloudAgents.apiOrigin. Do not substitute.
@@ -13,13 +13,88 @@ const AGENT_SYSTEM = 'You are "Jelajah AI", a South Korea travel assistant for M
   'If a fact is uncertain, say it is an estimate. If the question is off-topic from South Korea or travel, ' +
   'ask the user to ask about South Korea only.';
 
+// OpenAI-compatible gateway for the owner's own API key (application Secret A2AGENT_API_KEY).
+const GATEWAY_ORIGIN = 'https://api.a2agent.me';
+const GATEWAY_KEY_ENV = 'A2AGENT_API_KEY';
+const GATEWAY_TIMEOUT_MS = 12000;
+const ASK_DEADLINE_MS = 20000;
+
 const client = createCloudAgentsClient({ origin: CLOUD_API_ORIGIN });
 
 let bindingCache = null;
 let ensureChain = Promise.resolve();
+let gatewayModelCache = null;
+let gatewayChain = Promise.resolve();
 
 function sleep(ms) {
   return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+
+function gatewayKey() {
+  const raw = Deno.env.get(GATEWAY_KEY_ENV) || '';
+  const key = raw.trim();
+  return key.length >= 8 ? key : '';
+}
+
+async function gatewayFetch(path, init, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(function () { controller.abort(); }, timeoutMs || GATEWAY_TIMEOUT_MS);
+  try {
+    const res = await fetch(GATEWAY_ORIGIN + path, Object.assign({ signal: controller.signal }, init));
+    if (!res.ok) throw new CloudAgentsError('ai_service_unavailable', 503, 'not_sent');
+    return await res.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function pickGatewayId(ids) {
+  if (ids.some(function (id) { return /minimax.?m3/i.test(id); })) {
+    return ids.filter(function (id) { return /minimax.?m3/i.test(id); })[0];
+  }
+  const minimax = ids.filter(function (id) { return /minimax/i.test(id); });
+  if (minimax.length) return minimax.sort()[0];
+  const deepseek = ids.filter(function (id) { return /deepseek|glm|kimi|qwen/i.test(id); });
+  if (deepseek.length) return deepseek.sort()[0];
+  return ids.sort()[0];
+}
+
+async function pickGatewayModel(key) {
+  if (gatewayModelCache) return gatewayModelCache;
+  const run = async function () {
+    if (gatewayModelCache) return gatewayModelCache;
+    const res = await gatewayFetch('/v1/models', { headers: { Authorization: 'Bearer ' + key } });
+    const rows = Array.isArray(res?.data) ? res.data : [];
+    const ids = rows.map(function (r) { return r && typeof r.id === 'string' ? r.id.trim() : ''; }).filter(Boolean);
+    if (!ids.length) throw new CloudAgentsError('ai_resource_not_found', 404, 'not_sent');
+    gatewayModelCache = pickGatewayId(ids);
+    return gatewayModelCache;
+  };
+  const result = gatewayChain.then(run, run);
+  gatewayChain = result.then(function () {}, function () {});
+  return result;
+}
+
+async function askViaGateway(key, question, deadline) {
+  const model = await pickGatewayModel(key);
+  const res = await gatewayFetch('/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + key },
+    body: JSON.stringify({
+      model,
+      messages: [{ role: 'system', content: AGENT_SYSTEM }, { role: 'user', content: question }],
+      max_tokens: 300,
+      temperature: 0.4,
+      stream: false,
+    }),
+  }, Math.max(2000, Math.min(GATEWAY_TIMEOUT_MS, deadline - Date.now())));
+  const choices = Array.isArray(res?.choices) ? res.choices : [];
+  const content = choices[0]?.message?.content;
+  const text = (typeof content === 'string' ? content : '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (text.length < 3) throw new CloudAgentsError('ai_response_invalid');
+  return text.slice(0, 1200);
 }
 
 async function pickModel() {
@@ -83,7 +158,7 @@ async function ensureBinding() {
   return result;
 }
 
-async function ask(question) {
+async function askViaCloud(question, deadline) {
   const binding = await ensureBinding();
   const session = await client.request('/api/v1/cloud/sessions', {
     method: 'POST',
@@ -101,7 +176,6 @@ async function ask(question) {
     method: 'POST',
     body: { events: [{ type: 'user.message', content: [{ type: 'text', text: question }] }] },
   });
-  const deadline = Date.now() + 20000;
   while (Date.now() < deadline) {
     await sleep(1200);
     const list = await client.request(
@@ -121,6 +195,18 @@ async function ask(question) {
     }
   }
   throw new CloudAgentsError('ai_service_unavailable', 503, 'unknown');
+}
+
+async function ask(question) {
+  const deadline = Date.now() + ASK_DEADLINE_MS;
+  const key = gatewayKey();
+  if (!key) return askViaCloud(question, deadline);
+  try {
+    return await askViaGateway(key, question, deadline);
+  } catch (gatewayError) {
+    if (Date.now() >= deadline - 3000) throw gatewayError;
+    return await askViaCloud(question, deadline);
+  }
 }
 
 function json(payload, status) {
