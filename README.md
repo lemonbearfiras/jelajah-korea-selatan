@@ -24,7 +24,7 @@ An interactive English-language website for planning a trip to South Korea — a
 - **Frontend:** plain HTML + CSS + JavaScript — no build step, no framework. All the main styles and scripts live in `index.html`; external scripts are in `js/`.
 - **Community backend:** Firebase (Auth + Firestore, compat SDK via CDN).
 - **Live data:** [Open-Meteo](https://open-meteo.com) (weather), [Frankfurter](https://api.frankfurter.dev) (ECB MYR→KRW rates).
-- **AI:** an OpenAI-compatible gateway (MiniMax / DeepSeek models) called from the Deno edge Function (`functions/index.ts`), with Qoder Cloud Agents as the automatic backup. The key is an application Secret (`A2AGENT_API_KEY`) read only inside the Function — no secrets in the browser, and never in this repository.
+- **AI:** Gemini (Google AI Studio) called from the Deno edge Function (`functions/index.ts`), with an OpenAI-compatible gateway (MiniMax/DeepSeek) and Qoder Cloud Agents as automatic backups. Keys are application Secrets read only inside the Function — no secrets in the browser, and never in this repository.
 - **Hosting:** GitHub Pages (static) + Qoder Sites (static + Function).
 
 ## Folder structure
@@ -67,16 +67,24 @@ An interactive English-language website for planning a trip to South Korea — a
 - **GitHub Pages:** push to `main` — Pages publishes from the repository root.
 - **Qoder Sites:** `dist/` + `functions/` are prepared and published through Qoder (edge Function runtime).
 
-## AI key (Qoder Sites only)
+## AI keys (Qoder Sites only)
 
 The browser never sees any key, and GitHub Pages has no Function to hold one — the Pages copy therefore always uses the local matching engine.
 
-1. Open the Qoder Sites portal for this site → **Settings** → **Secrets**.
-2. Add a Secret named exactly `A2AGENT_API_KEY` and paste your gateway key as its value. Save and wait until it shows as synchronised.
-3. Publish the site again. The Function then answers through the gateway (`https://api.a2agent.me/v1`, model discovered from `/v1/models`, MiniMax preferred).
-4. If the Secret is missing, has been revoked, or the gateway is unreachable, the Function falls back to Qoder Cloud Agents automatically.
+The Function tries its providers in this order and moves to the next one on any failure:
 
-Keep the key private: pasting it into a chat, the code, or the Git repository exposes it to everyone, and anyone who finds it can spend your quota.
+1. **Gemini** — Secret `GEMINI_API_KEY` (`https://generativelanguage.googleapis.com/v1beta`, model discovered from `/v1beta/models`, `gemini-2.5-flash` preferred).
+2. **Gateway** — Secret `A2AGENT_API_KEY` (`https://api.a2agent.me/v1`, model discovered from `/v1/models`, MiniMax preferred).
+3. **Qoder Cloud Agents** — the platform-managed `QODER_PAT`, no key for you to supply.
+
+To add or replace a key:
+
+1. Create the key at its source (Gemini: [AI Studio → Get API key](https://aistudio.google.com/apikey); the free tier is rate-limited, so a busy demo day can hit the limit).
+2. Open the Qoder Sites portal for this site → **Settings** → **Secrets**.
+3. Add the Secret with the exact name above, paste the value, save, and wait until it shows as synchronised.
+4. Publish the site again so the running Function sees it.
+
+Keep key values private: pasting one into a chat, the code, or this repository exposes it to everyone, and anyone who finds it can spend your quota.
 
 ## Data & credits
 

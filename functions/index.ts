@@ -1,4 +1,4 @@
-// jelajah-ask — server-only bridge: browser -> this Function -> LLM gateway / Qoder Cloud Agents.
+// jelajah-ask — server-only bridge: browser -> this Function -> Gemini / LLM gateway / Qoder Cloud Agents.
 // Secret values are read with Deno.env.get here only; they never reach the browser.
 import { createCloudAgentsClient, CloudAgentsError } from './cloud-agents.mjs';
 
@@ -13,16 +13,21 @@ const AGENT_SYSTEM = 'You are "Jelajah AI", a South Korea travel assistant for M
   'If a fact is uncertain, say it is an estimate. If the question is off-topic from South Korea or travel, ' +
   'ask the user to ask about South Korea only.';
 
-// OpenAI-compatible gateway for the owner's own API key (application Secret A2AGENT_API_KEY).
+// Owner-supplied keys, each read as an application Secret; neither ever leaves this Function.
+// Gemini (Secret GEMINI_API_KEY) answers first. The OpenAI-compatible gateway
+// (Secret A2AGENT_API_KEY) is the backup, then Qoder Cloud Agents.
+const GEMINI_ORIGIN = 'https://generativelanguage.googleapis.com';
+const GEMINI_MODEL = 'gemini-2.5-flash';
 const GATEWAY_ORIGIN = 'https://api.a2agent.me';
-const GATEWAY_KEY_ENV = 'A2AGENT_API_KEY';
-const GATEWAY_TIMEOUT_MS = 12000;
+const PROVIDER_TIMEOUT_MS = 12000;
 const ASK_DEADLINE_MS = 20000;
 
 const client = createCloudAgentsClient({ origin: CLOUD_API_ORIGIN });
 
 let bindingCache = null;
 let ensureChain = Promise.resolve();
+let geminiModelCache = '';
+let geminiChain = Promise.resolve();
 let gatewayModelCache = null;
 let gatewayChain = Promise.resolve();
 
@@ -30,17 +35,17 @@ function sleep(ms) {
   return new Promise(function (resolve) { setTimeout(resolve, ms); });
 }
 
-function gatewayKey() {
-  const raw = Deno.env.get(GATEWAY_KEY_ENV) || '';
+function secretKey(name) {
+  const raw = Deno.env.get(name) || '';
   const key = raw.trim();
   return key.length >= 8 ? key : '';
 }
 
-async function gatewayFetch(path, init, timeoutMs) {
+async function jsonFetch(origin, path, init, timeoutMs) {
   const controller = new AbortController();
-  const timer = setTimeout(function () { controller.abort(); }, timeoutMs || GATEWAY_TIMEOUT_MS);
+  const timer = setTimeout(function () { controller.abort(); }, timeoutMs || PROVIDER_TIMEOUT_MS);
   try {
-    const res = await fetch(GATEWAY_ORIGIN + path, Object.assign({ signal: controller.signal }, init));
+    const res = await fetch(origin + path, Object.assign({ signal: controller.signal }, init));
     if (!res.ok) throw new CloudAgentsError('ai_service_unavailable', 503, 'not_sent');
     return await res.json();
   } finally {
@@ -63,7 +68,7 @@ async function pickGatewayModel(key) {
   if (gatewayModelCache) return gatewayModelCache;
   const run = async function () {
     if (gatewayModelCache) return gatewayModelCache;
-    const res = await gatewayFetch('/v1/models', { headers: { Authorization: 'Bearer ' + key } });
+    const res = await jsonFetch(GATEWAY_ORIGIN, '/v1/models', { headers: { Authorization: 'Bearer ' + key } });
     const rows = Array.isArray(res?.data) ? res.data : [];
     const ids = rows.map(function (r) { return r && typeof r.id === 'string' ? r.id.trim() : ''; }).filter(Boolean);
     if (!ids.length) throw new CloudAgentsError('ai_resource_not_found', 404, 'not_sent');
@@ -86,9 +91,63 @@ function cleanAnswer(raw) {
     .trim();
 }
 
+function pickGeminiId(ids) {
+  const ranks = [/gemini-2\.5-flash/, /gemini.*flash/i, /gemini/i];
+  for (let i = 0; i < ranks.length; i++) {
+    const hit = ids.filter(function (id) { return ranks[i].test(id); }).sort();
+    if (hit.length) return hit[0];
+  }
+  return '';
+}
+
+async function pickGeminiModel(key) {
+  if (geminiModelCache) return geminiModelCache;
+  const run = async function () {
+    if (geminiModelCache) return geminiModelCache;
+    try {
+      const res = await jsonFetch(GEMINI_ORIGIN, '/v1beta/models', { headers: { 'x-goog-api-key': key } });
+      const rows = Array.isArray(res?.models) ? res.models : [];
+      const ids = rows
+        .filter(function (m) {
+          return m && typeof m.name === 'string' &&
+            Array.isArray(m.supportedGenerationMethods) &&
+            m.supportedGenerationMethods.indexOf('generateContent') >= 0;
+        })
+        .map(function (m) { return m.name.replace(/^models\//, ''); });
+      geminiModelCache = pickGeminiId(ids) || GEMINI_MODEL;
+    } catch (e) {
+      geminiModelCache = GEMINI_MODEL;
+    }
+    return geminiModelCache;
+  };
+  const result = geminiChain.then(run, run);
+  geminiChain = result.then(function () {}, function () {});
+  return result;
+}
+
+async function askViaGemini(key, question, deadline) {
+  const model = await pickGeminiModel(key);
+  const res = await jsonFetch(GEMINI_ORIGIN, '/v1beta/models/' + model + ':generateContent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: AGENT_SYSTEM }] },
+      contents: [{ role: 'user', parts: [{ text: question }] }],
+      generationConfig: { maxOutputTokens: 900, temperature: 0.4 },
+    }),
+  }, Math.max(2000, Math.min(PROVIDER_TIMEOUT_MS, deadline - Date.now())));
+  const parts = res?.candidates?.[0]?.content?.parts;
+  const text = cleanAnswer(Array.isArray(parts)
+    ? parts.filter(function (p) { return p && typeof p.text === 'string' && p.thought !== true; })
+        .map(function (p) { return p.text; }).join(' ')
+    : '');
+  if (text.length < 3) throw new CloudAgentsError('ai_response_invalid');
+  return text.slice(0, 1200);
+}
+
 async function askViaGateway(key, question, deadline) {
   const model = await pickGatewayModel(key);
-  const res = await gatewayFetch('/v1/chat/completions', {
+  const res = await jsonFetch(GATEWAY_ORIGIN, '/v1/chat/completions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + key },
     body: JSON.stringify({
@@ -98,7 +157,7 @@ async function askViaGateway(key, question, deadline) {
       temperature: 0.4,
       stream: false,
     }),
-  }, Math.max(2000, Math.min(GATEWAY_TIMEOUT_MS, deadline - Date.now())));
+  }, Math.max(2000, Math.min(PROVIDER_TIMEOUT_MS, deadline - Date.now())));
   const choices = Array.isArray(res?.choices) ? res.choices : [];
   const content = choices[0]?.message?.content;
   const text = cleanAnswer(typeof content === 'string' ? content : '');
@@ -208,14 +267,22 @@ async function askViaCloud(question, deadline) {
 
 async function ask(question) {
   const deadline = Date.now() + ASK_DEADLINE_MS;
-  const key = gatewayKey();
-  if (!key) return askViaCloud(question, deadline);
-  try {
-    return await askViaGateway(key, question, deadline);
-  } catch (gatewayError) {
-    if (Date.now() >= deadline - 3000) throw gatewayError;
-    return await askViaCloud(question, deadline);
+  const providers = [];
+  const geminiKey = secretKey('GEMINI_API_KEY');
+  const gatewayKey = secretKey('A2AGENT_API_KEY');
+  if (geminiKey) providers.push(function (d) { return askViaGemini(geminiKey, question, d); });
+  if (gatewayKey) providers.push(function (d) { return askViaGateway(gatewayKey, question, d); });
+  providers.push(function (d) { return askViaCloud(question, d); });
+  let lastError = null;
+  for (let i = 0; i < providers.length; i++) {
+    if (i > 0 && deadline - Date.now() < 4000) break;
+    try {
+      return await providers[i](deadline);
+    } catch (error) {
+      lastError = error;
+    }
   }
+  throw lastError || new CloudAgentsError('ai_service_unavailable', 503, 'unknown');
 }
 
 function json(payload, status) {
