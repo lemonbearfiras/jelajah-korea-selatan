@@ -75,6 +75,17 @@ async function pickGatewayModel(key) {
   return result;
 }
 
+// MiniMax streams its chain of thought inside <think>…</think>; only the text after it is the answer.
+const THINK_BLOCK = /<think\b[^>]*>[\s\S]*?<\/think>/gi;
+
+function cleanAnswer(raw) {
+  return String(raw)
+    .replace(THINK_BLOCK, ' ')
+    .replace(/<\/?think>/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 async function askViaGateway(key, question, deadline) {
   const model = await pickGatewayModel(key);
   const res = await gatewayFetch('/v1/chat/completions', {
@@ -83,16 +94,14 @@ async function askViaGateway(key, question, deadline) {
     body: JSON.stringify({
       model,
       messages: [{ role: 'system', content: AGENT_SYSTEM }, { role: 'user', content: question }],
-      max_tokens: 300,
+      max_tokens: 900,
       temperature: 0.4,
       stream: false,
     }),
   }, Math.max(2000, Math.min(GATEWAY_TIMEOUT_MS, deadline - Date.now())));
   const choices = Array.isArray(res?.choices) ? res.choices : [];
   const content = choices[0]?.message?.content;
-  const text = (typeof content === 'string' ? content : '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const text = cleanAnswer(typeof content === 'string' ? content : '');
   if (text.length < 3) throw new CloudAgentsError('ai_response_invalid');
   return text.slice(0, 1200);
 }
@@ -185,12 +194,12 @@ async function askViaCloud(question, deadline) {
     for (let i = events.length - 1; i >= 0; i--) {
       const ev = events[i];
       if (!ev || ev.type !== 'agent.message' || !Array.isArray(ev.content)) continue;
-      const text = ev.content
-        .filter(function (b) { return b && b.type === 'text' && typeof b.text === 'string'; })
-        .map(function (b) { return b.text; })
-        .join(' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+      const text = cleanAnswer(
+        ev.content
+          .filter(function (b) { return b && b.type === 'text' && typeof b.text === 'string'; })
+          .map(function (b) { return b.text; })
+          .join(' ')
+      );
       if (text.length >= 2) return text.slice(0, 1200);
     }
   }
