@@ -80,8 +80,9 @@ What the rules mean in short:
 3. Choose the **Gemini Developer API** free tier when it asks which backend to use. Confirmation appears after a minute or two; the site then answers for visitors immediately — nothing to publish again.
 4. If the console instead shows an error saying AI Logic works best with **App Check**, do this extra bit:
    - Open [Google Cloud reCAPTCHA](https://www.google.com/recaptcha/admin/create), choose **reCAPTCHA v3**, add both domains — `lemonbearfiras.github.io` and your `*.qoder.website` host — and accept.
-   - Copy the **site key** it shows and paste it into `APP_CHECK_SITE_KEY` at the top of `js/ai-logic.js`. (The site key is public by design; the secret key is not needed by this site.)
+   - Copy the **site key** it shows and paste it into `APP_CHECK_SITE_KEY` at the top of `js/firestore.js`. (The site key is public by design; the secret key is not needed by this site.)
    - Back in the Firebase console → **App Check** → **Get started for Web** → register this web app with that site key → save.
+   - `js/firestore.js` stays inert (`window.JelajahAppCheck.mode === 'off'`) while that constant is empty, so nothing breaks if you skip this step. For a quick test on your own machine only, you can instead set a Google **debug token** as `window.FIREBASE_APPCHECK_DEBUG_TOKEN` before the script loads.
 5. **Free-tier limits.** Google's free tier for this project allows about **20 Gemini requests per day per model**, plus a per-minute cap, and the counter resets after roughly 12 hours of usage. `gemini-2.5-flash` (the name in older guides) is no longer open to new projects, so `js/ai-logic.js` asks for `gemini-3.8-flash` and falls back to the `gemini-flash-latest` alias. When the quota runs out the ask box does **not** break: it moves on to the Qoder Sites Function (your MiniMax gateway credit) and then to the offline matching engine. If you want more free quota for demo day, enable billing on the project — Google then charges per request instead of blocking at 20/day.
 
 ## Step 6 — Open the site through localhost (recommended)
@@ -114,6 +115,7 @@ Then open <http://localhost:8000>.
 | `js/komuniti-auth.js` | Sign up / sign in / Google / log out (two modes) |
 | `js/komuniti-comments.js` | Display, send & delete comments (Firestore / demo) |
 | `js/ai-logic.js` | Ask Jelajah AI → Gemini through Firebase AI Logic (ES modules, Step 5) |
+| `js/firestore.js` | App Check bootstrap for the same Firebase app (reCAPTCHA v3 or debug token; inert when unconfigured) |
 | `firestore.rules` | Firestore security rules (paste into the Console — Step 4) |
 | `destinations-korea.json` | Backup copy of the 68-place database |
 

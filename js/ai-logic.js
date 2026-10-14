@@ -14,11 +14,7 @@
    reject dan index.html jatuh ke Function / enjin offline.
    ============================================================ */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js';
-import { initializeAppCheck, ReCaptchaV3Provider } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app-check.js';
 import { getAI, GoogleAIBackend, getGenerativeModel } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-ai.js';
-
-/* Tampal kunci site reCAPTCHA v3 dari konsol Firebase di sini. */
-var APP_CHECK_SITE_KEY = '';
 
 /* Gemini 2.5 dah tidak dibuka untuk projek baharu; alias latest sebagai penampan
    kalau Google menamatkan nama model. Tier percuma = 20 permintaan/hari untuk projek ini. */
@@ -41,24 +37,21 @@ function clean(raw) {
     .trim();
 }
 
+/* Aplikasi Firebase berasingan ('jelajah-ai') — firestore.js melekatkan App Check
+   pada aplikasi yang sama, jadi tiada aplikasi kedua dicipta. */
+var CFG = window.FIREBASE_CONFIG;
+var app = (CFG && CFG.apiKey && CFG.projectId) ? initializeApp(CFG, 'jelajah-ai') : null;
+
 /* Gemini melalui Firebase: satu instance AI untuk semua model. */
 var aiPromise = null;
 
 function buildAI() {
-  if (aiPromise) return aiPromise;
-  aiPromise = new Promise(function (resolve, reject) {
-    var cfg = window.FIREBASE_CONFIG;
-    if (!cfg || !cfg.apiKey || !cfg.projectId) { reject(new Error('tiada config Firebase')); return; }
-    var app = initializeApp(cfg, 'jelajah-ai');
-    if (APP_CHECK_SITE_KEY) {
-      initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider(APP_CHECK_SITE_KEY),
-        isTokenEnabled: true,
-        getHeadersAsync: function () { return {}; },
-      });
-    }
-    resolve(getAI(app, { backend: new GoogleAIBackend() }));
-  });
+  if (!aiPromise) {
+    aiPromise = new Promise(function (resolve, reject) {
+      if (!app) { reject(new Error('tiada config Firebase')); return; }
+      resolve(getAI(app, { backend: new GoogleAIBackend() }));
+    });
+  }
   return aiPromise;
 }
 
