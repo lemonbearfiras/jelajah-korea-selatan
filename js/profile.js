@@ -61,7 +61,7 @@ function btnBusy(b,fn){
   }).then(function(){b.disabled=false});
 }
 function needLogin(){
-  alert('Please log in first in the Community Space to use this feature.');
+  alert('Please log in to the Community Space first to use this feature.');
   location.href='index.html#komuniti';
 }
 
@@ -82,7 +82,7 @@ function paintFriendBtn(){
     return;
   }
   if(myReqId){
-    b.textContent='Request sent (cancel)';
+    b.textContent='Request sent — tap to cancel';
     b.className='pill';
     b.onclick=function(){btnBusy(b,cancelRequest)};
     return;
@@ -167,7 +167,7 @@ function loadRequests(){
     .then(function(snap){
       reqRows=snap.docs.map(function(d){return {id:d.id,from:d.data().from}});
       return renderRequests();
-    }).catch(function(){$('#req-list').innerHTML='<p class="req-empty">Could not be loaded yet — please deploy the new Firestore rules first (see README-FIREBASE.md).</p>'});
+    }).catch(function(){$('#req-list').innerHTML='<p class="req-empty">The requests could not be loaded yet — publish the latest Firestore rules first (see README-FIREBASE.md).</p>'});
 }
 function renderRequests(){
   var list=$('#req-list');
@@ -185,7 +185,7 @@ function renderRequests(){
         +(v.photo?'<img src="'+esc(v.photo)+'" alt="">':esc(initials(nm)))+'</span>'
         +'<span class="nm-wrap"><b class="nm">'+esc(nm)+'</b><span class="sub">Wants to be friends with you</span></span>'
         +'<button class="pill solid req-acc" type="button">Accept</button>'
-        +'<button class="pill req-del" type="button"> Decline</button>';
+        +'<button class="pill req-del" type="button">Decline</button>';
       list.appendChild(row);
       var accBtn=row.querySelector('.req-acc'), delBtn=row.querySelector('.req-del');
       accBtn.onclick=function(){btnBusy(accBtn,function(){return acceptReq(r.id,r.from)})};
@@ -320,7 +320,7 @@ Promise.all([
   }
 
   if(items.length){
-    $('#p-c-note').textContent='— '+items.length+' newest first';
+    $('#p-c-note').textContent='— '+items.length+' most recent first';
     $('#p-list').innerHTML=items.map(function(c){
       return '<div class="c-item"><time>'+(c.ts?fmtDate(c.ts):'just now')+'</time><p>'+esc(c.text)+'</p></div>';
     }).join('');

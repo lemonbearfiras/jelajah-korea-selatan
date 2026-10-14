@@ -185,11 +185,11 @@ userIn.addEventListener('input',function(){
 
 function validate(){
   var un=userIn.value.trim(), n=nameIn.value.trim(), p=photoVal, a=aboutIn.value.trim();
-  if(un&&!/^[a-z0-9._]{3,20}$/.test(un)){note('Username: 3–20 characters, lowercase letters, numbers, _ or . only.','bad');return null}
+  if(un&&!/^[a-z0-9._]{3,20}$/.test(un)){note('Username: 3–20 characters — lowercase letters, numbers, _ or . only.','bad');return null}
   if(n.length<2||n.length>40){note('Display name must be 2–40 characters.','bad');return null}
   if(p&&!PHOTO_RE.test(p)){note('Photo must be an uploaded image or a link starting with http:// or https://','bad');return null}
   if(p.length>AVA_MAX_CHARS){note('Photo is too large — upload a smaller image instead.','bad');return null}
-  if(a.length>500){note('About is too long (max 500).','bad');return null}
+  if(a.length>500){note('About is too long (max 500 characters).','bad');return null}
   return {username:un,name:n,photo:p,about:a};
 }
 
@@ -225,7 +225,7 @@ var un=auth.onAuthStateChanged(function(u){
   if((u.uid||'').indexOf('demo-')===0){show('#st-auth');return}
   me=u.uid;
   loadDoc().catch(function(e){
-    $('#err-msg').textContent='Error while loading the settings ('+(e.code||e.message)+').';
+    $('#err-msg').textContent='The settings could not be loaded ('+(e.code||e.message)+').';
     show('#st-err');
   });
 });

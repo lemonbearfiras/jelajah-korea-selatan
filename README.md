@@ -32,6 +32,7 @@ An interactive English-language website for planning a trip to South Korea — a
 ```
 ├── index.html            # Home page (all main CSS/JS + the destination database)
 ├── profile.html          # Public member profile page
+├── settings.html         # Profile settings for the signed-in member
 ├── chat.html             # Real-time chat between friends
 ├── js/
 │   ├── live.js           # Live weather + ECB rate chart + hover/tooltip
@@ -39,6 +40,7 @@ An interactive English-language website for planning a trip to South Korea — a
 │   ├── komuniti-auth.js  # Sign up/sign in/Google (Firebase Auth, offline demo mode)
 │   ├── komuniti-comments.js # Firestore comments
 │   ├── profile.js        # Profile, following/friends
+│   ├── settings.js       # Settings form + photo upload/resize
 │   └── chat.js           # Real-time chat
 ├── functions/
 │   ├── index.ts          # AI endpoint: /functions/v1/app?action=ask|health
@@ -51,13 +53,13 @@ An interactive English-language website for planning a trip to South Korea — a
 ## Running locally
 
 1. Clone or download this folder.
-2. Serve it as a static server, for example:
+2. Serve the folder with a static server, for example:
    ```bash
    npx serve .          # or
    python -m http.server 8000
    ```
 3. Open `http://localhost:8000`. Weather & rates work straight away (cloud APIs, no key).
-4. Community: if `js/firebase-config.js` has not been filled in yet, the site automatically uses **demo mode** (localStorage). For real Firebase, follow [README-FIREBASE.md](README-FIREBASE.md) and allow `localhost:8000` under *Authentication → Authorized domains*.
+4. Community: if `js/firebase-config.js` has not been filled in yet, the site automatically uses **Demo Mode** (localStorage). For real Firebase, follow [README-FIREBASE.md](README-FIREBASE.md). `localhost` is authorised by Firebase by default; for a hosted domain add it under *Authentication → Settings → Authorized domains*.
 5. The AI Functions are only active on Qoder Sites; when offline, "Ask Jelajah AI" uses the local matching engine.
 
 ## Publishing

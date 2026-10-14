@@ -82,7 +82,7 @@ function startChat(){
       var name=ov.name||'Friend';
       paintAva($('#c-ava'),{name:name,photo:ov.photo||''});
       $('#c-name').textContent=name;
-      document.title='Chat with '+name+' · Jelajah Korea';
+      document.title='Chat with '+name+' · Jelajah Korea Selatan';
       $('#lnk-profile').hidden=false;
       $('#lnk-profile').href='profile.html?v='+encodeURIComponent(other);
       $('#room').classList.add('show');

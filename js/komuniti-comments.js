@@ -40,10 +40,10 @@ function ago(ts){
   var s=Math.max(0,(Date.now()-ts)/1000);
   if(s<60)return 'just now';
   if(s<3600)return Math.floor(s/60)+' min ago';
-  if(s<86400)return Math.floor(s/3600)+' h ago';
+  if(s<86400)return Math.floor(s/3600)+' hr ago';
   var day=s/86400;
   if(day<2)return 'yesterday';
-  if(day<7)return Math.floor(day)+' d ago';
+  if(day<7)return Math.floor(day)+' days ago';
   var dt=new Date(ts);
   return dt.getDate()+' '+BM_M[dt.getMonth()]+' '+dt.getFullYear();
 }
@@ -154,7 +154,7 @@ function renderBoard(){
   rows=rows.slice(0,5);
   boardList.innerHTML=rows.map(function(r,i){
     return '<li><span class="km-rank">'+(i+1)+'</span>'+avaHTML(r,'km-ava-xs')+'<b>'+esc(r.name)+'</b>'+
-      '<span class="km-bscore">'+r.n+' comments · ♥ '+r.hearts+'</span></li>';
+      '<span class="km-bscore">'+r.n+(r.n===1?' comment · ':' comments · ')+'♥ '+r.hearts+'</span></li>';
   }).join('');
   boardEl.hidden=rows.length<2;
 }
@@ -171,7 +171,7 @@ function paintNote(){
   var nw=items.filter(function(c){return c.replyTo&&mine[c.replyTo]&&c.ts>seen}).length;
   if(!nw)return;
   noteEl.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>'+
-    '<b>'+nw+'</b> new replies to your comments.';
+    '<b>'+nw+'</b> new '+(nw===1?'reply':'replies')+' to '+(nw===1?'your comment':'your comments')+'.';
   noteEl.hidden=false;
   try{localStorage.setItem('km-seen-reply',String(Date.now()))}catch(e){}
 }
@@ -231,7 +231,7 @@ function fbLoad(){
     });
     refreshLikes();
   },function(err){
-    list.innerHTML='<div class="km-empty">Could not load comments ('+esc(err.code||'error')+'). All Firestore rules are in README-FIREBASE.md.</div>';
+    list.innerHTML='<div class="km-empty">The comments could not be loaded ('+esc(err.code||'error')+'). See the Firestore rules in README-FIREBASE.md.</div>';
   });
 }
 
@@ -305,7 +305,7 @@ compose.addEventListener('submit',function(ev){
       createdAt:firebase.firestore.FieldValue.serverTimestamp()
     }).then(clear).catch(function(err){
       sendBtn.disabled=false;
-      alert('Could not save comment ('+(err.code||'error')+'). All Firestore rules are in README-FIREBASE.md.');
+      alert('The comment could not be saved ('+(err.code||'error')+'). See the Firestore rules in README-FIREBASE.md.');
     });
   }
 });
@@ -333,7 +333,7 @@ function toggleLike(id){
     }).then(function(){
       likeInfo[id]={n:info.n+1,mine:true};render();
     }).catch(function(e){
-      alert('Could not like ('+(e.code||'error')+'). Publish the likes rules — README-FIREBASE.md.');
+      alert('The like could not be saved ('+(e.code||'error')+'). Publish the likes rules — README-FIREBASE.md.');
       refreshLikes();
     });
   }
@@ -404,7 +404,7 @@ list.addEventListener('click',function(ev){
     demoLoad();
   }else{
     KomAuth.db().collection('comments').doc(id2).delete().catch(function(e){
-      alert('Could not delete comment ('+(e.code||'error')+'). Check the Firestore rules — README-FIREBASE.md.');
+      alert('The comment could not be deleted ('+(e.code||'error')+'). Check the Firestore rules — README-FIREBASE.md.');
     });
   }
 });

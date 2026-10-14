@@ -38,7 +38,7 @@
       "sejarah"
     ],
     "fee": 1000,
-    "fn": "Free for students? check at the counter",
+    "fn": "Free for students? Check at the counter",
     "s": "May",
     "d": "The ancestral shrine of the Joseon Dynasty kings, listed by UNESCO, with the Jeongjeon hall — the longest wooden hall in the world. The Jongmyo Daeje ritual in May happens once a year with full royal protocol.",
     "t": "Some slots can only be entered together with a guided tour."
@@ -388,7 +388,7 @@
     "fee": 0,
     "fn": "",
     "s": "Year-round",
-    "d": "Korea’s largest seafood market, run generation after generation by the women of Jagalchi. Choose live fish on the lower floor and have it cooked in the upper-floor restaurants — fresh hwej (sashimi) straight from the tanks.",
+    "d": "Korea’s largest seafood market, run generation after generation by the women of Jagalchi. Choose live fish on the lower floor and have it cooked in the upper-floor restaurants — fresh hoe (sashimi) straight from the tanks.",
     "t": "Gentle haggling is part of the experience."
   },
   {
@@ -403,7 +403,7 @@
     "fee": 0,
     "fn": "",
     "s": "Year-round",
-    "d": "A street from the Busan international film festival that has become a snack hub: seeded hotteok (ssiat hotteok) and dwaeji gukbap pork soup are its champions. Handprints of filmmakers from around the world are set along the street.",
+    "d": "A street from the Busan international film festival that has become a snack hub: seeded hotteok (ssiat hotteok) and dwaeji gukbap pork soup are its specialities. Handprints of filmmakers from around the world are set along the street.",
     "t": "The long queue at the seeded hotteok moves fast — it is worth it."
   },
   {
@@ -444,7 +444,7 @@
       "bandar"
     ],
     "fee": 15000,
-    "fn": "±₩20,000 round trip · crystal cabin +",
+    "fn": "±₩20,000 round trip · crystal cabin extra",
     "s": "Year-round",
     "d": "A cable car that crosses the sea from Songdo Beach to Dongseom Island — one of the best aerial experiences in Busan. The glass-floored \"crystal\" cabins give an open view straight down onto the water.",
     "t": "The boardwalk on the island at the far end is worth exploring."
@@ -502,7 +502,7 @@
     "fee": 0,
     "fn": "Book the trail online",
     "s": "Apr–Jun · Sep–Oct",
-    "d": "The highest mountain in South Korea (1,947m) at the middle of the island — all of Jeju is in fact this volcano. The Baengnokdam summit crater and azalea forest make up the country’s best hiking routes.",
+    "d": "The highest mountain in South Korea (1,947m) in the middle of the island — all of Jeju is in fact this volcano. The Baengnokdam summit crater and azalea forest make up the country’s best hiking routes.",
     "t": "Book a Gwaneumsa trail slot early; bring a jacket — the weather changes fast."
   },
   {
@@ -517,8 +517,8 @@
     "fee": 5000,
     "fn": "Ferry round trip",
     "s": "Apr–Oct",
-    "d": "A small island shaped like a sleeping ox north-east of Jeju — 15 minutes by ferry from Seongsan. Coastal cycling routes, free-roaming cattle and peanut flavour are its identity.",
-    "t": "Udo peanut ice cream and peanut burger must be tried."
+    "d": "A small island shaped like a sleeping ox north-east of Jeju — 15 minutes by ferry from Seongsan. Coastal cycling routes, free-roaming cattle and peanut-flavoured snacks are its signature.",
+    "t": "Try the Udo peanut ice cream and peanut burger."
   },
   {
     "n": "Manjanggul Lava Tube",
@@ -631,7 +631,7 @@
     "fee": 3000,
     "fn": "",
     "s": "Year-round",
-    "d": "A park holding 23 royal Silla burial mounds that form green hill silhouettes in the middle of Gyeongju. The Cheonmachong tomb is opened so visitors can see a golden horse burial.",
+    "d": "A park holding 23 royal Silla burial mounds that form green hill silhouettes in the middle of Gyeongju. The Cheonmachong tomb is open to visitors, who can see a golden horse burial.",
     "t": "Rent a bicycle to explore the wider tomb trails."
   },
   {
@@ -689,7 +689,7 @@
     "fee": 0,
     "fn": "",
     "s": "Year-round",
-    "d": "Gyeongju’s young-flow street — old hanok shop-houses turned into artsy cafes, modern Korean restaurants and craft shops. Kkwabaegi donuts and ice cream are the must-eat snacks here.",
+    "d": "Gyeongju’s trendiest street — old hanok shop-houses turned into artsy cafes, modern Korean restaurants and craft shops. Kkwabaegi donuts and ice cream are the must-eat snacks here.",
     "t": "Liveliest on weekend afternoons; parking is difficult."
   },
   {
@@ -717,7 +717,7 @@
     "fee": 3000,
     "fn": "",
     "s": "Year-round",
-    "d": "A shrine keeping the portrait of Joseon founder King Taejo Yi Seong-gye — Jeonju is his ancestral hometown. Old pine courtyards and tiered gates frame a tranquil slice of history.",
+    "d": "A shrine holding the portrait of Joseon founder King Taejo Yi Seong-gye — Jeonju is his ancestral hometown. Old pine courtyards and tiered gates frame a tranquil slice of history.",
     "t": "The Jaman mural alley is right behind it."
   },
   {
@@ -745,7 +745,7 @@
     "fee": 0,
     "fn": "",
     "s": "Year-round",
-    "d": "Jeonju’s legendary choco pie shop and the compulsory souvenir of the city — soft layered pastry filled with marshmallow cream and coated in chocolate. The long queues mark a reputation built over decades.",
+    "d": "Jeonju’s legendary choco pie shop and the must-buy souvenir of the city — soft layered pastry filled with marshmallow cream and coated in chocolate. The long queues mark a reputation built over decades.",
     "t": "Buy a large box as a gift; they sell out quickly in the afternoon."
   },
   {
@@ -816,7 +816,7 @@
       "budaya"
     ],
     "fee": 25000,
-    "fn": "±",
+    "fn": "",
     "s": "Year-round",
     "d": "A Joseon village rebuilt authentically — regional houses, an old market, farmer dances, traditional weddings and boat races turned into permanent shows. It sits right next to Everland.",
     "t": "Check the show schedule at the entrance; winter brings a Festival of Lights."
@@ -830,7 +830,7 @@
       "alam"
     ],
     "fee": 9000,
-    "fn": "± · cable car +₩12,000",
+    "fn": "Cable car ±₩12,000 extra",
     "s": "Oct (autumn foliage)",
     "d": "The most famous national park in Korea — the granite Ulsanbawi peak, Sinheungsa Temple and the giant stone Buddha in its valley. Its autumn foliage is considered the most beautiful in the country.",
     "t": "Take the cable car to Gwongeumseong for a panorama without the climb."
@@ -860,7 +860,7 @@
       "alam"
     ],
     "fee": 30000,
-    "fn": "± · 2 riders",
+    "fn": "Price is per bike (2 riders)",
     "s": "Apr–Nov",
     "d": "Pedal a four-wheeled rail bike along a 4.5km old rail line through LED-lit tunnels and the Bukhan river valley. The return leg is on the regular train across the same valley.",
     "t": "Book a morning slot online; the LED tunnels are the highlight."
@@ -890,9 +890,9 @@
       "keluarga"
     ],
     "fee": 3000,
-    "fn": "± · feed grass ±₩1,000",
+    "fn": "Grass for feeding ±₩1,000",
     "s": "May–Oct",
-    "d": "A sheep farm on the Daegwallyeong highland where you feed the grass directly from your hand — the sheep follow visitors across the pasture. The cool air of the plateau lasts even in summer.",
+    "d": "A sheep farm on the Daegwallyeong highland where you feed grass directly from your hand — the sheep follow visitors across the pasture. The cool air of the plateau lasts even in summer.",
     "t": "Bring a jacket all year round; the slope path is gentle."
   },
   {
@@ -950,7 +950,7 @@
       "alam"
     ],
     "fee": 2000,
-    "fn": "± · skylift +",
+    "fn": "Skylift ticket extra",
     "s": "Oct–Nov",
     "d": "The largest reed wetland in Korea, home to thousands of migratory birds and fiddler crabs, with a 1.2km boardwalk facing the estuary. The National Garden next door adds attractions throughout the year.",
     "t": "Ride the skylift for the bay panorama; sunset is the highlight."
@@ -966,7 +966,7 @@
     "fee": 2000,
     "fn": "",
     "s": "Year-round",
-    "d": "A cooling green bamboo forest that can be walked through all year — boardwalks between the bamboo stalks make it one of the most photographed places in Jeolla. The metasequoia lane next door is famous in adverts and dramas.",
+    "d": "A cool green bamboo forest that can be walked through all year — boardwalks between the bamboo stalks make it one of the most photographed places in Jeolla. The metasequoia lane next door is famous in adverts and dramas.",
     "t": "Try the local bamboo dishes: daetongbap (rice cooked in a bamboo tube)."
   },
   {
@@ -980,7 +980,7 @@
     "fee": 0,
     "fn": "",
     "s": "Year-round",
-    "d": "Daejeon’s legendary bakery since 1956, the reason the city is known as a \"bread town\" — the queue of buyers never breaks all day. Fried soboro and cream bread are its signature icons.",
+    "d": "Daejeon’s legendary bakery since 1956, the reason the city is known as a \"bread town\" — the queue never dies down all day. Fried soboro and cream bread are its signature icons.",
     "t": "The Daejeon Station branch is the easiest to visit while travelling by KTX."
   }
 ]

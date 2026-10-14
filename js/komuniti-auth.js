@@ -49,11 +49,11 @@ function errMsg(code){
     'auth/wrong-password':'Wrong password.',
     'auth/invalid-credential':'Wrong email or password.',
     'auth/too-many-requests':'Too many attempts — try again in a few minutes.',
-    'auth/popup-closed-by-user':'The Google window was closed before sign-in finished.',
-    'auth/popup-blocked':'The browser blocked the popup — allow pop-ups and try again.',
+    'auth/popup-closed-by-user':'The Google window was closed before you finished logging in.',
+    'auth/popup-blocked':'The browser blocked the pop-up — allow pop-ups and try again.',
     'auth/unauthorized-domain':'This domain is not authorised in Firebase yet. Open the site via http://localhost:8000 (see README-FIREBASE.md).',
     'auth/network-request-failed':'Network problem — check your internet connection.',
-    'auth/operation-not-allowed':'This sign-in method is not enabled yet in the Firebase Console.'
+    'auth/operation-not-allowed':'This login method is not enabled yet in the Firebase Console.'
   };
   return m[code]||('Error: '+code);
 }
@@ -68,7 +68,7 @@ function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'
 function paintNav(){
   if(!navLogin)return;
   if(user){
-    var first=(user.name||'Akaun').trim().split(/\s+/)[0];
+    var first=(user.name||'Account').trim().split(/\s+/)[0];
     navLogin.classList.add('signed');
     if(mode==='firebase'){
       navLogin.href='https://lemonbearfiras.github.io/jelajah-korea-selatan/profile?v='+encodeURIComponent(user.uid);
@@ -79,7 +79,7 @@ function paintNav(){
       navLogin.href='#komuniti';
       navLogin.removeAttribute('target');
       navLogin.removeAttribute('rel');
-      navLogin.title='Hi, '+user.name+' — go to the Community space';
+      navLogin.title='Hi, '+user.name+' — go to the Community Space';
     }
     navLogin.innerHTML='<span class="nl-ava">'+(user.photo?'<img src="'+esc(user.photo)+'" alt="">':initials(user.name))+'</span><span class="nl-name">'+esc(first)+'</span>';
   }else{
@@ -87,7 +87,7 @@ function paintNav(){
     navLogin.href='#komuniti';
     navLogin.removeAttribute('target');
     navLogin.removeAttribute('rel');
-    navLogin.title='Log in / sign up';
+    navLogin.title='Log in or sign up';
     navLogin.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.2 4.9-6 8-6s6.5 1.8 8 6"/></svg><span class="nl-name">Log in</span>';
   }
 }
@@ -121,7 +121,7 @@ function setNote(){
   if(mode==='firebase'){
     noteEl.innerHTML='<b style="color:#0b7a52">✓ Connected to Firebase</b> — accounts &amp; comments are stored in the cloud, visible to every visitor.';
   }else{
-    noteEl.innerHTML='<b>Demo mode</b> — profiles &amp; comments are stored in this browser only. Connect your Firebase project (fill in <b>js/firebase-config.js</b>, guide in <b>README-FIREBASE.md</b>) for real comments.';
+    noteEl.innerHTML='<b>Demo Mode</b> — profiles &amp; comments are stored in this browser only. Connect your Firebase project (fill in <b>js/firebase-config.js</b>, guide in <b>README-FIREBASE.md</b>) for real comments.';
   }
 }
 
@@ -133,7 +133,7 @@ function setTab(t){
   fName.hidden=(mode==='demo')?false:(t==='in');
   fUser.hidden=(mode==='demo')||(t==='in');
   nameIn.required=(mode==='demo'||t==='up');
-  submitBtn.textContent=(mode==='demo')?'Enter as guest':((t==='in')?'Log in':'Create account');
+  submitBtn.textContent=(mode==='demo')?'Continue as guest':((t==='in')?'Log in':'Create account');
   passIn.setAttribute('autocomplete',t==='in'?'current-password':'new-password');
   hideErr();
 }

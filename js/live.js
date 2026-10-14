@@ -218,8 +218,8 @@ function loadRange(days){
     var mid=$('#rc-mid');
     if(mid)mid.textContent=RANGE_LABEL[days]+' · Mon–Fri ECB'+(liveNow?' + live point (now)':' · each point = 1 day (ECB)');
   }).catch(function(){
-    if(!fxLastPts){applyRate(RATE);setupConverter();var dateEl=$('#rc-date');if(dateEl)dateEl.textContent='disconnected · estimate';}
-    var mid=$('#rc-mid');if(mid)mid.textContent='disconnected · data for this range is unavailable';
+    if(!fxLastPts){applyRate(RATE);setupConverter();var dateEl=$('#rc-date');if(dateEl)dateEl.textContent='Disconnected · estimate';}
+    var mid=$('#rc-mid');if(mid)mid.textContent='Disconnected · data for this range is unavailable';
   });
 }
 function bindRanges(){
@@ -238,7 +238,7 @@ function setupConverter(){
   function fromKRW(){var k=parseFloat(String(krw.value).replace(/[^0-9.]/g,''));if(isNaN(k)||k<0)k=0;rm.value=(k/RATE).toFixed(2);}
   if(!rm._bound){rm._bound=1;rm.addEventListener('input',fromRM);krw.addEventListener('input',fromKRW);}
   fromRM();
-  if(note)note.innerHTML='Current rate: <b>1 RM = ₩'+RATE.toFixed(2)+'</b> · <b>1,000 ₩ = RM'+(1000/RATE).toFixed(2)+'</b>';
+  if(note)note.innerHTML='Current rate: <b>RM1 = ₩'+RATE.toFixed(2)+'</b> · <b>1,000 ₩ = RM'+(1000/RATE).toFixed(2)+'</b>';
 }
 function applyRate(v){
   RATE=v;

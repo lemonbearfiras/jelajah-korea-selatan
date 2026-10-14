@@ -17,7 +17,7 @@ but accounts & comments are stored only in your browser.
 1. On the project's main page, click the **Web** icon `</>` (Add app → Web).
 2. Type a nickname, e.g. `jelajah-korea-web` → **Register app**.
 3. Firebase shows a `const firebaseConfig = {...}` block — **copy every value**.
-4. Open the **`js/firebase-config.js`** file and replace all the `MASUKKAN_...` values:
+4. Open the **`js/firebase-config.js`** file and replace every placeholder value (they all start with `MASUKKAN_`) with the value Firebase shows you:
 
 ```js
 var FIREBASE_CONFIG = {
@@ -52,19 +52,20 @@ var FIREBASE_CONFIG = {
    paste it in the Rules tab → click **Publish**.
 
 > ⚠️ This version of the rules adds new collections: `follows`, `friendRequests`,
-> `friends`, `chats`, plus the `about` and `username` fields (optional, ≤ 20 characters)
-> in `users`. Without publishing them, the profile page still loads (name, comments, date)
+> `friends`, `chats`, plus the optional `username` field (≤ 20 characters) and the editable
+> `about` field (≤ 500 characters) in `users`. Without publishing them, the profile page still
+> loads (name, comments, date)
 > but the Followers / Following / Friends counts show "—" and the Follow / Add Friend / Chat
 > buttons fail.
 
 What the rules mean in short:
 
-- `comments` — anyone can read; only signed-in members can write; delete your own.
+- `comments` — anyone can read; only signed-in members can write; you can delete only your own.
 - `users` — public profile (name, photo, `about` ≤ 500 characters, `username` ≤ 20 characters, `createdAt`); only the owner can edit/delete. Email is not stored here. Can be updated through the **settings.html** page (the ⚙ Settings button on your own profile). The photo is either an image link or an **uploaded photo** stored as a `data:image/...` text (up to 120,000 characters) — the rules must allow that length or saving a new photo is rejected.
-- `follows` — one document `ID = me_them`; anyone can read the counts; only the follower can create/delete their own follow.
+- `follows` — one document per follow, `ID = follower_following`; anyone can read the counts; only the follower can create or delete their own follow.
 - `friendRequests` — `ID = sender_receiver`; only the two people involved can read; only the recipient can accept (pending → accepted).
 - `friends` — `ID = the two uids sorted a-z`; anyone can read (proof of friendship); created only by the recipient after the request is accepted.
-- `chats` — messages in `chats/<pairId>/messages`; ONLY the two friends involved can read/send; text 1–1000 characters; delete your own messages.
+- `chats` — messages in `chats/<pairId>/messages`; only the two friends involved can read or send; text 1–1000 characters; you can delete only your own messages.
 
 ## Step 5 — Open the site through localhost (recommended)
 
@@ -90,6 +91,8 @@ Then open <http://localhost:8000>.
 | `js/profile.js` | Profile logic — Follow button, Add Friend / Accept / Chat, statistics & editing About |
 | `chat.html` | **Private chat** page between two friends — `chat?v=<friend uid>` |
 | `js/chat.js` | Real-time chat logic (onSnapshot) — send & display messages |
+| `settings.html` | **Profile settings** page for the signed-in owner — name, photo, username, about |
+| `js/settings.js` | Settings logic — form validation, photo upload/resize, saving to `users` |
 | `js/firebase-config.js` | **You fill in** the project configuration here |
 | `js/komuniti-auth.js` | Sign up / sign in / Google / log out (two modes) |
 | `js/komuniti-comments.js` | Display, send & delete comments (Firestore / demo) |
@@ -102,11 +105,11 @@ Then open <http://localhost:8000>.
   - `comments` → `{ uid, name, photo, text, replyTo, replyName, createdAt }` — real-time updates (no reload). `replyTo`/`replyName` are empty (`''`) for ordinary comments; filled with the original ID & name when replying.
   - `likes` → `{ commentId, uid, createdAt }` — one document per like; the document ID must be `<commentId>_<uid>` so a member can like only once (and can undo it).
   - `users` → public profile of each account: `{ uid, name, photo, about, username, createdAt }` — created automatically during sign up/sign in; the **Username** field on the Sign up form is optional (max 20 characters: lowercase letters, numbers, `_`, `.`) and is saved here as `username`. `about`, `username` and the profile photo (uploaded file, stored as a `data:image/...` string, or an image link) can be edited later by the owner through the **⚙ Settings** button on the profile page (the `settings.html` page). Email is not stored here (privacy — this document is publicly readable).
-  - `follows` → `{ follower, following }` — document ID `follower_followed`; used for the Follower/Following counts.
+  - `follows` → `{ follower, following }` — document ID `follower_following`; used for the Follower/Following counts.
   - `friendRequests` → `{ from, to, status }` — ID `sender_receiver`; status `pending` / `accepted`.
   - `friends` → `{ participants: [uidA, uidB] sorted a-z, reqId }` — proof of friendship; ID = `uidA_uidB`.
   - `chats/<pairId>/messages` → `{ from, to, text, createdAt }` — private chat, only between the two friends.
-- **Demo mode:** browser `localStorage` (`km-demo-user`, `km-demo-comments`).
+- **Demo Mode:** browser `localStorage` (`km-demo-user`, `km-demo-comments`).
 
 ## Common questions
 
