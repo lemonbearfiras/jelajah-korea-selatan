@@ -15,16 +15,16 @@ var ICON={
   moon:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="#cdd9f2"/></svg>'
 };
 function wmo(c){
-  if(c===0||c===1)return['Cerah','sun'];
-  if(c===2)return['Berawan Separa','cloud'];
-  if(c===3)return['Berawan','cloud'];
-  if(c===45||c===48)return['Berkabus','fog'];
-  if(c>=51&&c<=57)return['Renyai','rain'];
-  if(c>=61&&c<=67)return['Hujan','rain'];
-  if(c>=71&&c<=77)return['Salji','snow'];
-  if(c>=80&&c<=82)return['Hujan Tiba-tiba','rain'];
-  if(c===85||c===86)return['Hujan Salji','snow'];
-  if(c>=95)return['Ribut Petir','bolt'];
+  if(c===0||c===1)return['Clear','sun'];
+  if(c===2)return['Partly Cloudy','cloud'];
+  if(c===3)return['Cloudy','cloud'];
+  if(c===45||c===48)return['Fog','fog'];
+  if(c>=51&&c<=57)return['Drizzle','rain'];
+  if(c>=61&&c<=67)return['Rain','rain'];
+  if(c>=71&&c<=77)return['Snow','snow'];
+  if(c>=80&&c<=82)return['Showers','rain'];
+  if(c===85||c===86)return['Snow showers','snow'];
+  if(c>=95)return['Thunderstorm','bolt'];
   return['—','cloud'];
 }
 function loadWeather(){
@@ -44,24 +44,24 @@ function loadWeather(){
       var tmin=one('temperature_2m_min',0),tmax=one('temperature_2m_max',0),rainp=one('precipitation_probability_max',0);
       var sunrise=one('sunrise',0),sunset=one('sunset',0);
       var night=!!(sunrise&&sunset&&cur.time&&(cur.time<sunrise||cur.time>sunset));
-      if(night&&m[1]==='sun')m=['Cerah','moon'];
+      if(night&&m[1]==='sun')m=['Clear','moon'];
       var extra=[];
-      if(cur.apparent_temperature!=null)extra.push('rasa '+Math.round(cur.apparent_temperature)+'°');
-      if(tmax!=null&&tmin!=null)extra.push('☀ siang '+Math.round(tmax)+'° · ☾ malam '+Math.round(tmin)+'°');
+      if(cur.apparent_temperature!=null)extra.push('feels like '+Math.round(cur.apparent_temperature)+'°');
+      if(tmax!=null&&tmin!=null)extra.push('☀ day '+Math.round(tmax)+'° · ☾ night '+Math.round(tmin)+'°');
       if(cur.relative_humidity_2m!=null)extra.push('💧'+Math.round(cur.relative_humidity_2m)+'%');
-      if(cur.wind_speed_10m!=null)extra.push('💨'+Math.round(cur.wind_speed_10m)+' km/j');
+      if(cur.wind_speed_10m!=null)extra.push('💨'+Math.round(cur.wind_speed_10m)+' km/h');
       if(rainp!=null)extra.push('☔'+Math.round(rainp)+'%');
-      chip.innerHTML=ICON[m[1]]+'<span>'+Math.round(cur.temperature_2m)+'°C · '+m[0]+(night?' (malam)':'')+'</span>'
+      chip.innerHTML=ICON[m[1]]+'<span>'+Math.round(cur.temperature_2m)+'°C · '+m[0]+(night?' (night)':'')+'</span>'
         +(extra.length?'<span class="w-x">'+extra.join(' · ')+'</span>':'');
       chip.classList.add('upd');
-      chip.title='Cuaca langsung (Open-Meteo) · '+cur.time.replace('T',' ');
+      chip.title='Live weather (Open-Meteo) · '+cur.time.replace('T',' ');
     }).catch(function(){});
   });
 }
 
 /* ---------- KADAR LANGSUNG MYR→KRW ---------- */
-var RATE=328, MONTHS=['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
-var DAYS=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+var RATE=328, MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 function fmtDate(s){var p=s.split('-');return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1]+' '+p[0];}
 function fmtShort(s){var p=s.split('-');return parseInt(p[2],10)+' '+MONTHS[parseInt(p[1],10)-1];}
@@ -119,7 +119,7 @@ function renderGraph(pts){
       h+='<circle class="rc-pt" cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="1.7"><title>'+fmtFull(p.d)+' · RM1 = ₩'+p.v.toFixed(2)+'</title></circle>';
     });
     var lp=pts[n-1];
-    h+='<circle class="rc-pt hot" cx="'+X(n-1).toFixed(1)+'" cy="'+Y(lp.v).toFixed(1)+'" r="3.4"><title>'+fmtFull(lp.d)+' · RM1 = ₩'+lp.v.toFixed(2)+(lp.live?' (langsung · pasaran)':' (kadar terkini)')+'</title></circle>';
+    h+='<circle class="rc-pt hot" cx="'+X(n-1).toFixed(1)+'" cy="'+Y(lp.v).toFixed(1)+'" r="3.4"><title>'+fmtFull(lp.d)+' · RM1 = ₩'+lp.v.toFixed(2)+(lp.live?' (live · market)':' (latest rate)')+'</title></circle>';
     ptsG.innerHTML=h;
   }
   var minEl=$('#rc-min'),maxEl=$('#rc-max');
@@ -171,7 +171,7 @@ function bindHover(){
   svg.addEventListener('touchmove',show,{passive:true});
   svg.addEventListener('touchend',hide);
 }
-var RANGE_LABEL={7:'1 minggu',30:'1 bulan',92:'3 bulan',182:'6 bulan',365:'1 tahun'};
+var RANGE_LABEL={7:'1 week',30:'1 month',92:'3 months',182:'6 months',365:'1 year'};
 var liveP=null;
 function fetchLive(){
   if(liveP)return liveP;
@@ -213,13 +213,13 @@ function loadRange(days){
     applyRate(pts[pts.length-1].v);
     var liveNow=pts[pts.length-1].live;
     var dateEl=$('#rc-date');
-    if(dateEl)dateEl.textContent=fmtFull(pts[pts.length-1].d)+(liveNow?' · langsung':'');
+    if(dateEl)dateEl.textContent=fmtFull(pts[pts.length-1].d)+(liveNow?' · live':'');
     setupConverter();
     var mid=$('#rc-mid');
-    if(mid)mid.textContent=RANGE_LABEL[days]+' · Isn–Jum ECB'+(liveNow?' + titik langsung (kini)':' · setiap titik = 1 hari (ECB)');
+    if(mid)mid.textContent=RANGE_LABEL[days]+' · Mon–Fri ECB'+(liveNow?' + live point (now)':' · each point = 1 day (ECB)');
   }).catch(function(){
-    if(!fxLastPts){applyRate(RATE);setupConverter();var dateEl=$('#rc-date');if(dateEl)dateEl.textContent='terputus · anggaran';}
-    var mid=$('#rc-mid');if(mid)mid.textContent='terputus · data julat ini tidak tersedia';
+    if(!fxLastPts){applyRate(RATE);setupConverter();var dateEl=$('#rc-date');if(dateEl)dateEl.textContent='disconnected · estimate';}
+    var mid=$('#rc-mid');if(mid)mid.textContent='disconnected · data for this range is unavailable';
   });
 }
 function bindRanges(){
@@ -238,7 +238,7 @@ function setupConverter(){
   function fromKRW(){var k=parseFloat(String(krw.value).replace(/[^0-9.]/g,''));if(isNaN(k)||k<0)k=0;rm.value=(k/RATE).toFixed(2);}
   if(!rm._bound){rm._bound=1;rm.addEventListener('input',fromRM);krw.addEventListener('input',fromKRW);}
   fromRM();
-  if(note)note.innerHTML='Kadar kini: <b>1 RM = ₩'+RATE.toFixed(2)+'</b> · <b>1,000 ₩ = RM'+(1000/RATE).toFixed(2)+'</b>';
+  if(note)note.innerHTML='Current rate: <b>1 RM = ₩'+RATE.toFixed(2)+'</b> · <b>1,000 ₩ = RM'+(1000/RATE).toFixed(2)+'</b>';
 }
 function applyRate(v){
   RATE=v;

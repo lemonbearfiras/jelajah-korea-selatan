@@ -1,0 +1,986 @@
+[
+  {
+    "n": "Gyeongbokgung Palace",
+    "h": "경복궁",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah",
+      "budaya"
+    ],
+    "fee": 3000,
+    "fn": "Closed Tuesdays · free in hanbok",
+    "s": "Apr · Oct–Nov",
+    "d": "The main palace of the Joseon Dynasty, built in 1395 at the foot of Bugak Mountain, with 330 traditional buildings and Gyeonghoeru Pond. The hourly guard changing ceremony (10am–2pm) is one of the liveliest spectacles in Seoul.",
+    "t": "Free entry when wearing hanbok; closed every Tuesday."
+  },
+  {
+    "n": "Changdeokgung Palace &amp; Huwon",
+    "h": "창덕궁",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah",
+      "budaya"
+    ],
+    "fee": 3000,
+    "fn": "Huwon Garden +₩8,000 · closed Mondays",
+    "s": "Apr–Nov",
+    "d": "The second Joseon palace, listed by UNESCO for how it blends with nature. The Huwon (Secret Garden) keeps ancient ponds and trees more than 300 years old.",
+    "t": "Book a Huwon slot as early as possible — tickets sell out fast."
+  },
+  {
+    "n": "Jongmyo Shrine",
+    "h": "종묘",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 1000,
+    "fn": "Free for students? check at the counter",
+    "s": "May",
+    "d": "The ancestral shrine of the Joseon Dynasty kings, listed by UNESCO, with the Jeongjeon hall — the longest wooden hall in the world. The Jongmyo Daeje ritual in May happens once a year with full royal protocol.",
+    "t": "Some slots can only be entered together with a guided tour."
+  },
+  {
+    "n": "Deoksugung Palace",
+    "h": "덕수궁",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 1000,
+    "fn": "Closed Mondays",
+    "s": "Oct–Nov",
+    "d": "The palace that became King Gojong’s residence after Joseon opened to the world — the only one mixing modern western buildings. The plane-tree-covered lane beside it is the most romantic walking route in Seoul.",
+    "t": "Deoksugung Doldam-gil road is at its most beautiful in autumn."
+  },
+  {
+    "n": "Bukchon Hanok Village",
+    "h": "북촌한옥마을",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A 600-year-old hanok village of hilly lanes and curved traditional roofs, still lived in by residents today. The crest of Bukchon-ro 11-gil offers a panorama of hanok roofs with N Seoul Tower in the background.",
+    "t": "A real residential area — walk quietly and respect the residents."
+  },
+  {
+    "n": "Insadong",
+    "h": "인사동",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "budaya",
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A street of Korean traditional art and crafts — ceramic shops, hanji paper, tea and calligraphy paintings. The multi-storey tea houses in the small alleys keep a calm Joseon atmosphere.",
+    "t": "SSamziegil is a spiral craft complex that is well worth a visit."
+  },
+  {
+    "n": "Jogyesa Temple",
+    "h": "조계사",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "May",
+    "d": "The head temple of Korean Jogye Buddhism, standing in the middle of the city, framed by white pines hundreds of years old. During the Lotus Lantern Festival in May, the whole grounds fill with thousands of colourful lanterns.",
+    "t": "Free and open into the evening; templestay programmes available."
+  },
+  {
+    "n": "Gwangjang Market",
+    "h": "광장시장",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Korea’s oldest covered market (1905) and a snack paradise: mayak gimbap, bindaetteok, yukhoe and kalguksu served stall after stall. Its indoor food alley has featured in many world food documentaries.",
+    "t": "Come before 11am to avoid the long queues."
+  },
+  {
+    "n": "Namdaemun Market",
+    "h": "남대문시장",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "makanan",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Korea’s largest traditional market, with more than 10,000 stalls trading since 1414. The kalguksu alley inside is famous for hand-made noodles served from generation to generation.",
+    "t": "The best place for cheap souvenirs and morning snacks."
+  },
+  {
+    "n": "Myeongdong",
+    "h": "명동",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar",
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "The busiest shopping and cosmetics hub in Korea, which turns into a giant street food lane after sunset. Cheese tteokbokki, bite-sized corndog and bingsu are the must-eats here.",
+    "t": "The snack lane is liveliest after 6pm."
+  },
+  {
+    "n": "Cheonggyecheon",
+    "h": "청계천",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar",
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Nov",
+    "d": "A 5.8km stream restored from a covered highway in 2005, now a rest corridor in the middle of the city. The pedestrian walk is cool and full of lights at night.",
+    "t": "The Lantern Festival in Nov–Dec is the annual highlight."
+  },
+  {
+    "n": "N Seoul Tower",
+    "h": "N서울타워",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar"
+    ],
+    "fee": 21000,
+    "fn": "Cable car ±₩15,000 round trip",
+    "s": "Year-round",
+    "d": "A tower on the summit of Namsan Hill (236m) offering a 360° panorama of Seoul — one of the most iconic spots in the capital. Thousands of love locks on the deck railing are a popular engagement token among visitors.",
+    "t": "Take the cable car or the Namsan shuttle bus 01A/05B."
+  },
+  {
+    "n": "Hongdae",
+    "h": "홍대",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A street art zone around Hongik University — busking, murals, vinyl shops and the youngest nightlife in Seoul. Every Saturday, the Free Market sells handmade crafts by art students.",
+    "t": "Street dance performances start at 8pm outside the station."
+  },
+  {
+    "n": "Seongsu-dong",
+    "h": "성수동",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Nicknamed \"Brooklyn of Seoul\" — old shoe factories rewoven into designer cafes, pop-up stores and studios. Seoul Forest park next door offers green space and free-roaming deer.",
+    "t": "Come in the morning for the cafes before weekends get crowded."
+  },
+  {
+    "n": "Starfield COEX Library",
+    "h": "별마당도서관",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "bandar",
+      "keluarga"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A giant public library in the middle of the COEX mall with bookshelves 13 metres high — one of the most loved reading spaces in the world. Glass walls spill light into the two-storey gallery.",
+    "t": "Combine it with Bongeunsa Temple right next door."
+  },
+  {
+    "n": "Korean War Memorial",
+    "h": "전쟁기념관",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah",
+      "keluarga"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "The largest military museum in Asia, documenting the 1950–53 Korean War and the country’s defence history. The outdoor field displays more than 160 real aircraft, tanks and ships.",
+    "t": "Free; the outdoor exhibits are very suitable for children."
+  },
+  {
+    "n": "National Museum of Korea",
+    "h": "국립중앙박물관",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "sejarah",
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Korea’s largest museum with more than 420,000 artefacts — the Silla gold crowns and Goryeo celadon are the highlights. Its new building is designed to absorb traditional palace architecture.",
+    "t": "Free; allow 2–3 hours for the main galleries."
+  },
+  {
+    "n": "Han River Park",
+    "h": "한강공원",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "keluarga",
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "Picnic mat rental ±₩3,000",
+    "s": "Apr–Oct",
+    "d": "A 40km riverside park system that acts as the backyard of Seoul residents — picnics, kite flying, cycling and instant noodles from riverside ramyeon machines. The Banpo Moonlight Rainbow Fountain on Banpo Bridge lights up every night from Apr to Oct.",
+    "t": "Use the \"Congcafe\" app to book picnic tents."
+  },
+  {
+    "n": "Lotte World",
+    "h": "롯데월드",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "keluarga"
+    ],
+    "fee": 55000,
+    "fn": "Cheaper online",
+    "s": "Year-round",
+    "d": "The largest indoor theme park in the world, housed inside the Lotte World Mall shopping complex, with the outdoor Magic Island featuring the Gyro Drop coaster. Ice rink, parades and laser shows run all day.",
+    "t": "Download the Magic Pass app to shorten waiting time."
+  },
+  {
+    "n": "Seoul Grand Park &amp; Zoo",
+    "h": "서울대공원",
+    "c": "Gwacheon",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "keluarga",
+      "alam"
+    ],
+    "fee": 5000,
+    "fn": "Cable car +₩4,000",
+    "s": "Apr–Oct",
+    "d": "Korea’s largest zoo and theme park complex in the Gwacheon valley, with a cable car and more than 3,000 animals. The Museum of Modern Art (MMCA) Gwacheon branch sits right next door.",
+    "t": "Combine the zoo and MMCA for a full family day."
+  },
+  {
+    "n": "COEX Aquarium",
+    "h": "코엑스아쿠아리움",
+    "c": "Seoul",
+    "r": "Seoul",
+    "cat": [
+      "keluarga"
+    ],
+    "fee": 31000,
+    "fn": "",
+    "s": "Year-round",
+    "d": "An aquarium with 183 tanks and a moving glass tunnel — sharks, rays and penguins are the main stars. It sits inside the COEX complex next to the Starfield Library.",
+    "t": "The shark feeding schedule and the diver display board are the highlights."
+  },
+  {
+    "n": "DMZ (Demilitarized Zone)",
+    "h": "비무장지대",
+    "c": "Paju",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 80000,
+    "fn": "Tour package ±₩50,000–90,000 · passport required",
+    "s": "Apr–Jun · Sep–Oct",
+    "d": "The most heavily controlled border in the world, dividing the Korean Peninsula since 1953 — Imjingak, the Third Infiltration Tunnel, Dora Observatory and Dorasan Station reveal a Cold War story that is still ongoing. It can only be visited through licensed guided tours.",
+    "t": "Bring a real passport; book 3–7 days ahead and avoid ripped clothing."
+  },
+  {
+    "n": "Haedong Yonggungsa Temple",
+    "h": "해동용궁사",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "budaya",
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Apr · Oct",
+    "d": "A rare Buddhist temple built on the sea cliffs of eastern Busan instead of in the mountains. The Goddess of Mercy statue faces the rising sea and the flight of 108 steps is its landmark.",
+    "t": "Come before 9am — the car park and lanes fill up quickly."
+  },
+  {
+    "n": "Haeundae Beach",
+    "h": "해운대",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "bandar",
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Jun–Sep",
+    "d": "Korea’s most iconic beach, a 1.5km sweep of sand visited by 8–10 million travellers every summer. The hotel towers along the shore turn into a panorama of light at night.",
+    "t": "The east end of the beach (Dongbaekseom) is calmer for sunrise."
+  },
+  {
+    "n": "Dongbaekseom Island",
+    "h": "동백섬",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A small pine-wooded island linked to Haeundae Beach by a boardwalk, with the APEC Conference House and the Nurimaru lighthouse. Its 30-minute path offers the best sea views in Busan.",
+    "t": "Sunrise and Gwangan Bridge views from its tip."
+  },
+  {
+    "n": "Gamcheon Culture Village",
+    "h": "감천문화마을",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "budaya",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A hillside village settled by war refugees that is now full of murals, sculptures and colourful lanes — nicknamed \"Machu Picchu of Korea\". Its tiered houses form the most photographed labyrinth in Busan.",
+    "t": "Pick up the stamp map at the visitor centre; keep quiet in residential alleys."
+  },
+  {
+    "n": "Jagalchi Market",
+    "h": "자갈치시장",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Korea’s largest seafood market, run generation after generation by the women of Jagalchi. Choose live fish on the lower floor and have it cooked in the upper-floor restaurants — fresh hwej (sashimi) straight from the tanks.",
+    "t": "Gentle haggling is part of the experience."
+  },
+  {
+    "n": "BIFF Square &amp; Nampo-dong",
+    "h": "비프광장",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "makanan",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A street from the Busan international film festival that has become a snack hub: seeded hotteok (ssiat hotteok) and dwaeji gukbap pork soup are its champions. Handprints of filmmakers from around the world are set along the street.",
+    "t": "The long queue at the seeded hotteok moves fast — it is worth it."
+  },
+  {
+    "n": "Gwangalli Beach",
+    "h": "광안리",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Jun–Sep",
+    "d": "The beach with the most dramatic view in Busan — Gwangandaegyo Bridge lights up in colour every night in front of the row of seaside cafes. Large drone shows are held every Saturday night.",
+    "t": "Choose an upper-floor cafe for the glowing bridge panorama."
+  },
+  {
+    "n": "Taejongdae",
+    "h": "태종대",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "Danubi train ±₩4,000",
+    "s": "Apr–Nov",
+    "d": "A seaside cliff park at the end of Yeongdo Island named after King Taejong — steep cliffs, a lighthouse and Sinseon Rock, believed to be where the gods played. The clifftop path looks out over the Korea Strait.",
+    "t": "Ride the Danubi train to save walking time."
+  },
+  {
+    "n": "Songdo Cable Car",
+    "h": "송도해상케이블카",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "keluarga",
+      "bandar"
+    ],
+    "fee": 15000,
+    "fn": "±₩20,000 round trip · crystal cabin +",
+    "s": "Year-round",
+    "d": "A cable car that crosses the sea from Songdo Beach to Dongseom Island — one of the best aerial experiences in Busan. The glass-floored \"crystal\" cabins give an open view straight down onto the water.",
+    "t": "The boardwalk on the island at the far end is worth exploring."
+  },
+  {
+    "n": "Beomeosa Temple",
+    "h": "범어사",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Apr–Nov",
+    "d": "A grand 7th-century temple at the foot of Mount Geumjeong, one of the three main temples of Busan. The tiered Iljumun gate and ancient stone courtyard give a tranquil mood far from the metropolis.",
+    "t": "Combine it with the hiking trail to the Geumjeongsan fortress."
+  },
+  {
+    "n": "SEA LIFE Busan",
+    "h": "씨라이프부산",
+    "c": "Busan",
+    "r": "Busan",
+    "cat": [
+      "keluarga"
+    ],
+    "fee": 31000,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A seaside aquarium on Haeundae Beach with an 80-metre glass tunnel — sharks, giant rays and Humboldt penguins are the children’s favourites. Interactive zones let you touch starfish.",
+    "t": "Check the feeding schedule on the entrance ticket board."
+  },
+  {
+    "n": "Seongsan Ilchulbong",
+    "h": "성산일출봉",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "alam"
+    ],
+    "fee": 5000,
+    "fn": "Closed during strong winds",
+    "s": "Year-round",
+    "d": "A 182m tuff cone volcano listed by UNESCO — the \"Sunrise Peak\" of Jeju, reached by a 30–45 minute climb. The summit shows a giant bowl-shaped crater facing the sea.",
+    "t": "Climb before 7am to see sunrise and avoid the crowds."
+  },
+  {
+    "n": "Hallasan Mountain",
+    "h": "한라산",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "alam"
+    ],
+    "fee": 0,
+    "fn": "Book the trail online",
+    "s": "Apr–Jun · Sep–Oct",
+    "d": "The highest mountain in South Korea (1,947m) at the middle of the island — all of Jeju is in fact this volcano. The Baengnokdam summit crater and azalea forest make up the country’s best hiking routes.",
+    "t": "Book a Gwaneumsa trail slot early; bring a jacket — the weather changes fast."
+  },
+  {
+    "n": "Udo Island",
+    "h": "우도",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "alam",
+      "keluarga"
+    ],
+    "fee": 5000,
+    "fn": "Ferry round trip",
+    "s": "Apr–Oct",
+    "d": "A small island shaped like a sleeping ox north-east of Jeju — 15 minutes by ferry from Seongsan. Coastal cycling routes, free-roaming cattle and peanut flavour are its identity.",
+    "t": "Udo peanut ice cream and peanut burger must be tried."
+  },
+  {
+    "n": "Manjanggul Lava Tube",
+    "h": "만장굴",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "alam"
+    ],
+    "fee": 2000,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A 7.4km-long lava tunnel — among the longest in the world and listed by UNESCO together with part of the Jeju Geopark. A giant lava column and lava stalactites form a cold geological gallery all year round.",
+    "t": "The temperature inside the cave stays around 11–13°C — bring a light jacket."
+  },
+  {
+    "n": "Cheonjiyeon Waterfall",
+    "h": "천지연폭포",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "alam"
+    ],
+    "fee": 2000,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A 22m waterfall dropping straight into a brackish pool whose name means \"pond of heaven and earth\". The mullet and giant prawns in the pool can be seen clearly from the stone bridge.",
+    "t": "Most beautiful after rain; the night lights stay on until 10pm."
+  },
+  {
+    "n": "Dongmun Market",
+    "h": "동문시장",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "The oldest market in Jeju, open since 1945 — seafood, black pork and island snacks sold next to dinner stalls. The black pork alley beside it has become a destination in its own right.",
+    "t": "Come at night: the public market turns into a food street."
+  },
+  {
+    "n": "Aqua Planet Jeju",
+    "h": "아쿠아플래닛제주",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "keluarga"
+    ],
+    "fee": 33000,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Korea’s largest aquarium on the north-east of the island, with a three-storey main tank holding 50,000 sea creatures. Diver shows and the open main tank are the most popular attractions.",
+    "t": "Combine it with the nearby Seongsan Ilchulbong."
+  },
+  {
+    "n": "O&#39;sulloc Tea Plantation",
+    "h": "오설록",
+    "c": "Jeju",
+    "r": "Jeju",
+    "cat": [
+      "makanan",
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Rolling green tea fields in western Jeju with the first tea museum in Korea. The curving rows of tea, rippling like green waves, are the backdrop of the most photographed cafe on the island.",
+    "t": "The green tea roll cake and latte are musts; entry is free."
+  },
+  {
+    "n": "Bulguksa Temple",
+    "h": "불국사",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah",
+      "budaya"
+    ],
+    "fee": 5000,
+    "fn": "",
+    "s": "Apr–Nov",
+    "d": "The great royal temple of 8th-century Silla, listed by UNESCO — the Cheongungyo stairs and the Dabotap and Seokgatap stone pagodas are icons of Korean Buddhist architecture. Its name means \"Temple of the Buddha Land\".",
+    "t": "Bus 12 leaves from the temple towards Seokguram at the hilltop."
+  },
+  {
+    "n": "Seokguram Grotto",
+    "h": "석굴암",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 4000,
+    "fn": "",
+    "s": "Year-round",
+    "d": "An 8th-century Buddhist grotto on the summit of Mount Tohamsan — the 3.5m Sakyamuni Buddha statue faces the eastern sea, designed so that sunrise light falls on its face. Listed by UNESCO together with Bulguksa.",
+    "t": "Cool mornings; sunrise from the cave doorway is the most magical moment."
+  },
+  {
+    "n": "Daereungwon Ancient Tomb Park",
+    "h": "대릉원",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 3000,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A park holding 23 royal Silla burial mounds that form green hill silhouettes in the middle of Gyeongju. The Cheonmachong tomb is opened so visitors can see a golden horse burial.",
+    "t": "Rent a bicycle to explore the wider tomb trails."
+  },
+  {
+    "n": "Cheomseongdae Observatory",
+    "h": "첨성대",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "The oldest stone observatory in East Asia (7th century), built from 365 stone blocks that represent the days of a year. This bottle-shaped structure has stood upright for 1,400 years.",
+    "t": "Donggung &amp; Wolji Pond is only a few steps away — see both."
+  },
+  {
+    "n": "Donggung &amp; Wolji Pond",
+    "h": "동궁과월지",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 2000,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A secondary Silla palace complex beside a pond used for royal banquets. After dark, the reconstructed buildings mirror in the pond water — the most photographed scene in Gyeongju.",
+    "t": "Come after sunset for the true reflection of the lights."
+  },
+  {
+    "n": "Gyeongju National Museum",
+    "h": "경주국립박물관",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "sejarah",
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Home to the Silla gold crowns, Cheonmachong tomb goods and the legendary 18-tonne bronze Emille Bell. Its main building faces the ancient tomb site.",
+    "t": "Free; 1–2 hours is enough for the main galleries."
+  },
+  {
+    "n": "Hwangnidan-gil Street",
+    "h": "황리단길",
+    "c": "Gyeongju",
+    "r": "Gyeongsang",
+    "cat": [
+      "makanan",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Gyeongju’s young-flow street — old hanok shop-houses turned into artsy cafes, modern Korean restaurants and craft shops. Kkwabaegi donuts and ice cream are the must-eat snacks here.",
+    "t": "Liveliest on weekend afternoons; parking is difficult."
+  },
+  {
+    "n": "Jeonju Hanok Village",
+    "h": "전주한옥마을",
+    "c": "Jeonju",
+    "r": "Jeolla",
+    "cat": [
+      "budaya"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Korea’s largest hanok village, with more than 800 traditional houses in the middle of town — the centre of Joseon culture and food. Hanbok rental, tea in a hanok house and Jeonju bibimbap are the three must-do experiences.",
+    "t": "Climb Omokdae hill for a hanok roof panorama at dusk."
+  },
+  {
+    "n": "Gyeonggijeon Shrine",
+    "h": "경기전",
+    "c": "Jeonju",
+    "r": "Jeolla",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 3000,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A shrine keeping the portrait of Joseon founder King Taejo Yi Seong-gye — Jeonju is his ancestral hometown. Old pine courtyards and tiered gates frame a tranquil slice of history.",
+    "t": "The Jaman mural alley is right behind it."
+  },
+  {
+    "n": "Nambu Market",
+    "h": "남부시장",
+    "c": "Jeonju",
+    "r": "Jeolla",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "Night market Fri–Sat",
+    "s": "Year-round",
+    "d": "A Jeonju public market since the 1920s known as the \"mothers’ market\" — fresh ingredients and street food sold side by side. Its night market fills the lanes with kkwabaegi, kongnamul gukbap bean sprout soup and modern snacks.",
+    "t": "The night market is only active on Friday and Saturday nights."
+  },
+  {
+    "n": "PNB Bakery",
+    "h": "전주피에네베",
+    "c": "Jeonju",
+    "r": "Jeolla",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Jeonju’s legendary choco pie shop and the compulsory souvenir of the city — soft layered pastry filled with marshmallow cream and coated in chocolate. The long queues mark a reputation built over decades.",
+    "t": "Buy a large box as a gift; they sell out quickly in the afternoon."
+  },
+  {
+    "n": "Chinatown Incheon",
+    "h": "인천차이나타운",
+    "c": "Incheon",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "makanan",
+      "sejarah"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Korea’s oldest Chinatown, born when Incheon port opened in 1883 — the origin of Korean jajangmyeon. A jajangmyeon museum, the grand Chinese gate and Jayu Freedom Park shape its hilly route.",
+    "t": "Eat jajangmyeon on the street where it was born, next to Jayu Park."
+  },
+  {
+    "n": "Songdo Central Park",
+    "h": "송도센트럴파크",
+    "c": "Incheon",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "bandar",
+      "keluarga"
+    ],
+    "fee": 0,
+    "fn": "Canal boat ±₩12,000",
+    "s": "Apr–Oct",
+    "d": "A seawater park in the heart of the smart city of Songdo — canals cruised by pedal boats between modern towers. Its design takes inspiration from Central Park in New York, in Korean form.",
+    "t": "Go up the nearby G-Tower observation tower."
+  },
+  {
+    "n": "Hwaseong Fortress Suwon",
+    "h": "수원화성",
+    "c": "Suwon",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "sejarah"
+    ],
+    "fee": 2000,
+    "fn": "",
+    "s": "Apr–Nov",
+    "d": "A 5.7km Joseon fortress encircling Suwon (1796) — a UNESCO masterpiece of military architecture with four great gates and gun towers. Its construction records are kept in the UNESCO Memory of the World register.",
+    "t": "Ride the dragon train to Haenggung Palace; sunset at Hwahongmun Gate."
+  },
+  {
+    "n": "Everland",
+    "h": "에버랜드",
+    "c": "Yongin",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "keluarga"
+    ],
+    "fee": 59000,
+    "fn": "±₩39,000 when bought online",
+    "s": "Year-round",
+    "d": "Korea’s largest theme park with Safari World, the Tulip Garden and the T-Express wooden coaster, one of the steepest in the world. It changes with the seasons — tulips, carnival, Halloween and the winter Festival of Lights.",
+    "t": "Buy tickets online; use the Q-Pass app to cut down queuing."
+  },
+  {
+    "n": "Korean Folk Village",
+    "h": "한국민속촌",
+    "c": "Yongin",
+    "r": "Incheon &amp; Gyeonggi",
+    "cat": [
+      "keluarga",
+      "budaya"
+    ],
+    "fee": 25000,
+    "fn": "±",
+    "s": "Year-round",
+    "d": "A Joseon village rebuilt authentically — regional houses, an old market, farmer dances, traditional weddings and boat races turned into permanent shows. It sits right next to Everland.",
+    "t": "Check the show schedule at the entrance; winter brings a Festival of Lights."
+  },
+  {
+    "n": "Seoraksan National Park",
+    "h": "설악산국립공원",
+    "c": "Sokcho",
+    "r": "Gangwon",
+    "cat": [
+      "alam"
+    ],
+    "fee": 9000,
+    "fn": "± · cable car +₩12,000",
+    "s": "Oct (autumn foliage)",
+    "d": "The most famous national park in Korea — the granite Ulsanbawi peak, Sinheungsa Temple and the giant stone Buddha in its valley. Its autumn foliage is considered the most beautiful in the country.",
+    "t": "Take the cable car to Gwongeumseong for a panorama without the climb."
+  },
+  {
+    "n": "Nami Island",
+    "h": "남이섬",
+    "c": "Chuncheon",
+    "r": "Gangwon",
+    "cat": [
+      "alam",
+      "keluarga"
+    ],
+    "fee": 16000,
+    "fn": "Includes return ferry",
+    "s": "Oct–Nov",
+    "d": "A half-moon island in the middle of Lake Cheongpyeong, famous for its metasequoia and white pine avenue — a Winter Sonata drama location. Bicycles, a mini train and swans are its family attractions.",
+    "t": "Take the early morning ferry to avoid the large tour groups."
+  },
+  {
+    "n": "Rail Bike Gangchon",
+    "h": "강촌레일바이크",
+    "c": "Chuncheon",
+    "r": "Gangwon",
+    "cat": [
+      "keluarga",
+      "alam"
+    ],
+    "fee": 30000,
+    "fn": "± · 2 riders",
+    "s": "Apr–Nov",
+    "d": "Pedal a four-wheeled rail bike along a 4.5km old rail line through LED-lit tunnels and the Bukhan river valley. The return leg is on the regular train across the same valley.",
+    "t": "Book a morning slot online; the LED tunnels are the highlight."
+  },
+  {
+    "n": "Gyeongpo Beach &amp; Lake",
+    "h": "경포",
+    "c": "Gangneung",
+    "r": "Gangwon",
+    "cat": [
+      "alam",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Jun–Oct",
+    "d": "An east-coast Gangneung beach with Lake Gyeongpoho behind it — a mix of sea, lake and the ancient Gyeongpodae pavilion. The Anmok cafe street nearby has made this town the coffee capital of Korea.",
+    "t": "Drink coffee on Anmok Street facing the eastern sea."
+  },
+  {
+    "n": "Daegwallyeong Sheep Farm",
+    "h": "대관령양떼목장",
+    "c": "Pyeongchang",
+    "r": "Gangwon",
+    "cat": [
+      "alam",
+      "keluarga"
+    ],
+    "fee": 3000,
+    "fn": "± · feed grass ±₩1,000",
+    "s": "May–Oct",
+    "d": "A sheep farm on the Daegwallyeong highland where you feed the grass directly from your hand — the sheep follow visitors across the pasture. The cool air of the plateau lasts even in summer.",
+    "t": "Bring a jacket all year round; the slope path is gentle."
+  },
+  {
+    "n": "Hahoe Village",
+    "h": "하회마을",
+    "c": "Andong",
+    "r": "Gyeongsang",
+    "cat": [
+      "budaya",
+      "sejarah"
+    ],
+    "fee": 5000,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A 600-year-old ancestral village of the Ryu clan, listed by UNESCO, shaped by a bend of the Nakdong River like the taegeuk symbol. Thatched-roof houses and Hahoe talchum mask dances make it a living museum of Korean culture.",
+    "t": "A traditional ferry brings you into the village; mask dance shows run on weekends."
+  },
+  {
+    "n": "Tongyeong",
+    "h": "통영",
+    "c": "Tongyeong",
+    "r": "Gyeongsang",
+    "cat": [
+      "alam",
+      "bandar"
+    ],
+    "fee": 0,
+    "fn": "Luge ±₩15,000 · cable car ±₩13,000",
+    "s": "Apr–Nov",
+    "d": "An archipelago harbour nicknamed \"Naples of the East\" — 570 small islands, an old market, seaside luge and the Mireuksan cable car looking over the southern sea. The most visited drama and film backdrop in South Gyeongsang.",
+    "t": "Tongyeong Luge and the view from Mireuksan are the two musts."
+  },
+  {
+    "n": "Yeosu",
+    "h": "여수",
+    "c": "Yeosu",
+    "r": "Jeolla",
+    "cat": [
+      "alam",
+      "bandar",
+      "keluarga"
+    ],
+    "fee": 0,
+    "fn": "Dolsan cable car ±₩13,000",
+    "s": "Apr–Nov",
+    "d": "A southern port with \"the most beautiful night sea in Korea\" — Odongdo Island, the Dolsan Bridge and a cable car crossing the water. The \"Yeosu Night Sea\" light show is a famous annual festival.",
+    "t": "Ride the Dolsan cable car after dark; do not miss Odongdo in camellia season."
+  },
+  {
+    "n": "Suncheon Bay",
+    "h": "순천만",
+    "c": "Suncheon",
+    "r": "Jeolla",
+    "cat": [
+      "alam"
+    ],
+    "fee": 2000,
+    "fn": "± · skylift +",
+    "s": "Oct–Nov",
+    "d": "The largest reed wetland in Korea, home to thousands of migratory birds and fiddler crabs, with a 1.2km boardwalk facing the estuary. The National Garden next door adds attractions throughout the year.",
+    "t": "Ride the skylift for the bay panorama; sunset is the highlight."
+  },
+  {
+    "n": "Damyang Bamboo Forest",
+    "h": "죽녹원",
+    "c": "Damyang",
+    "r": "Jeolla",
+    "cat": [
+      "alam"
+    ],
+    "fee": 2000,
+    "fn": "",
+    "s": "Year-round",
+    "d": "A cooling green bamboo forest that can be walked through all year — boardwalks between the bamboo stalks make it one of the most photographed places in Jeolla. The metasequoia lane next door is famous in adverts and dramas.",
+    "t": "Try the local bamboo dishes: daetongbap (rice cooked in a bamboo tube)."
+  },
+  {
+    "n": "Seongsimdang Daejeon",
+    "h": "대전성심당",
+    "c": "Daejeon",
+    "r": "Chungcheong",
+    "cat": [
+      "makanan"
+    ],
+    "fee": 0,
+    "fn": "",
+    "s": "Year-round",
+    "d": "Daejeon’s legendary bakery since 1956, the reason the city is known as a \"bread town\" — the queue of buyers never breaks all day. Fried soboro and cream bread are its signature icons.",
+    "t": "The Daejeon Station branch is the easiest to visit while travelling by KTX."
+  }
+]

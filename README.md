@@ -1,78 +1,78 @@
 # Jelajah Korea Selatan 🇰🇷
 
-Laman web interaktif berbahasa Melayu untuk merancang percutian ke Korea Selatan — direktori destinasi, perancang bajet, data langsung (cuaca & kadar tukaran), dan komuniti pelancong.
+An interactive English-language website for planning a trip to South Korea — a destination directory, a budget planner, live data (weather & exchange rates), and a traveller community.
 
-**Demo langsung:**
+**Live demo:**
 - GitHub Pages — https://lemonbearfiras.github.io/jelajah-korea-selatan/
 - Qoder Sites (private) — https://jelajah-korea-qodzbckpyph.qoder.website
 
 ---
 
-## Ciri-ciri utama
+## Key features
 
-| Bahagian | Fungsi |
+| Section | Function |
 |---|---|
-| 🌤️ **Destinasi** | 6 kad wilayah dengan cuaca **langsung** setiap bandar (Open-Meteo): suhu, suhu rasa, min–maks, kelembapan, angin, kebarangkalian hujan |
-| 🗺️ **Peta Korea** | Peta SVG interaktif dengan laluan kereta api KTX sebenar + pin kota |
-| 💰 **Perancang Bajet** | Kadar tukaran **langsung ECB** (graf 1 hari–1 tahun, setiap titik = 1 hari, hover crosshair), penukar RM↔₩, anggaran bajet ikut kadar/musim/tema + Jana itinerari harian; kad info ekonomi Korea |
-| 📚 **Pangkalan Data** | 68 tempat (Seoul, Busan, Jeju, Gyeongju, Jeolla, Gangwon, dll.) dengan carian + modal butiran |
-| 🤖 **Tanya Panduan** | Soalan bebas → cadangan tempat: AI langsung melalui Fungsi Qoder Sites; enjin padanan lokal sebagai sandaran apabila luar talian |
-| 👥 **Komuniti** | Daftar/masuk (e-mel + Google) melalui Firebase, komen awam, halaman profil, ikut & rakan, dan sembang masa nyata |
+| 🌤️ **Destinations** | 6 region cards with **live** weather for each city (Open-Meteo): temperature, feels-like temperature, min–max, humidity, wind, chance of rain |
+| 🗺️ **Korea Map** | Interactive SVG map with the real KTX rail routes + city pins |
+| 💰 **Budget Planner** | **Live ECB** exchange rates (1 day–1 year chart, each point = 1 day, hover crosshair), RM↔₩ converter, budget estimates by rate/season/theme + Generate a daily itinerary; Korean economy info cards |
+| 📚 **Database** | 68 places (Seoul, Busan, Jeju, Gyeongju, Jeolla, Gangwon, etc.) with search + details modal |
+| 🤖 **Ask Jelajah AI** | Free-text questions → place suggestions: live AI through the Qoder Sites Functions; a local matching engine as a fallback when offline |
+| 👥 **Community** | Sign up/sign in (email + Google) through Firebase, public comments, profile pages, following & friends, and real-time chat |
 
 ## Tech stack
 
-- **Frontend:** HTML + CSS + JavaScript biasa — tiada build step, tiada framework. Kesemua gaya dan skrip utama berada dalam `index.html`; skrip luaran di `js/`.
-- **Backend komuniti:** Firebase (Auth + Firestore, SDK compat melalui CDN).
-- **Data langsung:** [Open-Meteo](https://open-meteo.com) (cuaca), [Frankfurter](https://api.frankfurter.dev) (kadar MYR→KRW ECB).
-- **AI:** Qoder Cloud Agents melalui edge Function Deno (`functions/index.ts`) — kuncian API diurus platform, tiada secret dalam pelayar.
-- **Hosting:** GitHub Pages (statik) + Qoder Sites (statik + Function).
+- **Frontend:** plain HTML + CSS + JavaScript — no build step, no framework. All the main styles and scripts live in `index.html`; external scripts are in `js/`.
+- **Community backend:** Firebase (Auth + Firestore, compat SDK via CDN).
+- **Live data:** [Open-Meteo](https://open-meteo.com) (weather), [Frankfurter](https://api.frankfurter.dev) (ECB MYR→KRW rates).
+- **AI:** Qoder Cloud Agents through a Deno edge Function (`functions/index.ts`) — API keys are managed by the platform, no secrets in the browser.
+- **Hosting:** GitHub Pages (static) + Qoder Sites (static + Function).
 
-## Struktur folder
+## Folder structure
 
 ```
-├── index.html            # Laman utama (segala CSS/JS utama + pangkalan data destinasi)
-├── profile.html          # Halaman profil awam ahli
-├── chat.html             # Sembang masa nyata antara rakan
+├── index.html            # Home page (all main CSS/JS + the destination database)
+├── profile.html          # Public member profile page
+├── chat.html             # Real-time chat between friends
 ├── js/
-│   ├── live.js           # Cuaca langsung + graf kadar ECB + hover/tooltip
-│   ├── firebase-config.js# Konfig projek Firebase (isi sendiri — lihat README-FIREBASE.md)
-│   ├── komuniti-auth.js  # Daftar/masuk/Google (Firebase Auth, mod demo offline)
-│   ├── komuniti-comments.js # Komen Firestore
-│   ├── profile.js        # Profil, ikut/rakan
-│   └── chat.js           # Sembang masa nyata
+│   ├── live.js           # Live weather + ECB rate chart + hover/tooltip
+│   ├── firebase-config.js# Firebase project config (fill it in yourself — see README-FIREBASE.md)
+│   ├── komuniti-auth.js  # Sign up/sign in/Google (Firebase Auth, offline demo mode)
+│   ├── komuniti-comments.js # Firestore comments
+│   ├── profile.js        # Profile, following/friends
+│   └── chat.js           # Real-time chat
 ├── functions/
-│   ├── index.ts          # Endpoint AI: /functions/v1/app?action=ask|health
-│   └── cloud-agents.mjs  # Klien Qoder Cloud Agents
-├── firestore.rules       # Peraturan keselamatan Firestore
-├── dist/                 # Salinan siap diterbitkan (Qoder Sites)
-└── README-FIREBASE.md    # Panduan penuh setup Firebase
+│   ├── index.ts          # AI endpoint: /functions/v1/app?action=ask|health
+│   └── cloud-agents.mjs  # Qoder Cloud Agents client
+├── firestore.rules       # Firestore security rules
+├── dist/                 # Copy ready to publish (Qoder Sites)
+└── README-FIREBASE.md    # Full Firebase setup guide
 ```
 
-## Menjalankan secara lokal
+## Running locally
 
-1. Klon atau muat turun folder ini.
-2. Hidangkan sebagai pelayan statik, contoh:
+1. Clone or download this folder.
+2. Serve it as a static server, for example:
    ```bash
-   npx serve .          # atau
+   npx serve .          # or
    python -m http.server 8000
    ```
-3. Buka `http://localhost:8000`. Cuaca & kadar berjalan terus (API awan, tanpa kunci).
-4. Komuniti: jika `js/firebase-config.js` belum diisi, laman automatik menggunakan **mod demo** (localStorage). Untuk Firebase sebenar, ikut [README-FIREBASE.md](README-FIREBASE.md) dan benarkan `localhost:8000` dalam *Authentication → Authorized domains*.
-5. Fungsi AI hanya aktif di Qoder Sites; secara luar talian, "Tanya Panduan" digunakan enjin padanan lokal.
+3. Open `http://localhost:8000`. Weather & rates work straight away (cloud APIs, no key).
+4. Community: if `js/firebase-config.js` has not been filled in yet, the site automatically uses **demo mode** (localStorage). For real Firebase, follow [README-FIREBASE.md](README-FIREBASE.md) and allow `localhost:8000` under *Authentication → Authorized domains*.
+5. The AI Functions are only active on Qoder Sites; when offline, "Ask Jelajah AI" uses the local matching engine.
 
-## Terbitkan
+## Publishing
 
-- **GitHub Pages:** push ke `main` — Pages menerbitkan dari akar repositori.
-- **Qoder Sites:** `dist/` + `functions/` disiapkan dan diterbitkan melalui Qoder (runtime edge Function).
+- **GitHub Pages:** push to `main` — Pages publishes from the repository root.
+- **Qoder Sites:** `dist/` + `functions/` are prepared and published through Qoder (edge Function runtime).
 
-## Data & kredit
+## Data & credits
 
-- Cuaca: Open-Meteo (bekanan, tanpa kunci API).
-- Kadar tukaran: kadar langsung terkini dari [exchangerate.fun](https://api.exchangerate.fun/latest); siri harian melalui Bank Tengah Eropah (API Frankfurter).
-- Fakta ekonomi: Bank Korea, KDI, OECD (setakat Oktober 2026).
-- Imej: Wikimedia Commons (thumb 1280/1920px).
-- Direka dan dibina sebagai projek penilaian pelajar.
+- Weather: Open-Meteo (no API key required).
+- Exchange rates: the latest live rates from [exchangerate.fun](https://api.exchangerate.fun/latest); daily series via the European Central Bank (Frankfurter API).
+- Economic facts: Bank of Korea, KDI, OECD (as of October 2026).
+- Images: Wikimedia Commons (1280/1920px thumbnails).
+- Designed and built as a student assessment project.
 
-## Lesen
+## License
 
-Dilesenkan di bawah [LICENSE](LICENSE).
+Licensed under [LICENSE](LICENSE).

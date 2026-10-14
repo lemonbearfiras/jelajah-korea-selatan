@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profil Ahli · Jelajah Korea Selatan</title>
+<title>Member Profile · Jelajah Korea Selatan</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="Halaman profil ahli Ruang Komuniti Jelajah Korea Selatan.">
+<meta name="description" content="Member profile page from the Jelajah Korea Selatan Community Space.">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -127,45 +127,45 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
 
 <div class="topbar">
   <a class="brand" href="index.html">Jelajah&nbsp;<em>Korea</em> <span style="font-weight:500;color:var(--muted)">· 프로필</span></a>
-  <a class="back" href="index.html#komuniti">← Ruang Komuniti</a>
+  <a class="back" href="index.html#komuniti">← Community Space</a>
 </div>
 
 <div class="wrap">
 
-  <div class="skeleton show" id="st-load" aria-label="Memuatkan profil">
+  <div class="skeleton show" id="st-load" aria-label="Loading profile">
     <div class="sk-ava"></div>
     <div class="sk-line" style="width:60%"></div>
     <div class="sk-line" style="width:35%"></div>
   </div>
 
   <div class="state" id="st-param">
-    <div class="big">Pautan tidak <i>lengkap</i></div>
-    <p>Halaman profil memerlukan ID pengguna — buka profil melalui avatar atau nama ahli dalam Ruang Komuniti.</p>
-    <a class="act" href="index.html#komuniti">Ke Ruang Komuniti →</a>
+    <div class="big">Link not <i>complete</i></div>
+    <p>The profile page requires a user ID — open a profile via a member's avatar or name in the Community Space.</p>
+    <a class="act" href="index.html#komuniti">To the Community Space →</a>
   </div>
 
   <div class="state" id="st-config">
-    <div class="big">Belum <i>bersambung</i></div>
-    <p>Firebase belum dikonfigurasi. Isi <b>js/firebase-config.js</b> mengikut panduan dalam README-FIREBASE.md.</p>
-    <a class="act" href="index.html">Kembali ke laman utama →</a>
+    <div class="big">Not yet <i>connected</i></div>
+    <p>Firebase has not been configured yet. Fill in <b>js/firebase-config.js</b> following the guide in README-FIREBASE.md.</p>
+    <a class="act" href="index.html">Back to the main page →</a>
   </div>
 
   <div class="state" id="st-demo">
-    <div class="big">Profil mod <i>demo</i></div>
-    <p>Akaun mod demo hanya disimpan dalam pelayar anda — tiada halaman profil awam. Daftar akaun sebenar dalam Ruang Komuniti untuk mendapat halaman profil sendiri.</p>
-    <a class="act" href="index.html#komuniti">Daftar akaun →</a>
+    <div class="big"><i>Demo</i>-mode profile</div>
+    <p>Demo-mode accounts are only stored in your browser — there is no public profile page. Sign up for a real account in the Community Space to get your own profile page.</p>
+    <a class="act" href="index.html#komuniti">Sign up for an account →</a>
   </div>
 
   <div class="state" id="st-404">
-    <div class="big">Profil tidak <i>dijumpai</i></div>
-    <p>Ahli ini tiada dalam pangkalan data — mungkin akaun telah dipadam atau pautan sudah lapuk.</p>
-    <a class="act" href="index.html#komuniti">Ke Ruang Komuniti →</a>
+    <div class="big">Profile not <i>found</i></div>
+    <p>This member is not in the database — the account may have been deleted or the link is outdated.</p>
+    <a class="act" href="index.html#komuniti">To the Community Space →</a>
   </div>
 
   <div class="state" id="st-err">
-    <div class="big">Tidak dapat <i>dimuatkan</i></div>
-    <p id="err-msg">Ralat semasa memuatkan profil.</p>
-    <a class="act" href="index.html#komuniti">Ke Ruang Komuniti →</a>
+    <div class="big">Unable to <i>load</i></div>
+    <p id="err-msg">Error while loading the profile.</p>
+    <a class="act" href="index.html#komuniti">To the Community Space →</a>
   </div>
 
   <div id="card">
@@ -173,17 +173,17 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
       <div class="p-head">
         <div class="ava-ring"><div class="ava" id="p-ava">?</div></div>
         <div class="p-id-block">
-          <p class="p-eyebrow">Ahli Komuniti · 회원</p>
+          <p class="p-eyebrow">Community Member · 회원</p>
           <h1 class="p-name" id="p-name">—</h1>
           <p class="p-uid" id="p-uid"></p>
         </div>
         <div class="p-actions">
-          <button class="pill solid" id="btn-follow" type="button">Ikut</button>
-          <button class="pill" id="btn-friend" type="button">Tambah Rakan</button>
-          <span class="pill own" id="own-chip" hidden>Ini profil anda</span>
-          <button class="pill" id="btn-settings" type="button" hidden>⚙ Tetapan</button>
+          <button class="pill solid" id="btn-follow" type="button">Follow</button>
+          <button class="pill" id="btn-friend" type="button">Add Friend</button>
+          <span class="pill own" id="own-chip" hidden>This is your profile</span>
+          <button class="pill" id="btn-settings" type="button" hidden>⚙ Settings</button>
           <div class="menu-wrap">
-            <button class="pill dot" id="btn-menu" type="button" aria-label="Menu lain">⋮</button>
+            <button class="pill dot" id="btn-menu" type="button" aria-label="More options">⋮</button>
             <div class="menu" id="menu"></div>
           </div>
         </div>
@@ -191,44 +191,44 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
     </div>
 
     <div class="blk stats">
-      <div class="stat"><b>Ahli sejak:</b> <span id="st-member">—</span></div>
-      <div class="stat"><b>Pengikut:</b> <span id="st-followers">—</span></div>
-      <div class="stat"><b>Mengikut:</b> <span id="st-following">—</span></div>
-      <div class="stat"><b>Rakan:</b> <span id="st-friends">—</span></div>
+      <div class="stat"><b>Member since:</b> <span id="st-member">—</span></div>
+      <div class="stat"><b>Followers:</b> <span id="st-followers">—</span></div>
+      <div class="stat"><b>Following:</b> <span id="st-following">—</span></div>
+      <div class="stat"><b>Friends:</b> <span id="st-friends">—</span></div>
     </div>
 
     <div class="blk">
-      <h2>Tentang: <span class="spacer"></span><button class="pill" id="btn-edit-about" type="button" hidden>Edit</button></h2>
+      <h2>About: <span class="spacer"></span><button class="pill" id="btn-edit-about" type="button" hidden>Edit</button></h2>
       <p class="about-text" id="about-text"></p>
-      <p class="about-empty" id="about-empty" hidden>Ahli ini belum menulis pengenalan diri.</p>
+      <p class="about-empty" id="about-empty" hidden>This member has not written an introduction yet.</p>
       <div id="about-edit-wrap" hidden>
-        <textarea class="about-edit" id="about-edit" maxlength="500" rows="4" placeholder="Ceritakan sedikit tentang anda — minat, gaya perjalanan, makanan kegemaran…"></textarea>
+        <textarea class="about-edit" id="about-edit" maxlength="500" rows="4" placeholder="Tell us a little about yourself — interests, travel style, favourite food…"></textarea>
         <div class="about-foot">
           <span class="about-chars" id="about-chars">0 / 500</span>
-          <button class="pill" id="about-cancel" type="button">Batal</button>
-          <button class="pill solid" id="about-save" type="button">Simpan</button>
+          <button class="pill" id="about-cancel" type="button">Cancel</button>
+          <button class="pill solid" id="about-save" type="button">Save</button>
         </div>
       </div>
     </div>
 
     <div class="blk" id="req-blk" hidden>
-      <h2>Permintaan Rakan <span id="req-count" style="color:var(--red)"></span></h2>
+      <h2>Friend Requests <span id="req-count" style="color:var(--red)"></span></h2>
       <div id="req-list"></div>
     </div>
 
     <div class="blk">
-      <h2>Komen oleh ahli ini <span id="p-c-note" style="font-weight:600;color:var(--muted);font-size:12px"></span></h2>
+      <h2>Comments by this member <span id="p-c-note" style="font-weight:600;color:var(--muted);font-size:12px"></span></h2>
       <div id="p-list"></div>
     </div>
 
     <div class="foot">
-      <a href="index.html#komuniti">Sertai perbualan dalam Komuniti →</a>
+      <a href="index.html#komuniti">Join the conversation in the Community →</a>
     </div>
   </div>
 
 </div>
 
-<footer>Jelajah Korea Selatan · 대한민국 — profil awam ahli komuniti</footer>
+<footer>Jelajah Korea Selatan · 대한민국 — public profile of a community member</footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>

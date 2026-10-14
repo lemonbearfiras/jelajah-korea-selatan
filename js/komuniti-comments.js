@@ -33,17 +33,17 @@ var pendingJump=true;
 
 /* ---------- util ---------- */
 var PROFILE_BASE='https://lemonbearfiras.github.io/jelajah-korea-selatan/profile?v=';
-var BM_M=['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
+var BM_M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function ago(ts){
-  if(!ts)return 'baru sahaja';
+  if(!ts)return 'just now';
   var s=Math.max(0,(Date.now()-ts)/1000);
-  if(s<60)return 'baru sahaja';
-  if(s<3600)return Math.floor(s/60)+' minit lalu';
-  if(s<86400)return Math.floor(s/3600)+' jam lalu';
+  if(s<60)return 'just now';
+  if(s<3600)return Math.floor(s/60)+' min ago';
+  if(s<86400)return Math.floor(s/3600)+' h ago';
   var day=s/86400;
-  if(day<2)return 'semalam';
-  if(day<7)return Math.floor(day)+' hari lalu';
+  if(day<2)return 'yesterday';
+  if(day<7)return Math.floor(day)+' d ago';
   var dt=new Date(ts);
   return dt.getDate()+' '+BM_M[dt.getMonth()]+' '+dt.getFullYear();
 }
@@ -59,19 +59,19 @@ function avaHTML(p,cls){
 function itemHTML(c,inThread){
   var own=user&&c.uid===user.uid;
   var li=likeInfo[c.id]||{n:0,mine:false};
-  var prof=c.uid?'<a class="km-prof" href="'+esc(PROFILE_BASE+encodeURIComponent(c.uid))+'" target="_blank" rel="noopener" title="Lihat halaman profil '+esc(c.name)+'">':'';
+  var prof=c.uid?'<a class="km-prof" href="'+esc(PROFILE_BASE+encodeURIComponent(c.uid))+'" target="_blank" rel="noopener" title="View '+esc(c.name)+'\'s profile page">':'';
   var profEnd=c.uid?'</a>':'';
-  var replyTag=(!inThread&&c.replyTo)?'<span class="km-replytag">↩ mem balas '+esc(c.replyName||'@'+c.replyTo.slice(0,8))+'</span>':'';
+  var replyTag=(!inThread&&c.replyTo)?'<span class="km-replytag">↩ replying to '+esc(c.replyName||'@'+c.replyTo.slice(0,8))+'</span>':'';
   return '<article class="km-item'+(inThread?' km-inthread':'')+'" id="komen-'+esc(c.id)+'">'+prof+avaHTML(c)+profEnd+
     '<div class="km-body">'+
       '<div class="km-meta"><b>'+(c.uid?'<a class="km-prof" href="'+esc(PROFILE_BASE+encodeURIComponent(c.uid))+'" target="_blank" rel="noopener">'+esc(c.name)+'</a>':esc(c.name))+'</b><time>'+ago(c.ts)+'</time>'+replyTag+
-      (own?'<button class="km-del" type="button" data-id="'+esc(c.id)+'">Padam</button>':'')+
+      (own?'<button class="km-del" type="button" data-id="'+esc(c.id)+'">Delete</button>':'')+
       '</div>'+
       '<p class="km-text">'+esc(c.text).replace(/\n/g,'<br>')+'</p>'+
       '<div class="km-acts">'+
-        '<button class="km-like'+(li.mine?' on':'')+'" type="button" data-id="'+esc(c.id)+'" aria-pressed="'+(li.mine?'true':'false')+'" aria-label="Suka komen">♥<i>'+li.n+'</i></button>'+
-        '<button class="km-replyb" type="button" data-id="'+esc(c.id)+'" data-name="'+esc(c.name)+'">Balas</button>'+
-        '<button class="km-shareb" type="button" data-id="'+esc(c.id)+'">Kongsi</button>'+
+        '<button class="km-like'+(li.mine?' on':'')+'" type="button" data-id="'+esc(c.id)+'" aria-pressed="'+(li.mine?'true':'false')+'" aria-label="Like comment">♥<i>'+li.n+'</i></button>'+
+        '<button class="km-replyb" type="button" data-id="'+esc(c.id)+'" data-name="'+esc(c.name)+'">Reply</button>'+
+        '<button class="km-shareb" type="button" data-id="'+esc(c.id)+'">Share</button>'+
       '</div>'+
       (!inThread?threadHTML(c):'')+
     '</div></article>';
@@ -81,7 +81,7 @@ function threadHTML(c){
   if(!reps||!reps.length)return '';
   reps.sort(function(a,b){return a.ts-b.ts});
   var open=!!openThreads[c.id];
-  return '<button class="km-toggle" type="button" data-id="'+esc(c.id)+'" aria-expanded="'+(open?'true':'false')+'">'+(open?'Tutup':'Buka')+' balasan ('+reps.length+')</button>'+
+  return '<button class="km-toggle" type="button" data-id="'+esc(c.id)+'" aria-expanded="'+(open?'true':'false')+'">'+(open?'Close':'Open')+' replies ('+reps.length+')</button>'+
     '<div class="km-replies" id="rep-'+esc(c.id)+'"'+(open?'':' hidden')+'>'+reps.map(function(r){return itemHTML(r,true)}).join('')+'</div>';
 }
 var threads={};
@@ -109,9 +109,9 @@ function buildThreads(){
 }
 function render(){
   items.sort(function(a,b){return b.ts-a.ts});
-  countEl.textContent=items.length?items.length+' komen':'';
+  countEl.textContent=items.length?items.length+(items.length===1?' comment':' comments'):'';
   if(!items.length){
-    list.innerHTML='<div class="km-empty">Masih tiada komen — jadilah orang pertama berkongsi cerita perjalanan anda!</div>';
+    list.innerHTML='<div class="km-empty">No comments yet — be the first to share your travel story!</div>';
     renderBoard();paintNote();return;
   }
   list.innerHTML=buildThreads().map(function(c){return itemHTML(c,false)}).join('');
@@ -134,7 +134,7 @@ function openThread(box){
   var tg=box.parentNode.querySelector('.km-toggle');
   box.hidden=false;
   openThreads[box.id.slice(4)]=true;
-  if(tg){tg.setAttribute('aria-expanded','true');tg.textContent='Tutup balasan ('+box.querySelectorAll('.km-item').length+')'}
+  if(tg){tg.setAttribute('aria-expanded','true');tg.textContent='Close replies ('+box.querySelectorAll('.km-item').length+')'}
 }
 window.addEventListener('hashchange',tryJump);
 
@@ -154,7 +154,7 @@ function renderBoard(){
   rows=rows.slice(0,5);
   boardList.innerHTML=rows.map(function(r,i){
     return '<li><span class="km-rank">'+(i+1)+'</span>'+avaHTML(r,'km-ava-xs')+'<b>'+esc(r.name)+'</b>'+
-      '<span class="km-bscore">'+r.n+' komen · ♥ '+r.hearts+'</span></li>';
+      '<span class="km-bscore">'+r.n+' comments · ♥ '+r.hearts+'</span></li>';
   }).join('');
   boardEl.hidden=rows.length<2;
 }
@@ -171,7 +171,7 @@ function paintNote(){
   var nw=items.filter(function(c){return c.replyTo&&mine[c.replyTo]&&c.ts>seen}).length;
   if(!nw)return;
   noteEl.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>'+
-    '<b>'+nw+'</b> balasan baharu pada komen anda.';
+    '<b>'+nw+'</b> new replies to your comments.';
   noteEl.hidden=false;
   try{localStorage.setItem('km-seen-reply',String(Date.now()))}catch(e){}
 }
@@ -226,12 +226,12 @@ function fbLoad(){
   unsubs=db.collection('comments').orderBy('createdAt','desc').limit(50).onSnapshot(function(snap){
     items=snap.docs.map(function(doc){
       var v=doc.data();
-      return {id:doc.id,uid:v.uid||'',name:v.name||'Pengembara',photo:v.photo||'',text:v.text||'',
+      return {id:doc.id,uid:v.uid||'',name:v.name||'Traveller',photo:v.photo||'',text:v.text||'',
         replyTo:v.replyTo||'',replyName:v.replyName||'',ts:v.createdAt&&v.createdAt.toMillis?v.createdAt.toMillis():null};
     });
     refreshLikes();
   },function(err){
-    list.innerHTML='<div class="km-empty">Tidak dapat memuatkan komen ('+esc(err.code||'ralat')+'). Semua peraturan Firestore dalam README-FIREBASE.md.</div>';
+    list.innerHTML='<div class="km-empty">Could not load comments ('+esc(err.code||'error')+'). All Firestore rules are in README-FIREBASE.md.</div>';
   });
 }
 
@@ -241,10 +241,10 @@ function applyAuth(){
   sendBtn.disabled=locked;
   textEl.disabled=locked;
   compose.classList.toggle('locked',locked);
-  textEl.placeholder=locked?'Log masuk untuk menulis komen…':'Kongsi pengalaman anda — tip jadual, bajet atau makanan?';
+  textEl.placeholder=locked?'Log in to write a comment…':'Share your experience — itinerary, budget or food tips?';
   hintEl.hidden=!locked;
   if(locked)cancelReply();
-  render(); /* kira semula butang Padam/Suka ikut pemilik */
+  render(); /* re-count the Delete/Like buttons per owner */
 }
 d.addEventListener('komuniti:auth',function(ev){
   var prevMode=mode,prevUser=user;
@@ -305,7 +305,7 @@ compose.addEventListener('submit',function(ev){
       createdAt:firebase.firestore.FieldValue.serverTimestamp()
     }).then(clear).catch(function(err){
       sendBtn.disabled=false;
-      alert('Komen gagal dihantar ('+(err.code||'ralat')+'). Semua peraturan Firestore dalam README-FIREBASE.md.');
+      alert('Could not save comment ('+(err.code||'error')+'). All Firestore rules are in README-FIREBASE.md.');
     });
   }
 });
@@ -333,7 +333,7 @@ function toggleLike(id){
     }).then(function(){
       likeInfo[id]={n:info.n+1,mine:true};render();
     }).catch(function(e){
-      alert('Gagal menanda suka ('+(e.code||'ralat')+'). Terbitkan peraturan likes — README-FIREBASE.md.');
+      alert('Could not like ('+(e.code||'error')+'). Publish the likes rules — README-FIREBASE.md.');
       refreshLikes();
     });
   }
@@ -358,10 +358,10 @@ function shareComment(c,btn){
   var url=location.origin+location.pathname+'#komen-'+c.id;
   var snippet=c.text.length>90?c.text.slice(0,90)+'…':c.text;
   if(navigator.share){
-    navigator.share({title:'Jelajah Korea Selatan — Komuniti',text:c.name+': "'+snippet+'"',url:url}).catch(function(){});
+    navigator.share({title:'Jelajah Korea Selatan — Community',text:c.name+': "'+snippet+'"',url:url}).catch(function(){});
     return;
   }
-  copyText(url).then(function(){flashBtn(btn,'Pautan tersalin!')},function(){flashBtn(btn,'Gagal menyalin')});
+  copyText(url).then(function(){flashBtn(btn,'Link copied!')},function(){flashBtn(btn,'Copy failed')});
 }
 
 /* ---------- delegasi klik pada senarai ---------- */
@@ -376,7 +376,7 @@ list.addEventListener('click',function(ev){
       rbox.hidden=true;
       delete openThreads[tg.getAttribute('data-id')];
       tg.setAttribute('aria-expanded','false');
-      tg.textContent='Buka balasan ('+rbox.querySelectorAll('.km-item').length+')';
+      tg.textContent='Open replies ('+rbox.querySelectorAll('.km-item').length+')';
     }
     return;
   }
@@ -397,14 +397,14 @@ list.addEventListener('click',function(ev){
   }
   var b=t.closest('.km-del');
   if(!b||!user)return;
-  if(!window.confirm('Padam komen ini?'))return;
+  if(!window.confirm('Delete this comment?'))return;
   var id2=b.getAttribute('data-id');
   if(mode==='demo'){
     demoWrite(demoRead().filter(function(c){return c.id!==id2}));
     demoLoad();
   }else{
     KomAuth.db().collection('comments').doc(id2).delete().catch(function(e){
-      alert('Komen gagal dipadam ('+(e.code||'ralat')+'). Semak peraturan Firestore — README-FIREBASE.md.');
+      alert('Could not delete comment ('+(e.code||'error')+'). Check the Firestore rules — README-FIREBASE.md.');
     });
   }
 });

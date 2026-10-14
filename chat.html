@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sembang · Jelajah Korea Selatan</title>
+<title>Chat · Jelajah Korea Selatan</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="Sembang peribadi antara rakan dalam komuniti Jelajah Korea Selatan.">
+<meta name="description" content="Private chat between friends in the Jelajah Korea Selatan community.">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -75,16 +75,16 @@ footer{border-top:1px solid var(--line);padding:16px 5%;text-align:center;font-s
 <body>
 
 <div class="topbar">
-  <a class="brand" href="index.html">Jelajah&nbsp;<em>Korea</em> <span style="font-weight:500;color:var(--muted)">· Sembang</span></a>
+  <a class="brand" href="index.html">Jelajah&nbsp;<em>Korea</em> <span style="font-weight:500;color:var(--muted)">· Chat</span></a>
   <div class="links">
-    <a class="pill-link" id="lnk-profile" href="#" hidden>Profil ↔</a>
-    <a class="back" href="index.html#komuniti">← Komuniti</a>
+    <a class="pill-link" id="lnk-profile" href="#" hidden>Profile ↔</a>
+    <a class="back" href="index.html#komuniti">← Community</a>
   </div>
 </div>
 
 <div class="wrap">
 
-  <div class="skeleton show" id="st-load" aria-label="Memuatkan sembang">
+  <div class="skeleton show" id="st-load" aria-label="Loading chat">
     <div class="sk-line"></div>
     <div class="sk-line right"></div>
     <div class="sk-line"></div>
@@ -92,33 +92,33 @@ footer{border-top:1px solid var(--line);padding:16px 5%;text-align:center;font-s
   </div>
 
   <div class="state" id="st-param">
-    <div class="big">Tiada <i>rakan</i> dipilih</div>
-    <p>Halaman sembang memerlukan ID rakan — buka melalui butang "Rakan ✓ · Chat" pada profil mereka.</p>
-    <a class="act" href="index.html#komuniti">Ke Ruang Komuniti →</a>
+    <div class="big">No <i>friend</i> selected</div>
+    <p>The chat page requires a friend ID — open it via the "Friends ✓ · Chat" button on their profile.</p>
+    <a class="act" href="index.html#komuniti">To the Community Space →</a>
   </div>
 
   <div class="state" id="st-config">
-    <div class="big">Belum <i>bersambung</i></div>
-    <p>Firebase belum dikonfigurasi. Isi <b>js/firebase-config.js</b> mengikut panduan dalam README-FIREBASE.md.</p>
-    <a class="act" href="index.html">Kembali ke laman utama →</a>
+    <div class="big">Not yet <i>connected</i></div>
+    <p>Firebase has not been configured yet. Fill in <b>js/firebase-config.js</b> following the guide in README-FIREBASE.md.</p>
+    <a class="act" href="index.html">Back to the main page →</a>
   </div>
 
   <div class="state" id="st-login">
-    <div class="big">Log masuk <i>terlebih dahulu</i></div>
-    <p>Sembang peribadi hanya tersedia untuk ahli yang telah log masuk dengan akaun sebenar (bukan mod demo).</p>
-    <a class="act" href="index.html#komuniti">Log masuk / Daftar →</a>
+    <div class="big">Log in <i>first</i></div>
+    <p>Private chat is only available to members who are logged in with a real account (not demo mode).</p>
+    <a class="act" href="index.html#komuniti">Log in / Sign up →</a>
   </div>
 
   <div class="state" id="st-notfriend">
-    <div class="big">Belum jadi <i>rakan</i></div>
-    <p>Anda perlu menjadi rakan untuk berbual. Hantar permintaan rakan pada profil ahli ini, dan terima apabila mereka menjawab.</p>
-    <a class="act" id="act-toprofile" href="#">Buka Profil →</a>
+    <div class="big">Not <i>friends</i> yet</div>
+    <p>You need to be friends to chat. Send a friend request on this member's profile, and accept it once they respond.</p>
+    <a class="act" id="act-toprofile" href="#">Open Profile →</a>
   </div>
 
   <div class="state" id="st-err">
-    <div class="big">Tidak dapat <i>dimuatkan</i></div>
-    <p id="err-msg">Ralat semasa memuatkan sembang.</p>
-    <a class="act" href="index.html#komuniti">Ke Ruang Komuniti →</a>
+    <div class="big">Unable to <i>load</i></div>
+    <p id="err-msg">Error while loading the chat.</p>
+    <a class="act" href="index.html#komuniti">To the Community Space →</a>
   </div>
 
   <div id="room">
@@ -126,19 +126,19 @@ footer{border-top:1px solid var(--line);padding:16px 5%;text-align:center;font-s
       <div class="ava" id="c-ava">?</div>
       <div>
         <p class="nm" id="c-name">—</p>
-        <p class="sub" id="c-sub"><i>●</i> Sembang peribadi · hanya anda berdua</p>
+        <p class="sub" id="c-sub"><i>●</i> Private chat · just the two of you</p>
       </div>
     </div>
     <div class="msgs" id="msgs" aria-live="polite"></div>
     <form class="form" id="chat-form" autocomplete="off">
-      <textarea id="chat-input" rows="1" maxlength="1000" placeholder="Taip mesej… (Enter = hantar, Shift+Enter = baris baharu)"></textarea>
-      <button class="send" id="chat-send" type="submit" aria-label="Hantar">➤</button>
+      <textarea id="chat-input" rows="1" maxlength="1000" placeholder="Type a message… (Enter = send, Shift+Enter = new line)"></textarea>
+      <button class="send" id="chat-send" type="submit" aria-label="Send">➤</button>
     </form>
   </div>
 
 </div>
 
-<footer>Jelajah Korea Selatan · 대한민국 — sembang peribadi antara rakan</footer>
+<footer>Jelajah Korea Selatan · 대한민국 — private chat between friends</footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>

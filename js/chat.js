@@ -37,9 +37,9 @@ var db=firebase.firestore(), auth=firebase.auth();
 var me=null, chatId=null, unsub=null;
 
 function errState(e){
-  var msg='Ralat: '+esc(e.code||e.message||e);
+  var msg='Error: '+esc(e.code||e.message||e);
   if(e.code==='permission-denied'){
-    msg='Peraturan Firestore belum mengizinkan sembang — terbitkan peraturan dalam <b>firestore.rules</b> (README-FIREBASE.md, Langkah 4).';
+    msg='The Firestore rules do not yet allow chat — please deploy the rules in <b>firestore.rules</b> (README-FIREBASE.md, Step 4).';
   }
   $('#err-msg').innerHTML=msg;
   show('#st-err');
@@ -49,7 +49,7 @@ function renderMsgs(snap){
   var box=$('#msgs');
   var atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<70;
   if(!snap.size){
-    box.innerHTML='<div class="msg-sys">Belum ada mesej. Mulakan perbualan! 👋</div>';
+    box.innerHTML='<div class="msg-sys">No messages yet. Start the conversation! 👋</div>';
     return;
   }
   box.innerHTML='';
@@ -79,10 +79,10 @@ function startChat(){
       db.collection('users').doc(me).get().catch(function(){return {exists:false,data:function(){return {}}}})
     ]).then(function(res){
       var ov=res[0].exists?res[0].data():{};
-      var name=ov.name||'Rakan';
+      var name=ov.name||'Friend';
       paintAva($('#c-ava'),{name:name,photo:ov.photo||''});
       $('#c-name').textContent=name;
-      document.title='Sembang dengan '+name+' · Jelajah Korea';
+      document.title='Chat with '+name+' · Jelajah Korea';
       $('#lnk-profile').hidden=false;
       $('#lnk-profile').href='profile.html?v='+encodeURIComponent(other);
       $('#room').classList.add('show');
@@ -105,7 +105,7 @@ function startChat(){
       from:me,to:other,text:text,createdAt:firebase.firestore.FieldValue.serverTimestamp()
     }).then(function(){inputEl.value='';inputEl.focus()})
       .catch(function(e){
-        alert('Mesej tidak dapat dihantar: '+(e.code||e.message));
+        alert('Message could not be sent: '+(e.code||e.message));
       }).then(function(){sendBtn.disabled=false});
   };
   inputEl.addEventListener('keydown',function(ev){

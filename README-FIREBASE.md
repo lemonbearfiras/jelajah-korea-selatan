@@ -1,27 +1,27 @@
-# Panduan Firebase — Ruang Komuniti (Sign In + Komen + Profil + Rakan + Sembang)
+# Firebase Guide — Community Space (Sign In + Comments + Profile + Friends + Chat)
 
-Ruang Komuniti di laman ini disambungkan kepada **Firebase** (Authentication + Cloud Firestore).
-Sebelum konfigurasi diisi, laman berjalan dalam **Mod Demo** — semua fungsi boleh dicuba,
-tetapi akaun & komen disimpan dalam pelayar anda sahaja.
+The Community Space on this site is connected to **Firebase** (Authentication + Cloud Firestore).
+Before the configuration is filled in, the site runs in **Demo Mode** — every feature can be tried,
+but accounts & comments are stored only in your browser.
 
 ---
 
-## Langkah 1 — Cipta projek Firebase (2 minit)
+## Step 1 — Create a Firebase project (2 minutes)
 
-1. Buka <https://console.firebase.google.com> dan log masuk dengan akaun Google.
-2. Klik **Create a project / Add project**.
-3. Nama projek: cth. `jelajah-korea` → teruskan (Google Analytics boleh dimatikan).
+1. Open <https://console.firebase.google.com> and log in with a Google account.
+2. Click **Create a project / Add project**.
+3. Project name: e.g. `jelajah-korea` → continue (Google Analytics can be turned off).
 
-## Langkah 2 — Salin konfigurasi ke `js/firebase-config.js`
+## Step 2 — Copy the configuration into `js/firebase-config.js`
 
-1. Dalam halaman utama projek, klik ikon **Web** `</>` (Add app → Web).
-2. Taip nama samaran cth. `jelajah-korea-web` → **Register app**.
-3. Firebase memaparkan blok `const firebaseConfig = {...}` — **salin setiap nilai**.
-4. Buka fail **`js/firebase-config.js`** dan gantikan semua nilai `MASUKKAN_...`:
+1. On the project's main page, click the **Web** icon `</>` (Add app → Web).
+2. Type a nickname, e.g. `jelajah-korea-web` → **Register app**.
+3. Firebase shows a `const firebaseConfig = {...}` block — **copy every value**.
+4. Open the **`js/firebase-config.js`** file and replace all the `MASUKKAN_...` values:
 
 ```js
 var FIREBASE_CONFIG = {
-  apiKey:            "AIzaSy... (daripada Firebase)",
+  apiKey:            "AIzaSy... (from Firebase)",
   authDomain:        "jelajah-korea.firebaseapp.com",
   projectId:         "jelajah-korea",
   storageBucket:     "jelajah-korea.appspot.com",
@@ -30,90 +30,90 @@ var FIREBASE_CONFIG = {
 };
 ```
 
-5. Simpan fail. Sebaik sahaja nilai diisi, laman bertukar daripada Mod Demo ke Firebase secara automatik.
+5. Save the file. As soon as the values are filled in, the site switches from Demo Mode to Firebase automatically.
 
-## Langkah 3 — Aktifkan Authentication
+## Step 3 — Enable Authentication
 
-1. Menu kiri: **Build → Authentication → Get started**.
-2. Tab **Sign-in method** → aktifkan:
+1. Left menu: **Build → Authentication → Get started**.
+2. **Sign-in method** tab → enable:
    - **Email/Password** → Enable → Save
-   - **Google** → Enable → masukkan emel sokongan projek → Save
+   - **Google** → Enable → enter the project support email → Save
 
-> **Nota Google sign-in:** Google hanya dibenarkan dari domain yang didaftarkan.
-> `file://` (buka terus index.html) **tidak** dibenarkan — gunakan `localhost`
-> (Langkah 5). Emel/kata laluan berfungsi sama ada melalui `file://` mahupun localhost.
+> **Google sign-in note:** Google is only allowed from registered domains.
+> `file://` (opening index.html directly) is **not** allowed — use `localhost`
+> (Step 5). Email/password work both through `file://` and through localhost.
 
-## Langkah 4 — Cipta pangkalan data Firestore + peraturan
+## Step 4 — Create the Firestore database + rules
 
-1. Menu kiri: **Build → Firestore Database → Create database**.
-2. Pilih lokasi (cth. `asia-southeast1` — Singapura) → mode **Production** → Create.
-3. Tab **Rules** → **padam semua** teks lama → buka fail **`firestore.rules`** dalam
-   folder projek ini → **Ctrl+A kemudian Ctrl+C** (salin SELURUH isinya) →
-   tampal di tab Rules → klik **Publish**.
+1. Left menu: **Build → Firestore Database → Create database**.
+2. Choose a location (e.g. `asia-southeast1` — Singapore) → **Production** mode → Create.
+3. **Rules** tab → **delete all** the old text → open the **`firestore.rules`** file in
+   this project folder → **Ctrl+A then Ctrl+C** (copy ALL of its contents) →
+   paste it in the Rules tab → click **Publish**.
 
-> ⚠️ Peraturan versi ini menambah koleksi baharu: `follows`, `friendRequests`,
-> `friends`, `chats`, serta medan `about` dan `username` (pilihan, ≤ 20 aksara)
-> dalam `users`. Tanpa menerbitkannya,
-> halaman profil masih loads (nama, komen, tarikh) tetapi kiraan Pengikut /
-> Mengikut / Rakan paparkan "—" dan butang Ikut / Tambah Rakan / Chat gagal.
+> ⚠️ This version of the rules adds new collections: `follows`, `friendRequests`,
+> `friends`, `chats`, plus the `about` and `username` fields (optional, ≤ 20 characters)
+> in `users`. Without publishing them, the profile page still loads (name, comments, date)
+> but the Followers / Following / Friends counts show "—" and the Follow / Add Friend / Chat
+> buttons fail.
 
-Maksud peraturan ringkas:
+What the rules mean in short:
 
-- `comments` — sesiapa boleh baca; hanya ahli log masuk boleh tulis; padam milik sendiri.
-- `users` — profil awam (nama, foto, `about` ≤ 500 aksara, `username` ≤ 20 aksara, `createdAt`); hanya pemilik boleh ubah/padam. Emel tidak disimpan di sini. Boleh dikemas kini melalui halaman **settings.html** (butang ⚙ Tetapan pada profil sendiri).
-- `follows` — satu dokumen `ID = saya_dia`; siapa pun boleh baca kiraan; hanya pengikut boleh cipta/padam ikutan sendiri.
-- `friendRequests` — `ID = penghantar_penerima`; hanya dua orang terlibat boleh baca; penerima sahaja boleh terima (pending → accepted).
-- `friends` — `ID = dua uid tersusun a-z`; awam boleh baca (bukti persahabatan); hanya dicipta oleh penerima selepas permintaan diterima.
-- `chats` — mesej dalam `chats/<pairId>/messages`; HANYA dua rakan terlibat boleh baca/hantar; teks 1–1000 aksara; padam mesej sendiri.
+- `comments` — anyone can read; only signed-in members can write; delete your own.
+- `users` — public profile (name, photo, `about` ≤ 500 characters, `username` ≤ 20 characters, `createdAt`); only the owner can edit/delete. Email is not stored here. Can be updated through the **settings.html** page (the ⚙ Settings button on your own profile).
+- `follows` — one document `ID = me_them`; anyone can read the counts; only the follower can create/delete their own follow.
+- `friendRequests` — `ID = sender_receiver`; only the two people involved can read; only the recipient can accept (pending → accepted).
+- `friends` — `ID = the two uids sorted a-z`; anyone can read (proof of friendship); created only by the recipient after the request is accepted.
+- `chats` — messages in `chats/<pairId>/messages`; ONLY the two friends involved can read/send; text 1–1000 characters; delete your own messages.
 
-## Langkah 5 — Buka laman melalui localhost (disyorkan)
+## Step 5 — Open the site through localhost (recommended)
 
-Untuk Google sign-in (dan pengujian yang paling mirip laman sebenar):
+For Google sign-in (and testing that most closely matches the real site):
 
 ```bash
-# dalam folder projek, mana-mana satu:
+# in the project folder, either one:
 py -m http.server 8000        # Windows (Python)
 npx serve .                   # Node.js
 ```
 
-Kemudian buka <http://localhost:8000>.
-`localhost` sudah secara automatik dibenarkan oleh Firebase Authentication.
+Then open <http://localhost:8000>.
+`localhost` is already allowed automatically by Firebase Authentication.
 
 ---
 
-## Struktur fail
+## File structure
 
-| Fail | Fungsi |
+| File | Function |
 |---|---|
-| `index.html` | Laman utama — termasuk section `09 — Komuniti` |
-| `profile.html` | Halaman profil **awam** setiap ahli — `profile?v=<uid>` (pautan avatar/nama dalam komen & top bar) |
-| `js/profile.js` | Logik profil — butang Ikut, Tambah Rakan / Terima / Chat, statistik & sunting Tentang |
-| `chat.html` | Halaman **sembang peribadi** antara dua rakan — `chat?v=<uid rakan>` |
-| `js/chat.js` | Logik chat masa nyata (onSnapshot) — hantar & papar mesej |
-| `js/firebase-config.js` | **Anda isi** konfigurasi projek di sini |
-| `js/komuniti-auth.js` | Daftar / masuk / Google / log keluar (dua mod) |
-| `js/komuniti-comments.js` | Papar, hantar & padam komen (Firestore / demo) |
-| `firestore.rules` | Peraturan keselamatan Firestore (tampal dalam Console — Langkah 4) |
-| `destinations-korea.json` | Salinan sandaran pangkalan data 68 tempat |
+| `index.html` | Home page — includes the `09 — Community` section |
+| `profile.html` | **Public** profile page of each member — `profile?v=<uid>` (the avatar/name links in comments & the top bar) |
+| `js/profile.js` | Profile logic — Follow button, Add Friend / Accept / Chat, statistics & editing About |
+| `chat.html` | **Private chat** page between two friends — `chat?v=<friend uid>` |
+| `js/chat.js` | Real-time chat logic (onSnapshot) — send & display messages |
+| `js/firebase-config.js` | **You fill in** the project configuration here |
+| `js/komuniti-auth.js` | Sign up / sign in / Google / log out (two modes) |
+| `js/komuniti-comments.js` | Display, send & delete comments (Firestore / demo) |
+| `firestore.rules` | Firestore security rules (paste into the Console — Step 4) |
+| `destinations-korea.json` | Backup copy of the 68-place database |
 
-## Data yang disimpan
+## Data that is stored
 
-- **Firebase mode:** koleksi dalam Firestore
-  - `comments` → `{ uid, name, photo, text, replyTo, replyName, createdAt }` — kemas kini masa nyata (tanpa muat semula). `replyTo`/`replyName` kosong (`''`) untuk komen biasa; diisi ID & nama asal apabila membalas.
-  - `likes` → `{ commentId, uid, createdAt }` — satu dokumen setiap tanda suka; ID dokumen mestilah `<commentId>_<uid>` supaya seorang ahli hanya boleh suka sekali (dan boleh batal).
-  - `users` → profil awam setiap akaun: `{ uid, name, photo, about, username, createdAt }` — dicipta automatik semasa daftar/masuk; `about` (max 500 aksara) dan `username` (max 20 aksara) boleh disunting pemilik melalui butang **⚙ Tetapan** di halaman profil (halaman `settings.html`). Emel tidak disimpan di sini (privasi — dokumen ini boleh dibaca umum).
-  - `follows` → `{ follower, following }` — ID dokumen `pengikut_diikuti`; untuk kiraan Pengikut/Mengikut.
-  - `friendRequests` → `{ from, to, status }` — ID `penghantar_penerima`; status `pending` / `accepted`.
-  - `friends` → `{ participants: [uidA, uidB] tersusun a-z, reqId }` — bukti persahabatan; ID = `uidA_uidB`.
-  - `chats/<pairId>/messages` → `{ from, to, text, createdAt }` — sembang peribadi, hanya antara dua rakan.
-- **Mod demo:** `localStorage` pelayar (`km-demo-user`, `km-demo-comments`).
+- **Firebase mode:** collections in Firestore
+  - `comments` → `{ uid, name, photo, text, replyTo, replyName, createdAt }` — real-time updates (no reload). `replyTo`/`replyName` are empty (`''`) for ordinary comments; filled with the original ID & name when replying.
+  - `likes` → `{ commentId, uid, createdAt }` — one document per like; the document ID must be `<commentId>_<uid>` so a member can like only once (and can undo it).
+  - `users` → public profile of each account: `{ uid, name, photo, about, username, createdAt }` — created automatically during sign up/sign in; `about` (max 500 characters) and `username` (max 20 characters) can be edited by the owner through the **⚙ Settings** button on the profile page (the `settings.html` page). Email is not stored here (privacy — this document is publicly readable).
+  - `follows` → `{ follower, following }` — document ID `follower_followed`; used for the Follower/Following counts.
+  - `friendRequests` → `{ from, to, status }` — ID `sender_receiver`; status `pending` / `accepted`.
+  - `friends` → `{ participants: [uidA, uidB] sorted a-z, reqId }` — proof of friendship; ID = `uidA_uidB`.
+  - `chats/<pairId>/messages` → `{ from, to, text, createdAt }` — private chat, only between the two friends.
+- **Demo mode:** browser `localStorage` (`km-demo-user`, `km-demo-comments`).
 
-## Soalan lazim
+## Common questions
 
-| Masalah | Punca / penyelesaian |
+| Problem | Cause / solution |
 |---|---|
-| `auth/unauthorized-domain` | Buka melalui `http://localhost:8000`, atau tambah domain anda di Authentication → Settings → Authorized domains |
-| `permission-denied` semasa hantar | Peraturan Firestore belum diterbitkan (Langkah 4) |
-| Komen tidak muncul | Semak anda gunakan projek yang betul dalam `js/firebase-config.js`; buka Console (F12) untuk ralat |
-| `auth/operation-not-allowed` | Aktifkan kaedah Email/Password atau Google dalam Authentication |
-| Lupa kata laluan | Klik "Lupa kata laluan?" — pautan set semula dihantar ke emel |
+| `auth/unauthorized-domain` | Open through `http://localhost:8000`, or add your domain in Authentication → Settings → Authorized domains |
+| `permission-denied` when submitting | The Firestore rules have not been published yet (Step 4) |
+| Comments do not appear | Check that you are using the correct project in `js/firebase-config.js`; open the Console (F12) for errors |
+| `auth/operation-not-allowed` | Enable the Email/Password or Google method in Authentication |
+| Forgot password | Click "Forgot password?" — a reset link is sent to your email |

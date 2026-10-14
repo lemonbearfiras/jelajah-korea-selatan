@@ -8,7 +8,7 @@
 (function(){
 'use strict';
 var $=function(s){return document.querySelector(s)};
-var BM_M=['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
+var BM_M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var GRADS=['linear-gradient(135deg,#CD2E3A,#8e1f28)','linear-gradient(135deg,#0047A0,#2e6fd8)','linear-gradient(135deg,#c9a45c,#8a6d2f)','linear-gradient(135deg,#5b8def,#0047A0)','linear-gradient(135deg,#3d7a4f,#6b9c5a)','linear-gradient(135deg,#7a3dd1,#4a2a8e)'];
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -104,12 +104,12 @@ avaEl.addEventListener('keydown',function(ev){
 });
 $('#s-photo-clear').addEventListener('click',function(){
   photoIn.value='';previewAva();photoIn.focus();
-  note('Foto dikosongkan — tekan "Simpan perubahan" untuk menyimpan.','');
+  note('Photo cleared — press "Save changes" to save.','');
 });
 $('#i-copy').addEventListener('click',function(){
   var link=$('#i-link').textContent;
-  if(navigator.clipboard)navigator.clipboard.writeText(link).then(function(){note('✓ Pautan profil disalin.','ok')});
-  else prompt('Salin pautan ini:',link);
+  if(navigator.clipboard)navigator.clipboard.writeText(link).then(function(){note('✓ Profile link copied.','ok')});
+  else prompt('Copy this link:',link);
 });
 
 userIn.addEventListener('input',function(){
@@ -120,11 +120,11 @@ userIn.addEventListener('input',function(){
 
 function validate(){
   var un=userIn.value.trim(), n=nameIn.value.trim(), p=photoIn.value.trim(), a=aboutIn.value.trim();
-  if(un&&!/^[a-z0-9._]{3,20}$/.test(un)){note('Username: 3–20 aksara, huruf kecil, nombor, _ atau . sahaja.','bad');return null}
-  if(n.length<2||n.length>40){note('Nama paparan mesti 2–40 huruf.','bad');return null}
-  if(p&&!/^https?:\/\/\S+$/i.test(p)){note('URL foto mesti bermula http:// atau https://','bad');return null}
-  if(p.length>500){note('URL foto terlalu panjang (maks 500).','bad');return null}
-  if(a.length>500){note('Tentang terlalu panjang (maks 500).','bad');return null}
+  if(un&&!/^[a-z0-9._]{3,20}$/.test(un)){note('Username: 3–20 characters, lowercase letters, numbers, _ or . only.','bad');return null}
+  if(n.length<2||n.length>40){note('Display name must be 2–40 characters.','bad');return null}
+  if(p&&!/^https?:\/\/\S+$/i.test(p)){note('Photo URL must start with http:// or https://','bad');return null}
+  if(p.length>500){note('Photo URL is too long (max 500).','bad');return null}
+  if(a.length>500){note('About is too long (max 500).','bad');return null}
   return {username:un,name:n,photo:p,about:a};
 }
 
@@ -132,18 +132,18 @@ saveBtn.addEventListener('click',function(){
   var data=validate();
   if(!data){return}
   saveBtn.disabled=true;
-  note('Menyimpan…','');
+  note('Saving…','');
   data.uid=me;
   db.collection('users').doc(me).set(data,{merge:true}).then(function(){
     prof.username=data.username;prof.name=data.name;prof.photo=data.photo;prof.about=data.about;
     var u=auth.currentUser;
     return u.updateProfile({displayName:data.name,photoURL:data.photo||null});
   }).then(function(){
-    note('✓ Perubahan disimpan.','ok');
+    note('✓ Changes saved.','ok');
   }).catch(function(e){
-    var msg='Gagal menyimpan: '+(e.code||e.message);
+    var msg='Could not save: '+(e.code||e.message);
     if(e.code==='permission-denied'){
-      msg='Gagal menyimpan — terbitkan peraturan Firestore terkini (firestore.rules, lihat README-FIREBASE.md).';
+      msg='Could not save — please deploy the latest Firestore rules (firestore.rules, see README-FIREBASE.md).';
     }
     note(msg,'bad');
   }).then(function(){saveBtn.disabled=false});
@@ -156,7 +156,7 @@ var un=auth.onAuthStateChanged(function(u){
   if((u.uid||'').indexOf('demo-')===0){show('#st-auth');return}
   me=u.uid;
   loadDoc().catch(function(e){
-    $('#err-msg').textContent='Ralat semasa memuatkan tetapan ('+(e.code||e.message)+').';
+    $('#err-msg').textContent='Error while loading the settings ('+(e.code||e.message)+').';
     show('#st-err');
   });
 });

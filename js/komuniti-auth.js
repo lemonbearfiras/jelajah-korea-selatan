@@ -42,20 +42,20 @@ function emit(){
 }
 function errMsg(code){
   var m={
-    'auth/invalid-email':'Format emel tidak sah.',
-    'auth/email-already-in-use':'Emel ini sudah didaftar — gunakan tab Masuk.',
-    'auth/weak-password':'Kata laluan terlalu pendek — minima 6 aksara.',
-    'auth/user-not-found':'Akaun tidak dijumpai. Daftar dahulu.',
-    'auth/wrong-password':'Kata laluan salah.',
-    'auth/invalid-credential':'Emel atau kata laluan salah.',
-    'auth/too-many-requests':'Terlalu banyak percubaan — cuba lagi beberapa minit.',
-    'auth/popup-closed-by-user':'Tetingkap Google ditutup selesai.',
-    'auth/popup-blocked':'Pelayar menyekat pop-up — benarkan pop-up dan cuba lagi.',
-    'auth/unauthorized-domain':'Domain ini belum dibenarkan dalam Firebase. Buka laman melalui http://localhost:8000 (lihat README-FIREBASE.md).',
-    'auth/network-request-failed':'Masalah rangkaian — semak sambungan internet.',
-    'auth/operation-not-allowed':'Kaedah log masuk belum diaktifkan dalam Firebase Console.'
+    'auth/invalid-email':'Invalid email format.',
+    'auth/email-already-in-use':'This email is already registered — use the Log in tab.',
+    'auth/weak-password':'Password is too short — minimum 6 characters.',
+    'auth/user-not-found':'Account not found. Sign up first.',
+    'auth/wrong-password':'Wrong password.',
+    'auth/invalid-credential':'Wrong email or password.',
+    'auth/too-many-requests':'Too many attempts — try again in a few minutes.',
+    'auth/popup-closed-by-user':'The Google window was closed before sign-in finished.',
+    'auth/popup-blocked':'The browser blocked the popup — allow pop-ups and try again.',
+    'auth/unauthorized-domain':'This domain is not authorised in Firebase yet. Open the site via http://localhost:8000 (see README-FIREBASE.md).',
+    'auth/network-request-failed':'Network problem — check your internet connection.',
+    'auth/operation-not-allowed':'This sign-in method is not enabled yet in the Firebase Console.'
   };
-  return m[code]||('Ralat: '+code);
+  return m[code]||('Error: '+code);
 }
 function showErr(msg,ok){
   errEl.textContent=msg;
@@ -74,12 +74,12 @@ function paintNav(){
       navLogin.href='https://lemonbearfiras.github.io/jelajah-korea-selatan/profile?v='+encodeURIComponent(user.uid);
       navLogin.target='_blank';
       navLogin.rel='noopener';
-      navLogin.title='Halo, '+user.name+' — lihat halaman profil awam anda';
+      navLogin.title='Hi, '+user.name+' — view your public profile page';
     }else{
       navLogin.href='#komuniti';
       navLogin.removeAttribute('target');
       navLogin.removeAttribute('rel');
-      navLogin.title='Halo, '+user.name+' — ke Ruang Komuniti';
+      navLogin.title='Hi, '+user.name+' — go to the Community space';
     }
     navLogin.innerHTML='<span class="nl-ava">'+(user.photo?'<img src="'+esc(user.photo)+'" alt="">':initials(user.name))+'</span><span class="nl-name">'+esc(first)+'</span>';
   }else{
@@ -87,8 +87,8 @@ function paintNav(){
     navLogin.href='#komuniti';
     navLogin.removeAttribute('target');
     navLogin.removeAttribute('rel');
-    navLogin.title='Log masuk / daftar akaun';
-    navLogin.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.2 4.9-6 8-6s6.5 1.8 8 6"/></svg><span class="nl-name">Log Masuk</span>';
+    navLogin.title='Log in / sign up';
+    navLogin.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.2 4.9-6 8-6s6.5 1.8 8 6"/></svg><span class="nl-name">Log in</span>';
   }
 }
 function paintUser(){
@@ -97,7 +97,7 @@ function paintUser(){
   if(userLink){
     if(user&&mode==='firebase'){
       userLink.href='https://lemonbearfiras.github.io/jelajah-korea-selatan/profile?v='+encodeURIComponent(user.uid);
-      userLink.title='Lihat halaman profil awam anda — buka di tetingkap baharu';
+      userLink.title='View your public profile page — opens in a new window';
     }else{
       userLink.removeAttribute('href');
     }
@@ -114,14 +114,14 @@ function paintUser(){
     var h=0,s=user.name||'';for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;
     avaEl.style.background=g[h%g.length];
   }
-  badgeEl.textContent=(mode==='demo')?'Mod Demo':'Firebase · Awan';
+  badgeEl.textContent=(mode==='demo')?'Demo Mode':'Firebase · Cloud';
   badgeEl.className='km-badge '+(mode==='demo'?'demo':'cloud');
 }
 function setNote(){
   if(mode==='firebase'){
-    noteEl.innerHTML='<b style="color:#0b7a52">✓ Disambungkan ke Firebase</b> — akaun &amp; komen disimpan dalam awan, boleh dilihat oleh semua pengunjung.';
+    noteEl.innerHTML='<b style="color:#0b7a52">✓ Connected to Firebase</b> — accounts &amp; comments are stored in the cloud, visible to every visitor.';
   }else{
-    noteEl.innerHTML='<b>Mod demo</b> — profil &amp; komen disimpan dalam pelayar ini sahaja. Sambungkan projek Firebase anda (isi <b>js/firebase-config.js</b>, panduan di <b>README-FIREBASE.md</b>) untuk komen sebenar.';
+    noteEl.innerHTML='<b>Demo mode</b> — profiles &amp; comments are stored in this browser only. Connect your Firebase project (fill in <b>js/firebase-config.js</b>, guide in <b>README-FIREBASE.md</b>) for real comments.';
   }
 }
 
@@ -132,7 +132,7 @@ function setTab(t){
   tabUp.classList.toggle('active',t==='up');
   fName.hidden=(mode==='demo')?false:(t==='in');
   nameIn.required=(mode==='demo'||t==='up');
-  submitBtn.textContent=(mode==='demo')?'Masuk sebagai tetamu':((t==='in')?'Masuk':'Daftar akaun');
+  submitBtn.textContent=(mode==='demo')?'Enter as guest':((t==='in')?'Log in':'Create account');
   passIn.setAttribute('autocomplete',t==='in'?'current-password':'new-password');
   hideErr();
 }
@@ -155,7 +155,7 @@ form.addEventListener('submit',function(ev){
   var name=nameIn.value.trim(), email=emailIn.value.trim(), pass=passIn.value;
 
   if(mode==='demo'){
-    if(name.length<2){showErr('Masukkan nama anda (minima 2 huruf).');return}
+    if(name.length<2){showErr('Enter your name (minimum 2 letters).');return}
     submitBtn.disabled=true;
     setTimeout(function(){
       demoIn(name);
@@ -165,9 +165,9 @@ form.addEventListener('submit',function(ev){
     return;
   }
 
-  if(tab==='up'&&name.length<2){showErr('Masukkan nama penuh anda.');return}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showErr('Masukkan emel yang sah.');return}
-  if(pass.length<6){showErr('Kata laluan mesti sekurang-kurangnya 6 aksara.');return}
+  if(tab==='up'&&name.length<2){showErr('Enter your full name.');return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showErr('Enter a valid email.');return}
+  if(pass.length<6){showErr('Password must be at least 6 characters.');return}
 
   submitBtn.disabled=true;
   var done=function(){submitBtn.disabled=false;form.reset();hideErr();setTab('in')};
@@ -191,9 +191,9 @@ form.addEventListener('submit',function(ev){
 resetBtn.addEventListener('click',function(){
   if(mode==='demo')return;
   var email=emailIn.value.trim();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showErr('Taip emel anda di atas dahulu, kemudian klik "Lupa kata laluan?".');return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showErr('Type your email above first, then click "Forgot password?".');return}
   fbAuth.sendPasswordResetEmail(email).then(function(){
-    showErr('Pautan set semula telah dihantar ke '+email+'.',true);
+    showErr('A reset link has been sent to '+email+'.',true);
   }).catch(function(e){showErr(errMsg(e.code||e.message))});
 });
 
@@ -229,7 +229,7 @@ function saveUserProfile(u){
       createdAt:firebase.firestore.FieldValue.serverTimestamp()
     });
   }).catch(function(e){
-    console.warn('Profil tidak dapat disimpan:',e.code||e.message);
+    console.warn('Could not save profile:',e.code||e.message);
   });
 }
 

@@ -8,7 +8,7 @@
 (function(){
 'use strict';
 var $=function(s){return document.querySelector(s)};
-var BM_M=['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
+var BM_M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var GRADS=['linear-gradient(135deg,#CD2E3A,#8e1f28)','linear-gradient(135deg,#0047A0,#2e6fd8)','linear-gradient(135deg,#c9a45c,#8a6d2f)','linear-gradient(135deg,#5b8def,#0047A0)','linear-gradient(135deg,#3d7a4f,#6b9c5a)','linear-gradient(135deg,#7a3dd1,#4a2a8e)'];
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -57,11 +57,11 @@ function btnBusy(b,fn){
   if(b.disabled)return;
   b.disabled=true;
   Promise.resolve().then(fn).catch(function(e){
-    alert('Tidak dapat menyelesaikan tindakan: '+(e&&e.code?e.code:e&&e.message?e.message:e));
+    alert('Could not complete the action: '+(e&&e.code?e.code:e&&e.message?e.message:e));
   }).then(function(){b.disabled=false});
 }
 function needLogin(){
-  alert('Sila log masuk dahulu dalam Ruang Komuniti untuk menggunakan ciri ini.');
+  alert('Please log in first in the Community Space to use this feature.');
   location.href='index.html#komuniti';
 }
 
@@ -70,30 +70,30 @@ function paintFriendBtn(){
   var b=$('#btn-friend');
   b.style.display='';
   if(isFriend){
-    b.textContent='Rakan ✓ · Chat';
+    b.textContent='Friends ✓ · Chat';
     b.className='pill solid';
     b.onclick=function(){location.href='chat.html?v='+encodeURIComponent(uid)};
     return;
   }
   if(incomingReqId){
-    b.textContent='Terima Permintaan';
+    b.textContent='Accept Request';
     b.className='pill solid';
     b.onclick=function(){btnBusy(b,function(){return acceptReq(incomingReqId,uid)})};
     return;
   }
   if(myReqId){
-    b.textContent='Permintaan dihantar (batal)';
+    b.textContent='Request sent (cancel)';
     b.className='pill';
     b.onclick=function(){btnBusy(b,cancelRequest)};
     return;
   }
-  b.textContent='Tambah Rakan';
+  b.textContent='Add Friend';
   b.className='pill';
   b.onclick=function(){if(!me){needLogin();return}btnBusy(b,sendRequest)};
 }
 function paintFollowBtn(){
   var b=$('#btn-follow');
-  b.textContent=isFollowing?'Mengikut ✓':'Ikut';
+  b.textContent=isFollowing?'Following ✓':'Follow';
   b.className=isFollowing?'pill':'pill solid';
 }
 
@@ -167,25 +167,25 @@ function loadRequests(){
     .then(function(snap){
       reqRows=snap.docs.map(function(d){return {id:d.id,from:d.data().from}});
       return renderRequests();
-    }).catch(function(){$('#req-list').innerHTML='<p class="req-empty">Belum dapat dimuatkan — terbitkan peraturan Firestore baharu dahulu (lihat README-FIREBASE.md).</p>'});
+    }).catch(function(){$('#req-list').innerHTML='<p class="req-empty">Could not be loaded yet — please deploy the new Firestore rules first (see README-FIREBASE.md).</p>'});
 }
 function renderRequests(){
   var list=$('#req-list');
-  if(!reqRows.length){list.innerHTML='<p class="req-empty">Tiada permintaan rakan ketika ini.</p>';reqCount();return}
+  if(!reqRows.length){list.innerHTML='<p class="req-empty">No friend requests right now.</p>';reqCount();return}
   Promise.all(reqRows.map(function(r){
     return db.collection('users').doc(r.from).get().catch(function(){return {exists:false}});
   })).then(function(snaps){
     list.innerHTML='';
     reqRows.forEach(function(r,i){
       var v=snaps[i]&&snaps[i].exists?snaps[i].data():{};
-      var nm=v.name||'Ahli Komuniti';
+      var nm=v.name||'Community Member';
       var row=document.createElement('div');
       row.className='req-item';row.setAttribute('data-req',r.id);
       row.innerHTML='<span class="ava-sm" style="'+(v.photo?'':'background:'+gradFor(nm))+'">'
         +(v.photo?'<img src="'+esc(v.photo)+'" alt="">':esc(initials(nm)))+'</span>'
-        +'<span class="nm-wrap"><b class="nm">'+esc(nm)+'</b><span class="sub">Ingin menjadi rakan anda</span></span>'
-        +'<button class="pill solid req-acc" type="button">Terima</button>'
-        +'<button class="pill req-del" type="button"> Tolak</button>';
+        +'<span class="nm-wrap"><b class="nm">'+esc(nm)+'</b><span class="sub">Wants to be friends with you</span></span>'
+        +'<button class="pill solid req-acc" type="button">Accept</button>'
+        +'<button class="pill req-del" type="button"> Decline</button>';
       list.appendChild(row);
       var accBtn=row.querySelector('.req-acc'), delBtn=row.querySelector('.req-del');
       accBtn.onclick=function(){btnBusy(accBtn,function(){return acceptReq(r.id,r.from)})};
@@ -229,7 +229,7 @@ function initAbout(){
     db.collection('users').doc(me).set({about:a},{merge:true}).then(function(){
       prof.about=a;view();
     }).catch(function(e){
-      alert('Tentang tidak dapat disimpan: '+(e.code||e.message));
+      alert('About could not be saved: '+(e.code||e.message));
       btn.style.display='';
     }).then(function(){b.disabled=false});
   };
@@ -243,15 +243,15 @@ function initMenu(){
   var menu=$('#menu'),btn=$('#btn-menu');
   var items=[];
   if(me===uid){
-    items.push({t:'Tetapan profil',fn:function(){location.href=settingsUrl()}});
-    items.push({t:'Edit Tentang',fn:function(){var b=$('#btn-edit-about');if(!b.hidden)b.click()}});
+    items.push({t:'Profile settings',fn:function(){location.href=settingsUrl()}});
+    items.push({t:'Edit About',fn:function(){var b=$('#btn-edit-about');if(!b.hidden)b.click()}});
   }
-  items.push({t:'Salin Pautan Profil',fn:function(){
+  items.push({t:'Copy profile link',fn:function(){
     var u=location.href;
-    if(navigator.clipboard)navigator.clipboard.writeText(u).then(function(){alert('Pautan profil disalin.')});
-    else prompt('Salin pautan ini:',u);
+    if(navigator.clipboard)navigator.clipboard.writeText(u).then(function(){alert('Profile link copied.')});
+    else prompt('Copy this link:',u);
   }});
-  if(me&&me!==uid)items.push({t:isFriend?'Buka Sembang':'Tambah Rakan',fn:function(){
+  if(me&&me!==uid)items.push({t:isFriend?'Open Chat':'Add Friend',fn:function(){
     if(isFriend)location.href='chat.html?v='+encodeURIComponent(uid);
     else $('#btn-friend').click();
   }});
@@ -268,14 +268,14 @@ function initMenu(){
 /* ---------- hal mana ---------- */
 function logHint(){
   if(me)return;
-  $('#btn-follow').title='Log masuk dahulu';
-  $('#btn-friend').title='Log masuk dahulu';
+  $('#btn-follow').title='Log in first';
+  $('#btn-friend').title='Log in first';
 }
 
 /* ---------- lukis kad ---------- */
 function paintCard(){
   paintAva($('#p-ava'),prof);
-  $('#p-name').textContent=prof.name||'Ahli Komuniti';
+  $('#p-name').textContent=prof.name||'Community Member';
   $('#p-uid').textContent=(prof.username?'@'+prof.username+' · ':'')+'id: '+uid;
   var join=fmtDate(prof.createdAt);
   $('#st-member').textContent=join||'—';
@@ -307,7 +307,7 @@ Promise.all([
   var snap=res[1],cs=res[2];
   var items=cs.docs.map(function(doc){
     var c=doc.data();
-    return {name:c.name||'Pengembara',text:c.text||'',ts:tsOf(c.createdAt)};
+    return {name:c.name||'Traveller',text:c.text||'',ts:tsOf(c.createdAt)};
   }).sort(function(a,b){return (b.ts||0)-(a.ts||0)});
 
   if(snap.exists){
@@ -320,20 +320,20 @@ Promise.all([
   }
 
   if(items.length){
-    $('#p-c-note').textContent='— '+items.length+' terkini dahulu';
+    $('#p-c-note').textContent='— '+items.length+' newest first';
     $('#p-list').innerHTML=items.map(function(c){
-      return '<div class="c-item"><time>'+(c.ts?fmtDate(c.ts):'baru sahaja')+'</time><p>'+esc(c.text)+'</p></div>';
+      return '<div class="c-item"><time>'+(c.ts?fmtDate(c.ts):'just now')+'</time><p>'+esc(c.text)+'</p></div>';
     }).join('');
   }else{
     $('#p-c-note').textContent='';
-    $('#p-list').innerHTML='<div class="c-empty">Ahli ini belum meninggalkan komen dalam Ruang Komuniti.</div>';
+    $('#p-list').innerHTML='<div class="c-empty">This member has not left any comments in the Community Space yet.</div>';
   }
 
   return loadRelation().then(paintCard);
 }).catch(function(e){
-  var msg='Ralat semasa memuatkan profil ('+esc(e.code||e.message)+').';
+  var msg='Error while loading the profile ('+esc(e.code||e.message)+').';
   if(e.code==='permission-denied'){
-    msg='Peraturan Firestore belum mengizinkan bacaan awam — terbitkan peraturan dalam <b>firestore.rules</b> (lihat README-FIREBASE.md, Langkah 4).';
+    msg='The Firestore rules do not yet allow public reads — please deploy the rules in <b>firestore.rules</b> (see README-FIREBASE.md, Step 4).';
   }
   $('#err-msg').innerHTML=msg;
   show('#st-err');
