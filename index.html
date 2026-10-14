@@ -2606,6 +2606,8 @@ function dbAskEngine(q){
 }
 var DB_STOP2=('tempat|best|mana|apa|yang|untuk|dengan|boleh|nak|saya|kita|tolong|cadang|cadangan|destinasi|bagus|cantik|lawat|lawatan|pergi|adakah|bagaimana|area|kawasan|sekitar|pengalaman|aktiviti|singgah|jalan').split('|');
 var DB_ESC=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+/* Diubah kepada true bila pelayan AI Logic menolak token App Check (lapisan 1 mati untuk sesi ini). */
+var DB_AI_OFF=false;
 function dbReply(q){
   var r=dbAskEngine(q);
   var top=r.list.filter(function(x){return x.s>0}).slice(0,3);
@@ -2634,9 +2636,11 @@ function dbReply(q){
       '<p class="dbfoot">Generated live by AI · cross-checked against '+KOREA_DB.length+' places in the database.</p>';
   }
   /* Lapisan 1: Gemini melalui Firebase AI Logic (js/ai-logic.js). SDK-nya cuba semula
-     sendiri bila kuota penuh, jadi lapisan ini diberi had 8s supaya lapisan 2 sempat menjawab. */
+     sendiri bila kuota penuh, jadi lapisan ini diberi had 8s supaya lapisan 2 sempat menjawab.
+     Bila pelayan menolak kerana App Check (tiada token sah), jangan cuba lagi dalam sesi
+     ini — setiap soalan akan membuang satu permintaan yang pasti gagal. */
   function viaGemini(){
-    if(!window.JelajahAI)return Promise.reject(new Error('AI Logic tidak dimuat'));
+    if(!window.JelajahAI||DB_AI_OFF)return Promise.reject(new Error('AI Logic tidak dimuat'));
     return new Promise(function(resolve,reject){
       var done=false;
       var t=setTimeout(function(){if(done)return;done=true;reject(new Error('Gemini terlalu lama'));},8000);
@@ -2644,7 +2648,11 @@ function dbReply(q){
         if(done)return;done=true;clearTimeout(t);
         if(typeof text==='string'&&text.trim().length>=3)resolve(text.trim());
         else reject(new Error('jawapan pendek'));
-      },function(e){if(done)return;done=true;clearTimeout(t);reject(e);});
+      },function(e){
+        if(done)return;done=true;clearTimeout(t);
+        if(/App Check/i.test(String(e&&e.message||e)))DB_AI_OFF=true;
+        reject(e);
+      });
     });
   }
   /* Lapisan 2: Function sisi pelayan (kunci API tidak dilihat pelayar). */
