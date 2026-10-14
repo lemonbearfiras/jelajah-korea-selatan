@@ -173,7 +173,8 @@ form.addEventListener('submit',function(ev){
 
   if(tab==='up'&&name.length<2){showErr('Enter your full name.');return}
   var un=userIn.value.trim();
-  if(tab==='up'&&un&&!/^[a-z0-9._]{3,20}$/.test(un)){showErr('Username: 3–20 characters — lowercase letters, numbers, _ or . only.');return}
+  if(tab==='up'&&!un){showErr('Choose a username — 3–20 characters, lowercase letters, numbers, _ or .');return}
+  if(tab==='up'&&!/^[a-z0-9._]{3,20}$/.test(un)){showErr('Username: 3–20 characters — lowercase letters, numbers, _ or . only.');return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showErr('Enter a valid email.');return}
   if(pass.length<6){showErr('Password must be at least 6 characters.');return}
 
@@ -183,14 +184,16 @@ form.addEventListener('submit',function(ev){
   if(tab==='up'){
     fbAuth.createUserWithEmailAndPassword(email,pass).then(function(cred){
       return cred.user.updateProfile({displayName:name}).then(function(){
-        saveUserProfile(cred.user,un);
-        setUser(cred.user);done();
+        return saveUserProfile(cred.user,un).then(function(){
+          setUser(cred.user);done();
+        });
       });
     }).catch(function(e){submitBtn.disabled=false;showErr(errMsg(e.code||e.message))});
   }else{
     fbAuth.signInWithEmailAndPassword(email,pass).then(function(cred){
-      saveUserProfile(cred.user);
-      setUser(cred.user);done();
+      return saveUserProfile(cred.user).then(function(){
+        setUser(cred.user);done();
+      });
     }).catch(function(e){submitBtn.disabled=false;showErr(errMsg(e.code||e.message))});
   }
 });
@@ -209,7 +212,9 @@ resetBtn.addEventListener('click',function(){
 googleBtn.addEventListener('click',function(){
   hideErr();
   var p=new firebase.auth.GoogleAuthProvider();
-  fbAuth.signInWithPopup(p).then(function(cred){saveUserProfile(cred.user);setUser(cred.user)}).catch(function(e){showErr(errMsg(e.code||e.message))});
+  fbAuth.signInWithPopup(p).then(function(cred){
+    return saveUserProfile(cred.user).then(function(){setUser(cred.user)});
+  }).catch(function(e){showErr(errMsg(e.code||e.message))});
 });
 
 /* ---------- log keluar ---------- */
@@ -224,19 +229,24 @@ outBtn.addEventListener('click',function(){
 });
 
 /* ---------- simpan profil ke koleksi "users" ---------- */
+function unameFrom(email,uid){
+  var base=String(email||'').split('@')[0].toLowerCase().replace(/[^a-z0-9._]/g,'');
+  if(base.length<3)base=(base+'u'+String(uid||'')).replace(/[^a-z0-9._]/g,'');
+  return base.slice(0,20);
+}
 function saveUserProfile(u,username){
-  if(!fb||!u)return;
+  if(!fb||!u)return Promise.resolve();
   var ref=fb.collection('users').doc(u.uid);
-  ref.get().then(function(snap){
+  return ref.get().then(function(snap){
     if(snap.exists)return; /* profil sudah ada */
     var doc={
       uid:u.uid,
       name:u.displayName||'',
       photo:u.photoURL||'',
       about:'',
+      username:username||unameFrom(u.email,u.uid),
       createdAt:firebase.firestore.FieldValue.serverTimestamp()
     };
-    if(username)doc.username=username;
     return ref.set(doc);
   }).catch(function(e){
     console.warn('Could not save profile:',e.code||e.message);

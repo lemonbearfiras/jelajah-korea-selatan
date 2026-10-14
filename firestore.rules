@@ -47,9 +47,8 @@ service cloud.firestore {
                     && request.resource.data.photo.size() <= 120000
                     && request.resource.data.about is string
                     && request.resource.data.about.size() <= 500
-                    && (!('username' in request.resource.data)
-                        || (request.resource.data.username is string
-                            && request.resource.data.username.size() <= 20));
+                    && request.resource.data.username is string
+                    && request.resource.data.username.matches('^[a-z0-9._]{3,20}$');
     }
 
     /* satu dokumen setiap ikutan: ID = <pengikut>_<diikuti> */

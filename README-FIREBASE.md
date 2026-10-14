@@ -52,7 +52,7 @@ var FIREBASE_CONFIG = {
    paste it in the Rules tab → click **Publish**.
 
 > ⚠️ This version of the rules adds new collections: `follows`, `friendRequests`,
-> `friends`, `chats`, plus the optional `username` field (≤ 20 characters) and the editable
+> `friends`, `chats`, the required `username` field (3–20 characters, `^[a-z0-9._]{3,20}$`) and the editable
 > `about` field (≤ 500 characters) in `users`. Without publishing them, the profile page still
 > loads (name, comments, date)
 > but the Followers / Following / Friends counts show "—" and the Follow / Add Friend / Chat
@@ -61,7 +61,7 @@ var FIREBASE_CONFIG = {
 What the rules mean in short:
 
 - `comments` — anyone can read; only signed-in members can write; you can delete only your own.
-- `users` — public profile (name, photo, `about` ≤ 500 characters, `username` ≤ 20 characters, `createdAt`); only the owner can edit/delete. Email is not stored here. Can be updated through the **settings.html** page (the ⚙ Settings button on your own profile). The photo is either an image link or an **uploaded photo** stored as a `data:image/...` text (up to 120,000 characters) — the rules must allow that length or saving a new photo is rejected.
+- `users` — public profile (name, photo, `about` ≤ 500 characters, required `username` of 3–20 characters matching `^[a-z0-9._]{3,20}$`, `createdAt`); only the owner can edit/delete. Email is not stored here. Members without a username yet must set one in **settings.html** before any other change can be saved. Can be updated through the **settings.html** page (the ⚙ Settings button on your own profile). The photo is either an image link or an **uploaded photo** stored as a `data:image/...` text (up to 120,000 characters) — the rules must allow that length or saving a new photo is rejected.
 - `follows` — one document per follow, `ID = follower_following`; anyone can read the counts; only the follower can create or delete their own follow.
 - `friendRequests` — `ID = sender_receiver`; only the two people involved can read; only the recipient can accept (pending → accepted).
 - `friends` — `ID = the two uids sorted a-z`; anyone can read (proof of friendship); created only by the recipient after the request is accepted.

@@ -185,7 +185,8 @@ userIn.addEventListener('input',function(){
 
 function validate(){
   var un=userIn.value.trim(), n=nameIn.value.trim(), p=photoVal, a=aboutIn.value.trim();
-  if(un&&!/^[a-z0-9._]{3,20}$/.test(un)){note('Username: 3–20 characters — lowercase letters, numbers, _ or . only.','bad');return null}
+  if(!un){note('A username is required — 3–20 characters: lowercase letters, numbers, _ or .','bad');return null}
+  if(!/^[a-z0-9._]{3,20}$/.test(un)){note('Username: 3–20 characters — lowercase letters, numbers, _ or . only.','bad');return null}
   if(n.length<2||n.length>40){note('Display name must be 2–40 characters.','bad');return null}
   if(p&&!PHOTO_RE.test(p)){note('Photo must be an uploaded image or a link starting with http:// or https://','bad');return null}
   if(p.length>AVA_MAX_CHARS){note('Photo is too large — upload a smaller image instead.','bad');return null}
