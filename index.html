@@ -2635,27 +2635,24 @@ function dbReply(q){
     dbAns.innerHTML='<p class="dblead">Jelajah AI</p><p>'+DB_ESC(clean)+'</p>'+(top.length?chips:'')+
       '<p class="dbfoot">Generated live by AI · cross-checked against '+KOREA_DB.length+' places in the database.</p>';
   }
-  /* Lapisan 1: Gemini melalui Firebase AI Logic (js/ai-logic.js). SDK-nya cuba semula
-     sendiri bila kuota penuh, jadi lapisan ini diberi had 8s supaya lapisan 2 sempat menjawab.
+  /* Lapisan 1: Gemini melalui Firebase AI Logic (js/ai-logic.js). Jawapan tier percuma
+     boleh mengambil ~30 saat, jadi permintaan ini TIDAK dibatalkan pada 8s — lapisan 2
+     hanya turut dicuba dan yang pertama memberi jawapan yang menang.
      Bila pelayan menolak kerana App Check (tiada token sah), jangan cuba lagi dalam sesi
      ini — setiap soalan akan membuang satu permintaan yang pasti gagal. */
   function viaGemini(){
     if(!window.JelajahAI||DB_AI_OFF)return Promise.reject(new Error('AI Logic tidak dimuat'));
-    return new Promise(function(resolve,reject){
-      var done=false;
-      var t=setTimeout(function(){if(done)return;done=true;reject(new Error('Gemini terlalu lama'));},8000);
-      window.JelajahAI.ask(DB_DEC(q)).then(function(text){
-        if(done)return;done=true;clearTimeout(t);
-        if(typeof text==='string'&&text.trim().length>=3)resolve(text.trim());
-        else reject(new Error('jawapan pendek'));
-      },function(e){
-        if(done)return;done=true;clearTimeout(t);
-        if(/App Check/i.test(String(e&&e.message||e)))DB_AI_OFF=true;
-        reject(e);
-      });
+    return window.JelajahAI.ask(DB_DEC(q)).then(function(text){
+      var clean=(typeof text==='string')?text.trim():'';
+      if(clean.length<3)throw new Error('jawapan pendek');
+      return clean;
+    },function(e){
+      if(/App Check/i.test(String(e&&e.message||e)))DB_AI_OFF=true;
+      throw e;
     });
   }
-  /* Lapisan 2: Function sisi pelayan (kunci API tidak dilihat pelayar). */
+  /* Lapisan 2: Function sisi pelayan (kunci API tidak dilihat pelayar). Di GitHub Pages
+     laluan ini laju gagal (405) — itu sebabnya lapisan 1 tidak dibuang. */
   function viaFunction(){
     return fetch('/functions/v1/app?action=ask',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({q:DB_DEC(q)})})
       .then(function(res){return res.ok?res.json():Promise.reject(new Error('http '+res.status));})
@@ -2667,15 +2664,23 @@ function dbReply(q){
   }
   dbAns.classList.add('show','thinking');
   dbAns.innerHTML='<p class="dblead">Jelajah AI is thinking</p>';
-  var settled=false;
-  var timer=setTimeout(function(){if(!settled){settled=true;localReply();}},22000);
-  viaGemini()
-    .catch(function(){return viaFunction();})
-    .then(function(clean){
-      if(settled)return;settled=true;clearTimeout(timer);
-      showAi(clean);
-    })
-    .catch(function(){clearTimeout(timer);if(!settled){settled=true;localReply();}});
+  var settled=false,fnTried=false,fnFailed=false,gemFailed=false;
+  function finish(text){
+    if(settled)return;settled=true;
+    clearTimeout(guard);clearTimeout(handover);
+    if(text)showAi(text);else localReply();
+  }
+  function tryFunction(){
+    if(fnTried)return;fnTried=true;
+    viaFunction().then(function(clean){finish(clean);},function(){
+      fnFailed=true;if(gemFailed)finish(null);
+    });
+  }
+  var guard=setTimeout(function(){finish(null);},40000);
+  var handover=setTimeout(function(){tryFunction();},8000);
+  viaGemini().then(function(clean){finish(clean);},function(){
+    gemFailed=true;tryFunction();
+  });
 }
 $('#db-ask-form').addEventListener('submit',function(ev){
   ev.preventDefault();
