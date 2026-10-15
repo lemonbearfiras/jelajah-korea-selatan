@@ -6,27 +6,22 @@
    Firebase 'jelajah-ai' yang telah dicipta oleh js/ai-logic.js,
    supaya bukti pengunjung sampai ke Gemini dengan permintaan AI.
 
-   Kunci dipilih mengikut domain (kunci SITE reCAPTCHA v3 terikat pada domain):
-   1. Domain sepadan dalam SITE_KEYS → reCAPTCHA v3 (betul untuk orang ramai).
-      INI KEADAAN SEMASA: enforcement App Check dihidupkan pada aplikasi
-      ini, jadi tanpa token sah Gemini menolak permintaan dengan
-      "[401] Firebase App Check token is invalid".
-   2. Tiada padanan, tetapi token debug ada (window.FIREBASE_APPCHECK_DEBUG_TOKEN)
-      → mod debug Google; hanya berkesan pada pelayar anda sendiri.
-   3. Tiada padanan dan tiada debug → App Check tidak dipasang; lapisan 1
-      gagal dan laman jatuh ke Function / enjin offline.
+   ONE reCAPTCHA v3 site key serves the whole app. Both delivery hosts are the SAME
+   Firebase web app (same appId), so App Check only accepts one registered key; the
+   second domain is authorised by adding it to that key's domain allow-list in the
+   reCAPTCHA admin, not by a second key.
+     1. Key set + domain allowed + provider registered → reCAPTCHA v3 (production).
+     2. No key, but window.FIREBASE_APPCHECK_DEBUG_TOKEN set → Google debug mode
+        (your own browser only).
+     3. Neither → App Check not attached; tier 1 fails and the site falls to the
+        server Function (Qoder) or the offline engine (GitHub Pages).
    ============================================================ */
 import { getApp } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app-check.js';
 
-/* Kunci SITE reCAPTCHA v3 awam, satu per domain (kunci rahsia tidak diperlukan).
-   Pilih mengikut hostname; localhost/preview tanpa padanan → App Check tidak dipasang. */
-var SITE_KEYS = {
-  'lemonbearfiras.github.io': '6LcyC-8tAAAAAGNJsfELIqPyI7tQ4MUpXDDCbm2t',
-  'jelajah-korea-qodzbckpyph.qoder.website': '6LcENvAtAAAAAN8G3yfb7bLAb9hpigbmr_80Gp4P',
-};
-
-var APP_CHECK_SITE_KEY = SITE_KEYS[window.location.hostname] || '';
+/* Kunci SITE reCAPTCHA v3 awam (kunci rahsia hanya di konsol, bukan di sini).
+   Domain yang dibenarkan bagi kunci ini: lemonbearfiras.github.io + *.qoder.website */
+var APP_CHECK_SITE_KEY = '6LcyC-8tAAAAAGNJsfELIqPyI7tQ4MUpXDDCbm2t';
 
 var DEBUG_TOKEN = window.FIREBASE_APPCHECK_DEBUG_TOKEN || '';
 var app = null;
