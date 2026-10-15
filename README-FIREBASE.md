@@ -90,7 +90,7 @@ What the rules mean in short:
 
 ## Step 5b — Keep real AI on GitHub Pages after 2 November (the AI proxy)
 
-`worker/ai-proxy.js` is a 150-line **Cloudflare Worker**: a small HTTPS endpoint that holds the API key server-side and answers `POST /ask {q}` with `{ok:true, answer}`. It talks to the Gemini Developer API (or, as a backup, the same MiniMax gateway the Qoder Function uses) — **no Firebase, therefore no App Check requirement, and it does not expire**. Cloudflare's free plan covers this site easily, and the key-based free quota is far larger than the 20/day that Firebase's AI Logic tier gives; check [ai.google.dev/gemini-api/docs/rate-limits](https://ai.google.dev/gemini-api/docs/rate-limits) for the current numbers.
+`worker/ai-proxy.js` is a small **Cloudflare Worker** (~200 lines): an HTTPS endpoint that holds the API key server-side and answers `POST /ask {q}` with `{ok:true, answer}`. It calls the Gemini Developer API first and, if that Secret is absent or fails, the same MiniMax gateway the Qoder Function uses; it works out which model name to send by asking the provider's own model list, so a renamed model does not break it — and **no Firebase is involved, therefore no App Check requirement and no 2 November expiry**. Cloudflare's free plan covers this site easily, and the key-based free quota is far larger than the 20/day that Firebase's AI Logic tier gives; check [ai.google.dev/gemini-api/docs/rate-limits](https://ai.google.dev/gemini-api/docs/rate-limits) for the current numbers.
 
 The site is already wired for it (`DB_PROXY_URL` in `index.html`, currently empty = tier inactive). Deploy it like this — about ten minutes, no card needed:
 

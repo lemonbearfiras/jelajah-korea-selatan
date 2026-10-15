@@ -21,9 +21,19 @@ const SYSTEM =
   'ask the user to ask about South Korea only.';
 
 const MAX_ANSWER = 1200;
-const PROVIDER_TIMEOUT_MS = 12000;
+/* A free-tier answer really does take ~30 s, so the ask budget is generous; discovery
+   is a tiny request and must fail fast instead of eating the ask window. */
+const PROVIDER_TIMEOUT_MS = 28000;
+const DISCOVERY_TIMEOUT_MS = 8000;
 
 const THINK = /<think\b[^>]*>[\s\S]*?<\/think>/gi;
+
+/* Secrets pasted from AI Studio often carry stray spaces/newlines, and a key with
+   whitespace in it fails with a confusing 400 from Google. */
+function read(env, name, minLen) {
+  const v = typeof env[name] === 'string' ? env[name].trim() : '';
+  return v.length >= (minLen || 8) ? v : '';
+}
 
 function clean(raw) {
   return String(raw).replace(THINK, ' ').replace(/<\/?think>/gi, ' ').replace(/\s+/g, ' ').trim();
@@ -46,19 +56,27 @@ function json(body, status, origin) {
   });
 }
 
-async function post(url, headers, payload, timeoutMs) {
+async function send(method, url, headers, payload, timeoutMs) {
   const ctrl = new AbortController();
   const timer = setTimeout(function () { ctrl.abort(); }, timeoutMs || PROVIDER_TIMEOUT_MS);
   try {
     return await fetch(url, {
-      method: 'POST',
+      method: method,
       headers: headers,
-      body: JSON.stringify(payload),
+      body: payload,
       signal: ctrl.signal,
     });
   } finally {
     clearTimeout(timer);
   }
+}
+
+function post(url, headers, payload) {
+  return send('POST', url, headers, JSON.stringify(payload), PROVIDER_TIMEOUT_MS);
+}
+
+function getJson(url, headers) {
+  return send('GET', url, headers, undefined, DISCOVERY_TIMEOUT_MS);
 }
 
 /* Free-tier Gemini via an API key — the model name is discovered, not guessed. */
@@ -68,8 +86,8 @@ async function pickGemini(env) {
   if (env.GEMINI_MODEL) return env.GEMINI_MODEL;
   if (geminiModel) return geminiModel;
   try {
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200', {
-      headers: { 'x-goog-api-key': env.GEMINI_API_KEY },
+    const res = await getJson('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200', {
+      'x-goog-api-key': env.GEMINI_API_KEY,
     });
     const rows = (await res.json()).models || [];
     const ids = rows
@@ -115,8 +133,8 @@ async function pickGateway(env) {
   if (env.GATEWAY_MODEL) return env.GATEWAY_MODEL;
   if (gatewayModel) return gatewayModel;
   try {
-    const res = await fetch('https://api.a2agent.me/v1/models', {
-      headers: { authorization: 'Bearer ' + env.A2AGENT_API_KEY },
+    const res = await getJson('https://api.a2agent.me/v1/models', {
+      authorization: 'Bearer ' + env.A2AGENT_API_KEY,
     });
     const rows = (await res.json()).data || [];
     const ids = rows.map(function (m) { return m.id; }).filter(Boolean);
@@ -153,6 +171,12 @@ async function askGateway(env, question) {
 
 export default {
   async fetch(request, env) {
+    env = {
+      GEMINI_API_KEY: read(env, 'GEMINI_API_KEY'),
+      A2AGENT_API_KEY: read(env, 'A2AGENT_API_KEY'),
+      GEMINI_MODEL: read(env, 'GEMINI_MODEL', 1),
+      GATEWAY_MODEL: read(env, 'GATEWAY_MODEL', 1),
+    };
     const origin = request.headers.get('origin') || '';
     if (!ALLOW.has(origin)) return json({ ok: false, error: 'origin_not_allowed' }, 403, '');
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(origin) });
