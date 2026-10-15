@@ -15,7 +15,7 @@ An interactive English-language website for planning a trip to South Korea — a
 | 🌤️ **Destinations** | 6 region cards with **live** weather for each city (Open-Meteo): temperature, feels-like temperature, min–max, humidity, wind, chance of rain |
 | 🗺️ **Korea Map** | Interactive SVG map with the real KTX rail routes + city pins |
 | 💰 **Budget Planner** | **Live ECB** exchange rates (1 day–1 year chart, each point = 1 day, hover crosshair), RM↔₩ converter, budget estimates by rate/season/theme + Generate a daily itinerary; Korean economy info cards |
-| 📚 **Database** | 68 places (Seoul, Busan, Jeju, Gyeongju, Jeolla, Gangwon, etc.) with search + details modal |
+| 📚 **Database** | 126 places (deep Seoul + Busan coverage, then Jeju, Gyeongju, Jeolla, Gangwon, etc.) with search + details modal |
 | 🤖 **Ask Jelajah AI** | Free-text questions → live Gemini answers (Firebase AI Logic in the browser, then the Qoder Sites Function), with a local matching engine as a fallback when offline |
 | 👥 **Community** | Sign up/sign in (email + Google) through Firebase, public comments, profile pages, following & friends, and real-time chat |
 
@@ -41,10 +41,14 @@ An interactive English-language website for planning a trip to South Korea — a
 │   ├── komuniti-comments.js # Firestore comments
 │   ├── profile.js        # Profile, following/friends
 │   ├── settings.js       # Settings form + photo upload/resize
+│   ├── ai-logic.js       # Tier 1: Gemini through Firebase AI Logic, in the browser
+│   ├── firestore.js      # App Check bootstrap (inert by design — see README-FIREBASE.md Step 5)
 │   └── chat.js           # Real-time chat
 ├── functions/
 │   ├── index.ts          # AI endpoint: /functions/v1/app?action=ask|health
 │   └── cloud-agents.mjs  # Qoder Cloud Agents client
+├── worker/
+│   └── ai-proxy.js       # Optional tier 0: CORS proxy for GitHub Pages (Cloudflare Worker)
 ├── firestore.rules       # Firestore security rules
 ├── dist/                 # Copy ready to publish (Qoder Sites)
 └── README-FIREBASE.md    # Full Firebase setup guide
@@ -60,24 +64,26 @@ An interactive English-language website for planning a trip to South Korea — a
    ```
 3. Open `http://localhost:8000`. Weather & rates work straight away (cloud APIs, no key).
 4. Community: if `js/firebase-config.js` has not been filled in yet, the site automatically uses **Demo Mode** (localStorage). For real Firebase, follow [README-FIREBASE.md](README-FIREBASE.md). `localhost` is authorised by Firebase by default; for a hosted domain add it under *Authentication → Settings → Authorized domains*.
-5. "Ask Jelajah AI" tries three tiers: Firebase AI Logic (Gemini) straight from the browser → the Qoder Sites Function → the local matching engine. Only the first tier is available on GitHub Pages and localhost, so the answer you see depends on where the page is hosted.
+5. "Ask Jelajah AI" tries up to four tiers: an optional CORS proxy → Firebase AI Logic (Gemini) straight from the browser → the Qoder Sites Function → the local matching engine. Which tiers are live depends on where the page is hosted and on `DB_PROXY_URL` — see **AI** below.
 
 ## Publishing
 
 - **GitHub Pages:** push to `main` — Pages publishes from the repository root.
 - **Qoder Sites:** `dist/` + `functions/` are prepared and published through Qoder (edge Function runtime).
 
-## AI (three tiers)
+## AI (up to four tiers)
 
-**Tier 1 — Firebase AI Logic (Gemini) from the browser** (`js/ai-logic.js`, ES modules from the Firebase CDN v12.9.0, a separate Firebase app named `jelajah-ai`; `js/firestore.js` can attach App Check to that same app but is deliberately left unconfigured — see [README-FIREBASE.md](README-FIREBASE.md) Step 5, because AI Logic rejects Google Cloud Fraud Defense tokens). This is the only tier that works on GitHub Pages, so it is what real visitors use. It needs no API key in this repository: the project's own Firebase identity authorises the call. Models are tried in order — `gemini-3.8-flash`, then the `gemini-flash-latest` alias — because Google retires model names periodically (`gemini-2.5-flash` is already closed to new projects). The free tier caps this at roughly 20 requests/day per model and a single answer can take ~30 s, so `dbReply()` runs tier 1 and (after 8 s of silence) tier 2 **in parallel** and shows whichever replies first; when both fail it falls through to tier 3 instead of erroring.
+**Tier 0 — the AI proxy** (`worker/ai-proxy.js`, optional, off until `DB_PROXY_URL` is set in `index.html`): a Cloudflare Worker that holds an API key as a server-side Secret and answers `POST /ask {q}` → `{ok:true,answer}` with CORS limited to this site's own origins. It calls the Gemini Developer API (`GEMINI_API_KEY`) or, as backup, the same MiniMax gateway as tier 2 (`A2AGENT_API_KEY`). Because it is not a Firebase endpoint it is **not** affected by Google's rule that App Check becomes mandatory (and un-un-enforceable) for Firebase AI Logic on **2 November 2026** — which is what keeps a real AI answer available on GitHub Pages after that date. Deploy steps: [README-FIREBASE.md](README-FIREBASE.md) Step 5b.
 
-**Tier 2 — the Qoder Sites Function** (`functions/index.ts`), which tries its providers in this order and moves to the next one on any failure. Keys are application Secrets read only inside the Function — they never reach the browser or this repository:
+**Tier 1 — Firebase AI Logic (Gemini) from the browser** (`js/ai-logic.js`, ES modules from the Firebase CDN v12.9.0, a separate Firebase app named `jelajah-ai`; `js/firestore.js` can attach App Check to that same app but is deliberately left unconfigured — see [README-FIREBASE.md](README-FIREBASE.md) Step 5, because AI Logic rejects Google Cloud Fraud Defense tokens). It needs no API key in this repository: the project's own Firebase identity authorises the call. Models are tried in order — `gemini-3.8-flash`, then the `gemini-flash-latest` alias — because Google retires model names periodically (`gemini-2.5-flash` is already closed to new projects). The free tier caps this at roughly 20 requests/day per model and a single answer can take ~30 s, so `dbReply()` never cancels a tier it has started: the first tier that replies wins, a tier that fails immediately hands over to the next one, and after 8 s of silence the next tier is started in parallel. If every live tier fails, it falls through to tier 3 instead of erroring.
+
+**Tier 2 — the Qoder Sites Function** (`functions/index.ts`), which tries its providers in this order and moves to the next one on any failure. Keys are application Secrets read only inside the Function — they never reach the browser or this repository. This tier exists only on the Qoder host: GitHub Pages has no server, so the same-origin call there fails instantly.
 
 1. **Gemini** — Secret `GEMINI_API_KEY` (`https://generativelanguage.googleapis.com/v1beta`, model discovered from `/v1beta/models`, `gemini-3.8-flash` preferred).
 2. **Gateway** — Secret `A2AGENT_API_KEY` (`https://api.a2agent.me/v1`, model discovered from `/v1/models`, MiniMax preferred).
 3. **Qoder Cloud Agents** — the platform-managed `QODER_PAT`, no key for you to supply.
 
-**Tier 3 — the local matching engine** in `index.html`: scores the question against the 68-place database. Fully offline, always the fallback.
+**Tier 3 — the local matching engine** in `index.html`: scores the question against the 126-place database. Fully offline, always the fallback.
 
 To add or replace a tier-2 key:
 

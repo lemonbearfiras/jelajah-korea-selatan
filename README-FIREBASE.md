@@ -86,6 +86,24 @@ What the rules mean in short:
    - ⚠️ Never put a **secret/API key** in this chat or in git. The reCAPTCHA site key is public by design; it is the only value this site ever needs.
 5. **Free-tier limits and latency.** Google's free tier for this project allows about **20 Gemini requests per day per model**, plus a per-minute cap, and the counter resets after roughly 12 hours of usage. `gemini-2.5-flash` (the name in older guides) is no longer open to new projects, so `js/ai-logic.js` asks for `gemini-3.8-flash` and falls back to the `gemini-flash-latest` alias. A free-tier answer can take **~30 seconds**, so `dbReply()` does not cancel tier 1: after 8 s of silence it *also* asks tier 2 (the Qoder Sites Function on your MiniMax gateway credit) and shows whichever replies first, giving up at 40 s in favour of the offline matching engine. On GitHub Pages tier 2 fails instantly (there is no Function there), which is exactly why tier 1 is allowed to run long. If you want more quota for demo day, enable billing on the project — Google then charges per request instead of blocking at 20/day.
 
+6. **This free tier has an expiry date: 2 November 2026.** Google announced that from that day *App Check enforcement is required to use Firebase AI Logic and cannot be un-enforced* — every request without a valid App Check token is blocked. Since this project's only registrable provider (Fraud Defense) produces a token AI Logic refuses (item 4), tier 1 will stop answering on **GitHub Pages** at that point; localhost and the Qoder site keep working through the server Function. There is nothing to fix in the Firebase console — the way to keep real AI on Pages is to stop calling Firebase for the answer. See **Step 5b** below; it is already built and waiting for a key.
+
+## Step 5b — Keep real AI on GitHub Pages after 2 November (the AI proxy)
+
+`worker/ai-proxy.js` is a 150-line **Cloudflare Worker**: a small HTTPS endpoint that holds the API key server-side and answers `POST /ask {q}` with `{ok:true, answer}`. It talks to the Gemini Developer API (or, as a backup, the same MiniMax gateway the Qoder Function uses) — **no Firebase, therefore no App Check requirement, and it does not expire**. Cloudflare's free plan covers this site easily, and the key-based free quota is far larger than the 20/day that Firebase's AI Logic tier gives; check [ai.google.dev/gemini-api/docs/rate-limits](https://ai.google.dev/gemini-api/docs/rate-limits) for the current numbers.
+
+The site is already wired for it (`DB_PROXY_URL` in `index.html`, currently empty = tier inactive). Deploy it like this — about ten minutes, no card needed:
+
+1. **Get a key** at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) → *Create API key*. Copy it. **Do not paste it into this chat, into git, or into any site file** — it goes only into step 4.
+2. **Create the Worker**: [one.dash.cloudflare.com](https://one.dash.cloudflare.com) → sign up with email → left menu **Workers & Pages** → **Create** → **Get started** (Worker) → name it `jelajah-ai` → **Create**. In the code editor, select all of the template and delete it, paste the whole contents of `worker/ai-proxy.js`, then **Deploy**.
+3. **Open the URL**: the Worker page shows something like `https://jelajah-ai-<your-account>.workers.dev`. That address is public (it contains no secret) — copy it, you will need it in step 5.
+4. **Store the key**: that Worker page → **Settings** → **Variables and Secrets** → *Secrets* → **Add** → Name `GEMINI_API_KEY`, Value = the key from step 1 → **Save and deploy**. (Optional: add `A2AGENT_API_KEY` as a second Secret to keep the MiniMax model as backup.)
+5. **Turn it on in the site**: give the Worker URL to whoever maintains the code (or edit `index.html` yourself) and set `var DB_PROXY_URL='https://jelajah-ai-<your-account>.workers.dev'` — no trailing slash — then publish. Ask Jelajah AI now answers from the proxy in a few seconds; tier 1/2/3 remain as fallbacks, so if the Worker is ever removed nothing else breaks.
+
+The Worker refuses any request whose `Origin` is not the site's own addresses (they are listed in its `ALLOW` set), so a stranger's web page cannot spend your quota from a browser.
+
+⚠️ If the key ever leaks into a public file or chat, delete it in AI Studio and make a new one — a leaked key lets anyone spend your quota, and Google can suspend the key.
+
 ## Step 6 — Open the site through localhost (recommended)
 
 For Google sign-in (and testing that most closely matches the real site):
@@ -118,7 +136,7 @@ Then open <http://localhost:8000>.
 | `js/ai-logic.js` | Ask Jelajah AI → Gemini through Firebase AI Logic (ES modules, Step 5) |
 | `js/firestore.js` | App Check bootstrap for the same Firebase app (reCAPTCHA Enterprise or debug token; **intentionally inert** — `APP_CHECK_SITE_KEY` stays empty, see Step 5) |
 | `firestore.rules` | Firestore security rules (paste into the Console — Step 4) |
-| `destinations-korea.json` | Backup copy of the 68-place database |
+| `destinations-korea.json` | Backup copy of the 126-place database |
 
 ## Data that is stored
 
