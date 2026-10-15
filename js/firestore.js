@@ -10,22 +10,27 @@
    Both delivery hosts are the SAME Firebase web app (same appId), so App Check only
    accepts one registered provider; the second domain is authorised by adding it to
    that key's domain allow-list, not by a second key.
-   IMPORTANT: this app is registered in the Firebase console under "Fraud Defense",
-   which is reCAPTCHA Enterprise. reCAPTCHA Classic (v3) is retired by Google, so the
-   provider here MUST be ReCaptchaEnterpriseProvider — a v3 provider makes Firebase
-   answer the token exchange with "400 App not registered".
-     1. Key set + domain allowed + provider registered → reCAPTCHA Enterprise (production).
+   IMPORTANT — keep this key EMPTY for this project (verified 2026-10-15):
+   this web app is registered under "Fraud Defense" (= reCAPTCHA Enterprise), because
+   Google retired reCAPTCHA Classic. The token exchange then succeeds (HTTP 200), but
+   firebasevertexai.googleapis.com (Firebase AI Logic) rejects ANY request carrying that
+   token with "[401] Firebase App Check token is invalid" — for both regular and
+   limited-use tokens, and even when App Check enforcement is set to NOT enforced.
+   A request with no token at all is accepted, so attaching App Check is what breaks
+   the AI tier. Fill the constant again only when Google accepts Fraud Defense tokens
+   on AI Logic (or once a provider the endpoint understands, e.g. a v3 registration,
+   is available again) — the provider class below is already the Enterprise one.
+     1. Key set → reCAPTCHA Enterprise attached (currently = AI tier blocked).
      2. No key, but window.FIREBASE_APPCHECK_DEBUG_TOKEN set → Google debug mode
         (your own browser only).
-     3. Neither → App Check not attached; tier 1 fails and the site falls to the
-        server Function (Qoder) or the offline engine (GitHub Pages).
+     3. Neither → App Check not attached; the AI tier sends no token and answers.
    ============================================================ */
 import { getApp } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app-check.js';
 
-/* Kunci SITE awam Google Cloud Fraud Defense (kunci rahsia tidak pernah diperlukan
-   oleh laman ini). Domain dibenarkan: lemonbearfiras.github.io + *.qoder.website */
-var APP_CHECK_SITE_KEY = '6LcyC-8tAAAAAGNJsfELIqPyI7tQ4MUpXDDCbm2t';
+/* Kosongkan: AI Logic menolak token Fraud Defense (lihat nota di atas).
+   Kunci SITE awam yang didaftarkan: 6LcyC-8tAAAAAGNJsfELIqPyI7tQ4MUpXDDCbm2t */
+var APP_CHECK_SITE_KEY = '';
 
 var DEBUG_TOKEN = window.FIREBASE_APPCHECK_DEBUG_TOKEN || '';
 var app = null;
