@@ -6,21 +6,27 @@
    Firebase 'jelajah-ai' yang telah dicipta oleh js/ai-logic.js,
    supaya bukti pengunjung sampai ke Gemini dengan permintaan AI.
 
-   Tiga keadaan (panduan konsol: README-FIREBASE.md, Langkah 5):
-   1. APP_CHECK_SITE_KEY diisi  → reCAPTCHA v3 (betul untuk orang ramai).
-      INI KEADAAN SEMASA: projek ini telah mengaktifkan enforcement App
-      Check, jadi tanpa token sah Gemini menolak permintaan dengan
+   Kunci dipilih mengikut domain (kunci SITE reCAPTCHA v3 terikat pada domain):
+   1. Domain sepadan dalam SITE_KEYS → reCAPTCHA v3 (betul untuk orang ramai).
+      INI KEADAAN SEMASA: enforcement App Check dihidupkan pada aplikasi
+      ini, jadi tanpa token sah Gemini menolak permintaan dengan
       "[401] Firebase App Check token is invalid".
-   2. Kosong, tetapi token debug ada (window.FIREBASE_APPCHECK_DEBUG_TOKEN)
+   2. Tiada padanan, tetapi token debug ada (window.FIREBASE_APPCHECK_DEBUG_TOKEN)
       → mod debug Google; hanya berkesan pada pelayar anda sendiri.
-   3. Kedua-dua kosong           → App Check tidak dipasang; lapisan 1
+   3. Tiada padanan dan tiada debug → App Check tidak dipasang; lapisan 1
       gagal dan laman jatuh ke Function / enjin offline.
    ============================================================ */
 import { getApp } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app-check.js';
 
-/* Tampal kunci SITE reCAPTCHA v3 di sini (kunci rahsia tidak diperlukan). */
-var APP_CHECK_SITE_KEY = '6LcyC-8tAAAAAGNJsfELIqPyI7tQ4MUpXDDCbm2t';
+/* Kunci SITE reCAPTCHA v3 awam, satu per domain (kunci rahsia tidak diperlukan).
+   Pilih mengikut hostname; localhost/preview tanpa padanan → App Check tidak dipasang. */
+var SITE_KEYS = {
+  'lemonbearfiras.github.io': '6LcyC-8tAAAAAGNJsfELIqPyI7tQ4MUpXDDCbm2t',
+  'jelajah-korea-qodzbckpyph.qoder.website': '6LcENvAtAAAAAN8G3yfb7bLAb9hpigbmr_80Gp4P',
+};
+
+var APP_CHECK_SITE_KEY = SITE_KEYS[window.location.hostname] || '';
 
 var DEBUG_TOKEN = window.FIREBASE_APPCHECK_DEBUG_TOKEN || '';
 var app = null;
