@@ -2666,11 +2666,10 @@ var DB_STOP2=('tempat|best|mana|apa|yang|untuk|dengan|boleh|nak|saya|kita|tolong
 var DB_ESC=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
 /* Diubah kepada true bila pelayan AI Logic menolak token App Check (lapisan 1 mati untuk sesi ini). */
 var DB_AI_OFF=false;
-/* URL proxy AI (Cloudflare Worker dari worker/ai-proxy.js), cth.
-   https://jelajah-ai-<akaun>.workers.dev — TANPA slash hujung. Kosong = lapisan 0 mati,
-   dan tingkah laman sama seperti sebelumnya. Set ini selepas 2 Nov 2026 untuk AI sebenar
-   di GitHub Pages. */
-var DB_PROXY_URL='';
+/* URL proxy AI (Cloudflare Worker dari worker/ai-proxy.js) — TANPA slash hujung.
+   Kosong = lapisan 0 mati, dan tingkah laman sama seperti sebelumnya.
+   Deployed 2026-10-16: https://jelajah-korea-ai.firas12346haaha-e0d.workers.dev */
+var DB_PROXY_URL='https://jelajah-korea-ai.firas12346haaha-e0d.workers.dev';
 function dbReply(q){
   var r=dbAskEngine(q);
   var top=r.list.filter(function(x){return x.s>0}).slice(0,3);

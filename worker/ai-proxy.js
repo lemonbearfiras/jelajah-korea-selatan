@@ -23,8 +23,12 @@ const SYSTEM =
 const MAX_ANSWER = 1200;
 /* A free-tier answer really does take ~30 s, so the ask budget is generous; discovery
    is a tiny request and must fail fast instead of eating the ask window. */
-const PROVIDER_TIMEOUT_MS = 28000;
+const ASK_BUDGET_MS = 28000;
 const DISCOVERY_TIMEOUT_MS = 8000;
+/* One slow model must not hold the whole window, so every attempt is capped and the
+   next candidate model gets a turn inside the same budget. */
+const PER_TRY_MS = 14000;
+const MIN_TRY_MS = 4000;
 
 const THINK = /<think\b[^>]*>[\s\S]*?<\/think>/gi;
 
@@ -36,7 +40,7 @@ function read(env, name, minLen) {
 }
 
 function clean(raw) {
-  return String(raw).replace(THINK, ' ').replace(/<\/?think>/gi, ' ').replace(/\s+/g, ' ').trim();
+  return String(raw || '').replace(THINK, ' ').replace(/<\/?think>/gi, ' ').replace(/\s+/g, ' ').trim();
 }
 
 function cors(origin) {
@@ -58,33 +62,44 @@ function json(body, status, origin) {
 
 async function send(method, url, headers, payload, timeoutMs) {
   const ctrl = new AbortController();
-  const timer = setTimeout(function () { ctrl.abort(); }, timeoutMs || PROVIDER_TIMEOUT_MS);
+  const timer = setTimeout(function () { ctrl.abort(); }, timeoutMs || ASK_BUDGET_MS);
   try {
-    return await fetch(url, {
-      method: method,
-      headers: headers,
-      body: payload,
-      signal: ctrl.signal,
-    });
+    return await fetch(url, { method: method, headers: headers, body: payload, signal: ctrl.signal });
   } finally {
     clearTimeout(timer);
   }
-}
-
-function post(url, headers, payload) {
-  return send('POST', url, headers, JSON.stringify(payload), PROVIDER_TIMEOUT_MS);
 }
 
 function getJson(url, headers) {
   return send('GET', url, headers, undefined, DISCOVERY_TIMEOUT_MS);
 }
 
-/* Free-tier Gemini via an API key — the model name is discovered, not guessed. */
-let geminiModel = '';
+function left(deadlineAt) {
+  return Math.max(0, deadlineAt - Date.now());
+}
 
-async function pickGemini(env) {
-  if (env.GEMINI_MODEL) return env.GEMINI_MODEL;
-  if (geminiModel) return geminiModel;
+/* A wrong model id and an exhausted daily quota both arrive as a non-200, so the
+   provider's own reason is kept in the error to make them tellable apart. */
+async function failWith(prefix, res, secret) {
+  let reason = '';
+  try {
+    const data = await res.json();
+    reason = clean(data && data.error && data.error.message);
+  } catch (e) { /* body is not JSON — the status alone is enough */ }
+  if (secret) reason = reason.split(secret).join('');
+  return new Error(prefix + '_' + res.status + (reason ? ' ' + reason.slice(0, 90) : ''));
+}
+
+/* Free-tier Gemini through an API key. Quota is counted per model, so one 429 does not
+   mean the key is spent — the next candidate model may still answer. */
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/';
+let geminiModels = [];
+
+async function geminiCandidates(env) {
+  if (env.GEMINI_MODEL) return [env.GEMINI_MODEL];
+  if (geminiModels.length) return geminiModels;
+  const out = [];
+  function add(id) { if (id && out.indexOf(id) < 0) out.push(id); }
   try {
     const res = await getJson('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200', {
       'x-goog-api-key': env.GEMINI_API_KEY,
@@ -95,78 +110,95 @@ async function pickGemini(env) {
       .map(function (m) { return m.name.replace(/^models\//, ''); });
     const ranks = [/gemini-3\.8-flash/, /gemini-3.*flash/i, /gemini.*flash/i, /gemini/i];
     for (let i = 0; i < ranks.length; i++) {
-      const hit = ids.filter(function (id) { return ranks[i].test(id); }).sort();
-      if (hit.length) { geminiModel = hit[0]; return geminiModel; }
+      ids.filter(function (id) { return ranks[i].test(id); }).sort().forEach(add);
     }
-  } catch (e) { /* fall through to the constant */ }
-  return 'gemini-flash-latest';
+  } catch (e) { /* fall through to the alias */ }
+  add('gemini-flash-latest');
+  geminiModels = out.slice(0, 4);
+  return geminiModels;
 }
 
-async function askGemini(env, question) {
-  const model = await pickGemini(env);
-  const res = await post(
-    'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent',
-    { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
-    {
-      systemInstruction: { parts: [{ text: SYSTEM }] },
-      contents: [{ parts: [{ text: question }] }],
-      generationConfig: { maxOutputTokens: 900, temperature: 0.4 },
-    },
-  );
-  if (!res.ok) throw new Error('gemini_' + res.status);
-  const data = await res.json();
-  const parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
-  const text = clean(
-    parts
+async function askGemini(env, question, deadlineAt) {
+  const models = await geminiCandidates(env);
+  let last = new Error('gemini_no_model');
+  for (let i = 0; i < models.length; i++) {
+    const remaining = left(deadlineAt);
+    if (remaining < MIN_TRY_MS) break;
+    const res = await send('POST', GEMINI_URL + models[i] + ':generateContent',
+      { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
+      JSON.stringify({
+        systemInstruction: { parts: [{ text: SYSTEM }] },
+        contents: [{ parts: [{ text: question }] }],
+        generationConfig: { maxOutputTokens: 900, temperature: 0.4 },
+      }),
+      Math.min(remaining, PER_TRY_MS));
+    if (!res.ok) {
+      last = await failWith('gemini', res, env.GEMINI_API_KEY);
+      if (res.status === 401 || res.status === 403) break; /* key rejected, not spent */
+      continue;
+    }
+    const data = await res.json();
+    const parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
+    const text = clean(parts
       .filter(function (p) { return !p.thought; })
       .map(function (p) { return p.text || ''; })
-      .join(' ')
-  );
-  if (text.length < 3) throw new Error('gemini_empty');
-  return text.slice(0, MAX_ANSWER);
+      .join(' '));
+    if (text.length >= 3) return text.slice(0, MAX_ANSWER);
+    last = new Error('gemini_empty');
+  }
+  throw last;
 }
 
 /* Backup: the owner's OpenAI-compatible gateway (same key the Qoder Function uses). */
-let gatewayModel = '';
+const GATEWAY_URL = 'https://api.a2agent.me/v1/chat/completions';
+let gatewayModels = [];
 
-async function pickGateway(env) {
-  if (env.GATEWAY_MODEL) return env.GATEWAY_MODEL;
-  if (gatewayModel) return gatewayModel;
+async function gatewayCandidates(env) {
+  if (env.GATEWAY_MODEL) return [env.GATEWAY_MODEL];
+  if (gatewayModels.length) return gatewayModels;
+  const out = [];
+  function add(id) { if (id && out.indexOf(id) < 0) out.push(id); }
   try {
     const res = await getJson('https://api.a2agent.me/v1/models', {
       authorization: 'Bearer ' + env.A2AGENT_API_KEY,
     });
-    const rows = (await res.json()).data || [];
-    const ids = rows.map(function (m) { return m.id; }).filter(Boolean);
-    const m3 = ids.filter(function (id) { return /minimax.?m3/i.test(id); });
-    if (m3.length) gatewayModel = m3[0];
-    else {
-      const rest = ids.filter(function (id) { return /minimax|deepseek|glm|kimi|qwen/i.test(id); }).sort();
-      gatewayModel = rest[0] || '';
-    }
-    if (gatewayModel) return gatewayModel;
+    const ids = ((await res.json()).data || []).map(function (m) { return m.id; }).filter(Boolean);
+    ids.filter(function (id) { return /minimax.?m3/i.test(id); }).forEach(add);
+    ids.filter(function (id) { return /minimax/i.test(id); }).forEach(add);
+    ids.filter(function (id) { return /deepseek|glm|kimi|qwen/i.test(id); }).sort().forEach(add);
   } catch (e) { /* fall through to the constant */ }
-  return 'minimax-m3';
+  add('minimax-m3');
+  gatewayModels = out.slice(0, 3);
+  return gatewayModels;
 }
 
-async function askGateway(env, question) {
-  const model = await pickGateway(env);
-  const res = await post(
-    'https://api.a2agent.me/v1/chat/completions',
-    { 'content-type': 'application/json', authorization: 'Bearer ' + env.A2AGENT_API_KEY },
-    {
-      model: model,
-      messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: question }],
-      max_tokens: 900,
-      temperature: 0.4,
-      stream: false,
-    },
-  );
-  if (!res.ok) throw new Error('gateway_' + res.status);
-  const data = await res.json();
-  const text = clean((((data.choices || [])[0] || {}).message || {}).content || '');
-  if (text.length < 3) throw new Error('gateway_empty');
-  return text.slice(0, MAX_ANSWER);
+async function askGateway(env, question, deadlineAt) {
+  const models = await gatewayCandidates(env);
+  let last = new Error('gateway_no_model');
+  for (let i = 0; i < models.length; i++) {
+    const remaining = left(deadlineAt);
+    if (remaining < MIN_TRY_MS) break;
+    const res = await send('POST', GATEWAY_URL,
+      { 'content-type': 'application/json', authorization: 'Bearer ' + env.A2AGENT_API_KEY },
+      JSON.stringify({
+        model: models[i],
+        messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: question }],
+        max_tokens: 900,
+        temperature: 0.4,
+        stream: false,
+      }),
+      Math.min(remaining, PER_TRY_MS));
+    if (!res.ok) {
+      last = await failWith('gateway', res, env.A2AGENT_API_KEY);
+      if (res.status === 401 || res.status === 403) break;
+      continue;
+    }
+    const data = await res.json();
+    const text = clean((((data.choices || [])[0] || {}).message || {}).content || '');
+    if (text.length >= 3) return text.slice(0, MAX_ANSWER);
+    last = new Error('gateway_empty');
+  }
+  throw last;
 }
 
 export default {
@@ -191,19 +223,22 @@ export default {
       return json({ ok: false, error: 'bad_json' }, 400, origin);
     }
     if (q.length < 2 || q.length > 300) return json({ ok: false, error: 'bad_question' }, 400, origin);
-    if (!env.GEMINI_API_KEY && !env.A2AGENT_API_KEY) return json({ ok: false, error: 'no_key' }, 503, origin);
 
     const chain = [];
     if (env.GEMINI_API_KEY) chain.push(askGemini);
     if (env.A2AGENT_API_KEY) chain.push(askGateway);
+    if (!chain.length) return json({ ok: false, error: 'no_key' }, 503, origin);
+
+    const deadlineAt = Date.now() + ASK_BUDGET_MS;
     let last = new Error('no_provider');
     for (let i = 0; i < chain.length; i++) {
+      if (i > 0 && left(deadlineAt) < MIN_TRY_MS) break;
       try {
-        return json({ ok: true, answer: await chain[i](env, q) }, 200, origin);
+        return json({ ok: true, answer: await chain[i](env, q, deadlineAt) }, 200, origin);
       } catch (e) {
         last = e;
       }
     }
-    return json({ ok: false, error: String(last.message || last).slice(0, 60) }, 502, origin);
+    return json({ ok: false, error: String(last.message || last).slice(0, 120) }, 502, origin);
   },
 };

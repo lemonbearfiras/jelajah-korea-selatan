@@ -48,7 +48,7 @@ An interactive English-language website for planning a trip to South Korea — a
 │   ├── index.ts          # AI endpoint: /functions/v1/app?action=ask|health
 │   └── cloud-agents.mjs  # Qoder Cloud Agents client
 ├── worker/
-│   └── ai-proxy.js       # Optional tier 0: CORS proxy for GitHub Pages (Cloudflare Worker)
+│   └── ai-proxy.js       # Tier 0: CORS proxy for GitHub Pages (deployed Cloudflare Worker)
 ├── firestore.rules       # Firestore security rules
 ├── dist/                 # Copy ready to publish (Qoder Sites)
 └── README-FIREBASE.md    # Full Firebase setup guide
@@ -73,7 +73,7 @@ An interactive English-language website for planning a trip to South Korea — a
 
 ## AI (up to four tiers)
 
-**Tier 0 — the AI proxy** (`worker/ai-proxy.js`, optional, off until `DB_PROXY_URL` is set in `index.html`): a Cloudflare Worker that holds an API key as a server-side Secret and answers `POST /ask {q}` → `{ok:true,answer}` with CORS limited to this site's own origins. It calls the Gemini Developer API (`GEMINI_API_KEY`) or, as backup, the same MiniMax gateway as tier 2 (`A2AGENT_API_KEY`). Because it is not a Firebase endpoint it is **not** affected by Google's rule that App Check becomes mandatory (and un-un-enforceable) for Firebase AI Logic on **2 November 2026** — which is what keeps a real AI answer available on GitHub Pages after that date. Deploy steps: [README-FIREBASE.md](README-FIREBASE.md) Step 5b.
+**Tier 0 — the AI proxy** (`worker/ai-proxy.js`, **live** at `https://jelajah-korea-ai.firas12346haaha-e0d.workers.dev`, wired through `DB_PROXY_URL` in `index.html`): a Cloudflare Worker that holds an API key as a server-side Secret and answers `POST /ask {q}` → `{ok:true,answer}` with CORS limited to this site's own origins. It calls the Gemini Developer API (`GEMINI_API_KEY`) or, as backup, the same MiniMax gateway as tier 2 (`A2AGENT_API_KEY`), discovering the model list instead of hardcoding a name — and because free-tier quota is counted per model, a `429` makes it move to the next candidate rather than giving up. Because it is not a Firebase endpoint it is **not** affected by Google's rule that App Check becomes mandatory (and un-un-enforceable) for Firebase AI Logic on **2 November 2026** — which is what keeps a real AI answer available on GitHub Pages after that date. Deploy/re-deploy steps: [README-FIREBASE.md](README-FIREBASE.md) Step 5b.
 
 **Tier 1 — Firebase AI Logic (Gemini) from the browser** (`js/ai-logic.js`, ES modules from the Firebase CDN v12.9.0, a separate Firebase app named `jelajah-ai`; `js/firestore.js` can attach App Check to that same app but is deliberately left unconfigured — see [README-FIREBASE.md](README-FIREBASE.md) Step 5, because AI Logic rejects Google Cloud Fraud Defense tokens). It needs no API key in this repository: the project's own Firebase identity authorises the call. Models are tried in order — `gemini-3.8-flash`, then the `gemini-flash-latest` alias — because Google retires model names periodically (`gemini-2.5-flash` is already closed to new projects). The free tier caps this at roughly 20 requests/day per model and a single answer can take ~30 s, so `dbReply()` never cancels a tier it has started: the first tier that replies wins, a tier that fails immediately hands over to the next one, and after 8 s of silence the next tier is started in parallel. If every live tier fails, it falls through to tier 3 instead of erroring.
 
