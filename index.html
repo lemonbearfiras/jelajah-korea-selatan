@@ -2638,9 +2638,9 @@ document.addEventListener('click',function(ev){
 /* --- Tanya Panduan --- */
 var DB_REGIONS=['seoul','busan','jeju','gyeongju','tongyeong','hahoe','andong','jeonju','yeosu','suncheon','damyang','incheon','suwon','yongin','everland','gangwon','seoraksan','nami','chuncheon','daejeon'];
 var DB_RMAP={seoul:'Seoul',busan:'Busan',jeju:'Jeju',gyeongju:'Gyeongsang',tongyeong:'Gyeongsang',hahoe:'Gyeongsang',andong:'Gyeongsang',jeonju:'Jeolla',yeosu:'Jeolla',suncheon:'Jeolla',damyang:'Jeolla',incheon:'Incheon & Gyeonggi',suwon:'Incheon & Gyeonggi',yongin:'Incheon & Gyeonggi',everland:'Incheon & Gyeonggi',gangwon:'Gangwon',seoraksan:'Gangwon',nami:'Gangwon',chuncheon:'Gangwon',daejeon:'Chungcheong'};
-var DB_CATS={sejarah:['sejarah','istana','dinasti','warisan','purba'],budaya:['budaya','hanbok','kuil','tradisi','seni','upacara','teh'],bandar:['bandar','moden','beli','belian','shopping','malam','urban','kedai','kafe'],makanan:['makan','makanan','sedap','kuliner','juadah','restoran','hidangan','lapar'],keluarga:['kanak','anak','keluarga','family','budak','seronok'],alam:['alam','gunung','pantai','pulau','hiking','pemandangan','semula','luar']};
+var DB_CATS={sejarah:['sejarah','istana','dinasti','warisan','purba','history','historical','palace','dynasty','royal','heritage','ancient','shrine','tomb','museum','gallery','memorial'],budaya:['budaya','hanbok','kuil','tradisi','seni','upacara','teh','culture','cultural','tradition','temple','craft','ceremony','village'],bandar:['bandar','moden','beli','belian','shopping','malam','urban','kedai','kafe','city','night','street','tower','market'],makanan:['makan','makanan','sedap','kuliner','juadah','restoran','hidangan','lapar','food','snack','cuisine','restaurant','dish','taste','kimchi','bbq','noodle'],keluarga:['kanak','anak','keluarga','family','budak','seronok','kids','child','children','baby','play'],alam:['alam','gunung','pantai','pulau','hiking','pemandangan','semula','luar','nature','mountain','beach','island','hike','park','waterfall','view','garden','lake','forest']};
 var DB_FREE=['percuma','free','murah','jimat','budget'];
-var DB_SEASON={sakura:'Apr',spring:'Apr',bunga:'Apr',luruh:'Oct',autumn:'Oct',fall:'Nov',daun:'Oct',salji:'Jan',snow:'Jan',sejuk:'Jan',winter:'Jan',panas:'Jul',summer:'Jul'};
+var DB_SEASON={sakura:'Apr',spring:'Apr',bunga:'Apr',cherry:'Apr',blossom:'Apr',luruh:'Oct',autumn:'Oct',fall:'Nov',daun:'Oct',salji:'Jan',snow:'Jan',sejuk:'Jan',winter:'Jan',panas:'Jul',summer:'Jul'};
 var dbAns=$('#db-ask-answer'),dbAskIn=$('#db-ask-input');
 function dbAskEngine(q){
   var t=DB_DEC(q).toLowerCase(),cats=[],regs=[],mon='',free=DB_FREE.some(function(w){return t.indexOf(w)>=0}),toks;
@@ -2648,7 +2648,7 @@ function dbAskEngine(q){
   DB_REGIONS.forEach(function(w){if(t.indexOf(w)>=0&&regs.indexOf(DB_RMAP[w])<0)regs.push(DB_RMAP[w])});
   Object.keys(DB_SEASON).forEach(function(w){if(t.indexOf(w)>=0)mon=DB_SEASON[w]});
   toks=t.split(/[^a-z0-9']+/).filter(function(w){
-    return w.length>=4&&DB_STOP2.indexOf(w)<0;
+    return (w.length>=4||w==='dmz'||w==='ktx')&&DB_STOP2.indexOf(w)<0;
   });
   var scored=KOREA_DB.map(function(e){
     var sc=0;
@@ -2656,13 +2656,16 @@ function dbAskEngine(q){
     if(regs.indexOf(DB_DEC(e.r))>=0)sc+=4;
     if(free&&e.fee===0)sc+=3;else if(free&&e.fee<=5000)sc+=1;
     if(mon&&e.s.indexOf(mon)>=0)sc+=2;
-    var hay=DB_UP(e.n+' '+e.d+' '+e.c);
-    toks.forEach(function(w){if(hay.indexOf(DB_UP(w))>=0)sc+=1});
+    var hay=DB_UP(e.n+' '+e.d+' '+e.c),nm=DB_UP(e.n);
+    toks.forEach(function(w){var u=DB_UP(w);
+      if(nm.indexOf(u)>=0)sc+=(DB_REGIONS.indexOf(w)>=0?1:5);
+      else if(hay.indexOf(u)>=0)sc+=1});
     return {e:e,s:sc};
   }).sort(function(a,b){return b.s-a.s});
   return {list:scored,cats:cats,regs:regs,mon:mon,free:free,top:scored.length?scored[0].s:0};
 }
-var DB_STOP2=('tempat|best|mana|apa|yang|untuk|dengan|boleh|nak|saya|kita|tolong|cadang|cadangan|destinasi|bagus|cantik|lawat|lawatan|pergi|adakah|bagaimana|area|kawasan|sekitar|pengalaman|aktiviti|singgah|jalan').split('|');
+var DB_STOP2=('tempat|best|mana|apa|yang|untuk|dengan|boleh|nak|saya|kita|tolong|cadang|cadangan|destinasi|bagus|cantik|lawat|lawatan|pergi|adakah|bagaimana|area|kawasan|sekitar|pengalaman|aktiviti|singgah|jalan'
+  +'|what|where|which|when|how|many|much|should|could|would|please|recommend|suggestion|thing|things|worth|going|travel|itinerary|day|days|week|year|years|time|there|their|them|this|that|with|from|have|has|will|about|because|really|quite|like|know|want|need|price|prices|cost|costs|close|opens|open|place|places|spot|spots').split('|');
 var DB_ESC=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
 /* Diubah kepada true bila pelayan AI Logic menolak token App Check (lapisan 1 mati untuk sesi ini). */
 var DB_AI_OFF=false;
@@ -2670,9 +2673,37 @@ var DB_AI_OFF=false;
    Kosong = lapisan 0 mati, dan tingkah laman sama seperti sebelumnya.
    Deployed 2026-10-16: https://jelajah-korea-ai.firas12346haaha-e0d.workers.dev */
 var DB_PROXY_URL='https://jelajah-korea-ai.firas12346haaha-e0d.workers.dev';
+/* Konteks pangkalan data (retrieval): entri yang paling sepadan dengan soalan dihantar
+   bersama soalan itu supaya AI menjawab dari data laman ini — nama, yuran, musim, tip —
+   dan bukan rekaan. Hadkan ~2600 aksara; soalan tanpa padanan → konteks kosong, jadi
+   prompt kekal seperti asal. */
+var DB_CTX_MAX=2600;
+var DB_CTX_MIN=4;
+function dbCut(s,n){
+  s=String(s);
+  if(s.length<=n)return s;
+  var sp=s.slice(0,n).lastIndexOf(' ');
+  return s.slice(0,sp>n/2?sp:n).replace(/[,.;:–—-]+$/,'')+'…';
+}
+function dbCtx(list){
+  var out='',n=0;
+  for(var i=0;i<list.length&&n<6;i++){
+    var e=list[i].e;
+    var line='- '+DB_DEC(e.n)+' ('+DB_DEC(e.c)+', '+(e.fee===0?'free entry':'entry ₩'+e.fee+(e.fn?', '+DB_DEC(e.fn):''))
+      +', best '+DB_DEC(e.s)+'): '+dbCut(DB_DEC(e.d),200)
+      +(e.t?'. Tip: '+dbCut(DB_DEC(e.t),100):'');
+    if(out.length+line.length+1>DB_CTX_MAX)break;
+    out+=(out?'\n':'')+line;n++;
+  }
+  return {text:out,used:n};
+}
 function dbReply(q){
   var r=dbAskEngine(q);
-  var top=r.list.filter(function(x){return x.s>0}).slice(0,3);
+  var hits=r.list.filter(function(x){return x.s>0});
+  var top=hits.slice(0,3);
+  var ctxObj=dbCtx(hits.filter(function(x){return x.s>=Math.max(DB_CTX_MIN,r.top-5)}));
+  var ctxStr=ctxObj.text;
+
   var chips='<div class="dbmini">'+top.map(function(x){return '<button type="button" data-n="'+x.e.n+'">'+DB_DEC(x.e.n)+' <i>'+x.e.c+'</i></button>'}).join('')+'</div>';
   function localReply(){
     dbAns.classList.remove('thinking');
@@ -2695,14 +2726,16 @@ function dbReply(q){
   function showAi(clean){
     dbAns.classList.remove('thinking');
     dbAns.innerHTML='<p class="dblead">Jelajah AI</p><p>'+DB_ESC(clean)+'</p>'+(top.length?chips:'')+
-      '<p class="dbfoot">Generated live by AI · cross-checked against '+KOREA_DB.length+' places in the database.</p>';
+      '<p class="dbfoot">Generated live by AI · '+(ctxObj.used
+        ?'answered from '+ctxObj.used+' matching entr'+(ctxObj.used===1?'y':'ies')+' in the '+KOREA_DB.length+'-place database'
+        :'no database match for this question, so answered from general South Korea knowledge')+'</p>';
   }
   /* Lapisan 0 (pilihan): proxy CORS — worker/ai-proxy.js di Cloudflare. Ini satu-satunya
      lapisan yang berjalan di GitHub Pages DAN tidakentuh oleh peraturan wajib App Check
      Firebase AI Logic (2 November 2026), kerana ia bukan endpoint Firebase.
      Kosong = lapisan ini dilupakan sepenuhnya. */
   function viaProxy(){
-    return fetch(DB_PROXY_URL+'/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({q:DB_DEC(q)})})
+    return fetch(DB_PROXY_URL+'/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({q:DB_DEC(q),ctx:ctxStr})})
       .then(function(res){
         return res.text().then(function(t){
           var d=null;try{d=JSON.parse(t)}catch(err){}
@@ -2723,7 +2756,7 @@ function dbReply(q){
      ini — setiap soalan akan membuang satu permintaan yang pasti gagal. */
   function viaGemini(){
     if(!window.JelajahAI||DB_AI_OFF)return Promise.reject(new Error('AI Logic tidak dimuat'));
-    return window.JelajahAI.ask(DB_DEC(q)).then(function(text){
+    return window.JelajahAI.ask(DB_DEC(q),ctxStr).then(function(text){
       var clean=(typeof text==='string')?text.trim():'';
       if(clean.length<3)throw new Error('jawapan pendek');
       return clean;
@@ -2735,7 +2768,7 @@ function dbReply(q){
   /* Lapisan 2: Function sisi pelayan (kunci API tidak dilihat pelayar). Di GitHub Pages
      laluan ini laju gagal (405) — itu sebabnya lapisan 0/1 diperlukan di sana. */
   function viaFunction(){
-    return fetch('/functions/v1/app?action=ask',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({q:DB_DEC(q)})})
+    return fetch('/functions/v1/app?action=ask',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({q:DB_DEC(q),ctx:ctxStr})})
       .then(function(res){return res.ok?res.json():Promise.reject(new Error('http '+res.status));})
       .then(function(data){
         var clean=(data&&data.ok===true&&typeof data.answer==='string')?data.answer.replace(/\r?\n+/g,' ').replace(/\s+/g,' ').trim():'';

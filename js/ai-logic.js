@@ -93,12 +93,19 @@ function attempt(i, q) {
   });
 }
 
-/* window.JelajahAI.ask(soalan) → Promise<teks jawapan> */
+/* window.JelajahAI.ask(soalan, konteks?) → Promise<teks jawapan>
+   `konteks` ialah entri pangkalan data tempat yang paling sepadan dengan soalan (dibina
+   oleh index.html). Ia ditempel selepas soalan supaya Gemini menjawab dari data laman
+   ini dan bukan rekaan. Kosong = prompt sama seperti dahulu. */
+var CTX_MAX=2600;
+var CTX_NOTE='\n\nMatching entries from this site\'s own places database — use these for names, entry fees, best seasons and tips instead of guessing:\n';
+
 window.JelajahAI = {
   models: MODELS,
-  ask: function (question) {
+  ask: function (question, ctx) {
     var q = clean(question);
     if (q.length < 2 || q.length > 400) return Promise.reject(new Error('soalan tidak sah'));
-    return attempt(0, q);
+    var extra = clean(ctx || '').slice(0, CTX_MAX);
+    return attempt(0, q + (extra ? CTX_NOTE + extra : ''));
   },
 };

@@ -13,6 +13,19 @@ const AGENT_SYSTEM = 'You are "Jelajah AI", a South Korea travel assistant for M
   'If a fact is uncertain, say it is an estimate. If the question is off-topic from South Korea or travel, ' +
   'ask the user to ask about South Korea only.';
 
+// Retrieval context: index.html sends the database entries that best match the question, so
+// the model answers from this site's own 126-place data. Size-capped; absent ctx = old prompt.
+const CTX_MAX = 2600;
+const CTX_NOTE = "\n\nMatching entries from this site's own places database — use these for names, entry fees, best seasons and tips instead of guessing:\n";
+function flat(s) {
+  // \p{C} = control + format characters (needs the u flag)
+  return s.replace(/\p{C}/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function withCtx(q, ctx) {
+  return ctx ? q + CTX_NOTE + ctx : q;
+}
+
 // Owner-supplied keys, each read as an application Secret; neither ever leaves this Function.
 // Gemini (Secret GEMINI_API_KEY) answers first. The OpenAI-compatible gateway
 // (Secret A2AGENT_API_KEY) is the backup, then Qoder Cloud Agents.
@@ -307,17 +320,19 @@ async function handler(req) {
   } catch {
     return json({ ok: false, error: 'bad_request' }, 400);
   }
-  if (raw.length > 4096) return json({ ok: false, error: 'too_large' }, 413);
+  if (raw.length > 8192) return json({ ok: false, error: 'too_large' }, 413);
   let q = '';
+  let ctx = '';
   try {
     const parsed = JSON.parse(raw);
-    q = typeof parsed.q === 'string' ? parsed.q.replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim() : '';
+    q = typeof parsed.q === 'string' ? flat(parsed.q) : '';
+    ctx = typeof parsed.ctx === 'string' ? flat(parsed.ctx).slice(0, CTX_MAX) : '';
   } catch {
     return json({ ok: false, error: 'bad_request' }, 400);
   }
   if (q.length < 2 || q.length > 300) return json({ ok: false, error: 'bad_request' }, 400);
   try {
-    const answer = await ask(q);
+    const answer = await ask(withCtx(q, ctx));
     return json({ ok: true, answer });
   } catch (error) {
     const code = error instanceof CloudAgentsError ? error.code : 'ai_service_unavailable';

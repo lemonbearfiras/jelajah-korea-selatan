@@ -90,15 +90,18 @@ What the rules mean in short:
 
 ## Step 5b — Keep real AI on GitHub Pages after 2 November (the AI proxy)
 
-`worker/ai-proxy.js` is a small **Cloudflare Worker**: an HTTPS endpoint that holds the API key server-side and answers `POST /ask {q}` with `{ok:true, answer}`. It calls the Gemini Developer API first and, if that Secret is absent or fails, the same MiniMax gateway the Qoder Function uses. **No Firebase is involved, therefore no App Check requirement and no 2 November expiry.** Cloudflare's free plan covers this site easily, and the key-based free quota is far larger than the 20/day that Firebase's AI Logic tier gives; check [ai.google.dev/gemini-api/docs/rate-limits](https://ai.google.dev/gemini-api/docs/rate-limits) for the current numbers.
+`worker/ai-proxy.js` is a small **Cloudflare Worker**: an HTTPS endpoint that holds the API key server-side and answers `POST /ask {q, ctx}` with `{ok:true, answer}` — `q` is the question, `ctx` is the block of matching places from the site's own database (see *Answer grounding* below). It calls the Gemini Developer API first and, if that Secret is absent or fails, the same MiniMax gateway the Qoder Function uses. **No Firebase is involved, therefore no App Check requirement and no 2 November expiry.** Cloudflare's free plan covers this site easily, and the key-based free quota is far larger than the 20/day that Firebase's AI Logic tier gives; check [ai.google.dev/gemini-api/docs/rate-limits](https://ai.google.dev/gemini-api/docs/rate-limits) for the current numbers.
 
 **This is now deployed and switched on** — the Worker runs at `https://jelajah-korea-ai.firas12346haaha-e0d.workers.dev` and `DB_PROXY_URL` in `index.html` points at it, so it is the *first* tier the ask box tries. If you ever move it, edit that one line (no trailing slash) and publish.
+
+⚠️ **One re-paste is needed to enable grounded answers on GitHub Pages.** The build deployed on 16 October ignores the `ctx` field, so it answers from the model's own memory; the current `worker/ai-proxy.js` reads it and appends the database entries to the prompt. Re-pasting costs nothing and nothing else changes (same URL, same Secrets). Until you do it the site still works exactly as before — just without the database in the answer.
 
 How it behaves, because it matters when an answer looks slow:
 
 - It never hardcodes a model name — it reads the provider's own model list, so a renamed model does not break it.
 - Free-tier quota is counted **per model**, so one `429` does not mean the key is spent: the Worker moves on to the next candidate model, and then to the gateway Secret if you added one. A `401`/`403` (wrong key) stops immediately instead of retrying.
 - Each attempt is capped at 14 s and the whole request at 28 s, so a hung model cannot block the fallbacks. If every provider fails you get `{ok:false, error:"gemini_429 …"}` and the page falls through to the offline engine.
+- **Answer grounding (`ctx`)**: before asking, `index.html` scores your question against the 126-place database — region, category, free/cheap, season, and a strong bonus when a word matches a place *name* — and sends the best few entries (max 6, ~2 600 characters) as `name (city, entry ₩…, closed …, best season): description. Tip: …`. Every tier (proxy, Firebase, the Sites Function) receives the same block with the instruction to use it for names, fees, seasons and tips instead of guessing. That is why an answer can say "₩3,000, closed Tuesdays, free in hanbok" — those come from this site's data, not the model's memory. A question with no database match (for example "what is the weather today") sends an empty `ctx`, the prompt is exactly as it used to be, and the footnote under the answer tells you which case you are looking at.
 
 Deploying it (or re-deploying after a code change) takes about two minutes:
 

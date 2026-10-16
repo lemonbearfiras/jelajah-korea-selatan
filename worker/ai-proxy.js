@@ -2,7 +2,8 @@
    GitHub Pages cannot run server code, and after 2026-11-02 the Firebase AI Logic
    endpoint demands an App Check token that this project's provider cannot obtain.
    This Worker is a plain HTTPS API with no App Check involvement: the browser sends
-   only a question, the key stays in the Worker's secret.
+   the question plus the matching entries from the site's own 126-place database, and the
+   key stays in the Worker's secret.
    Deploy: Workers & Pages → Create → Worker → paste → Settings → Variables/secrets. */
 
 const ALLOW = new Set([
@@ -21,6 +22,12 @@ const SYSTEM =
   'ask the user to ask about South Korea only.';
 
 const MAX_ANSWER = 1200;
+/* Retrieval context: index.html sends the database entries that best match the question, so
+   the model answers from this site's own data instead of guessing. Size-capped, control
+   characters stripped; a request without ctx behaves exactly like the previous build. */
+const CTX_MAX = 2600;
+const CTX_NOTE = '\n\nMatching entries from this site\'s own places database — use these for names, entry fees, best seasons and tips instead of guessing:\n';
+
 /* A free-tier answer really does take ~30 s, so the ask budget is generous; discovery
    is a tiny request and must fail fast instead of eating the ask window. */
 const ASK_BUDGET_MS = 28000;
@@ -41,6 +48,16 @@ function read(env, name, minLen) {
 
 function clean(raw) {
   return String(raw || '').replace(THINK, ' ').replace(/<\/?think>/gi, ' ').replace(/\s+/g, ' ').trim();
+}
+
+/* Entries arrive one per line; collapsing the whitespace still keeps them readable because
+   every line starts with "- ". */
+function ctxText(raw) {
+  return clean(String(raw).replace(/\p{C}/gu, ' ')).slice(0, CTX_MAX);
+}
+
+function withCtx(question, ctx) {
+  return ctx ? question + CTX_NOTE + ctx : question;
 }
 
 function cors(origin) {
@@ -216,13 +233,16 @@ export default {
       return json({ ok: false, error: 'not_found' }, 404, origin);
     }
     let q = '';
+    let ctx = '';
     try {
       const body = await request.json();
       q = typeof body.q === 'string' ? body.q.trim() : '';
+      ctx = typeof body.ctx === 'string' ? ctxText(body.ctx) : '';
     } catch (e) {
       return json({ ok: false, error: 'bad_json' }, 400, origin);
     }
     if (q.length < 2 || q.length > 300) return json({ ok: false, error: 'bad_question' }, 400, origin);
+    const prompt = withCtx(q, ctx);
 
     const chain = [];
     if (env.GEMINI_API_KEY) chain.push(askGemini);
@@ -234,7 +254,7 @@ export default {
     for (let i = 0; i < chain.length; i++) {
       if (i > 0 && left(deadlineAt) < MIN_TRY_MS) break;
       try {
-        return json({ ok: true, answer: await chain[i](env, q, deadlineAt) }, 200, origin);
+        return json({ ok: true, answer: await chain[i](env, prompt, deadlineAt) }, 200, origin);
       } catch (e) {
         last = e;
       }
