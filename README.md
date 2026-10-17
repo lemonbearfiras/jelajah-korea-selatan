@@ -12,7 +12,7 @@ An interactive English-language website for planning a trip to South Korea — a
 
 | Section | Function |
 |---|---|
-| 🌤️ **Destinations** | 6 region cards with **live** weather for each city (Open-Meteo): temperature, feels-like temperature, min–max, humidity, wind, chance of rain |
+| 🌤️ **Destinations** | 6 region cards with **live** weather for each city (Open-Meteo): temperature, feels-like temperature, min–max, humidity, wind, chance of rain. Responses are cached in `localStorage` (stale-while-revalidate), so repeat visits paint instantly on weak mobile data |
 | 🗺️ **Korea Map** | Interactive SVG map with the real KTX rail routes + city pins |
 | 💰 **Budget Planner** | **Live ECB** exchange rates (1 day–1 year chart, each point = 1 day, hover crosshair), RM↔₩ converter, budget estimates by rate/season/theme + Generate a daily itinerary; Korean economy info cards |
 | 📚 **Database** | 126 places (deep Seoul + Busan coverage, then Jeju, Gyeongju, Jeolla, Gangwon, etc.) with search + details modal |

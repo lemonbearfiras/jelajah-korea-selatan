@@ -4,6 +4,19 @@
 function $(s){return document.querySelector(s);}
 var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* Stale-while-revalidate cache: paint the last good response instantly, then refetch.
+   On weak mobile data the cards are never left showing "Loading weather…". */
+var CK='jx:';
+function cacheRead(k,maxAge){
+  try{
+    var o=JSON.parse(localStorage.getItem(CK+k)||'null');
+    return o&&o.v&&Date.now()-o.t<=maxAge?o:null;
+  }catch(e){return null}
+}
+function cacheWrite(k,v){
+  try{localStorage.setItem(CK+k,JSON.stringify({t:Date.now(),v:v}))}catch(e){}
+}
+
 /* ---------- CUACA LANGSUNG ---------- */
 var ICON={
   sun:'<svg class="w-sun" viewBox="0 0 24 24" aria-hidden="true"><circle class="core" cx="12" cy="12" r="4.6"/><g class="rays"><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19"/></g></svg>',
@@ -27,34 +40,45 @@ function wmo(c){
   if(c>=95)return['Thunderstorm','bolt'];
   return['—','cloud'];
 }
+var W_SHOW_MS=1800000, W_FRESH_MS=300000;
+function paintWeather(chip,d){
+  var cur=d&&d.current;if(!cur)return false;
+  var m=wmo(cur.weather_code);
+  var dy=d.daily||{},one=function(k,i){return Array.isArray(dy[k])?dy[k][i]:null;};
+  var tmin=one('temperature_2m_min',0),tmax=one('temperature_2m_max',0),rainp=one('precipitation_probability_max',0);
+  var sunrise=one('sunrise',0),sunset=one('sunset',0);
+  var night=!!(sunrise&&sunset&&cur.time&&(cur.time<sunrise||cur.time>sunset));
+  if(night&&m[1]==='sun')m=['Clear','moon'];
+  var extra=[];
+  if(cur.apparent_temperature!=null)extra.push('feels like '+Math.round(cur.apparent_temperature)+'°');
+  if(tmax!=null&&tmin!=null)extra.push('☀ day '+Math.round(tmax)+'° · ☾ night '+Math.round(tmin)+'°');
+  if(cur.relative_humidity_2m!=null)extra.push('💧'+Math.round(cur.relative_humidity_2m)+'%');
+  if(cur.wind_speed_10m!=null)extra.push('💨'+Math.round(cur.wind_speed_10m)+' km/h');
+  if(rainp!=null)extra.push('☔'+Math.round(rainp)+'%');
+  chip.innerHTML=ICON[m[1]]+'<span>'+Math.round(cur.temperature_2m)+'°C · '+m[0]+(night?' (night)':'')+'</span>'
+    +(extra.length?'<span class="w-x">'+extra.join(' · ')+'</span>':'');
+  chip.classList.add('upd');
+  chip.title='Live weather (Open-Meteo) · '+cur.time.replace('T',' ');
+  return true;
+}
 function loadWeather(){
   var cards=Array.prototype.slice.call(document.querySelectorAll('.dest-card[data-lat]'));
   if(!cards.length||!window.fetch)return;
   cards.forEach(function(card){
     var chip=card.querySelector('.weather-chip');if(!chip)return;
     var lat=card.getAttribute('data-lat'),lon=card.getAttribute('data-lon');
+    var key='w'+lat+','+lon;
+    var hit=cacheRead(key,W_SHOW_MS);
+    if(hit){
+      paintWeather(chip,hit.v);
+      if(Date.now()-hit.t<W_FRESH_MS)return; /* still fresh — no refetch needed */
+    }
     var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
       +'&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code'
       +'&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&forecast_days=1'
       +'&timezone=Asia%2FSeoul';
     fetch(url).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){
-      var cur=d&&d.current;if(!cur)return;
-      var m=wmo(cur.weather_code);
-      var dy=d.daily||{},one=function(k,i){return Array.isArray(dy[k])?dy[k][i]:null;};
-      var tmin=one('temperature_2m_min',0),tmax=one('temperature_2m_max',0),rainp=one('precipitation_probability_max',0);
-      var sunrise=one('sunrise',0),sunset=one('sunset',0);
-      var night=!!(sunrise&&sunset&&cur.time&&(cur.time<sunrise||cur.time>sunset));
-      if(night&&m[1]==='sun')m=['Clear','moon'];
-      var extra=[];
-      if(cur.apparent_temperature!=null)extra.push('feels like '+Math.round(cur.apparent_temperature)+'°');
-      if(tmax!=null&&tmin!=null)extra.push('☀ day '+Math.round(tmax)+'° · ☾ night '+Math.round(tmin)+'°');
-      if(cur.relative_humidity_2m!=null)extra.push('💧'+Math.round(cur.relative_humidity_2m)+'%');
-      if(cur.wind_speed_10m!=null)extra.push('💨'+Math.round(cur.wind_speed_10m)+' km/h');
-      if(rainp!=null)extra.push('☔'+Math.round(rainp)+'%');
-      chip.innerHTML=ICON[m[1]]+'<span>'+Math.round(cur.temperature_2m)+'°C · '+m[0]+(night?' (night)':'')+'</span>'
-        +(extra.length?'<span class="w-x">'+extra.join(' · ')+'</span>':'');
-      chip.classList.add('upd');
-      chip.title='Live weather (Open-Meteo) · '+cur.time.replace('T',' ');
+      if(paintWeather(chip,d))cacheWrite(key,d);
     }).catch(function(){});
   });
 }
@@ -175,11 +199,15 @@ var RANGE_LABEL={7:'1 week',30:'1 month',92:'3 months',182:'6 months',365:'1 yea
 var liveP=null;
 function fetchLive(){
   if(liveP)return liveP;
+  var hit=cacheRead('live',900000);
+  if(hit)return Promise.resolve(hit.v);
   liveP=fetch('https://api.exchangerate.fun/latest').then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){
     if(!d||d.base!=='USD'||!d.rates||!(d.rates.MYR>0)||!(d.rates.KRW>0))throw new Error('bad payload');
     var dt=new Date((d.timestamp?d.timestamp*1000:Date.now()));
     var isoD=dt.getUTCFullYear()+'-'+('0'+(dt.getUTCMonth()+1)).slice(-2)+'-'+('0'+dt.getUTCDate()).slice(-2);
-    return {d:isoD,v:d.rates.KRW/d.rates.MYR,live:true};
+    var p={d:isoD,v:d.rates.KRW/d.rates.MYR,live:true};
+    cacheWrite('live',p);
+    return p;
   });
   liveP.catch(function(){liveP=null;});
   return liveP;
@@ -198,7 +226,16 @@ function fxSeries(days){
   fxCache[days]=pr;
   return pr;
 }
+var FX_SHOW_MS=21600000, FX_FRESH_MS=1800000;
 function loadRange(days){
+  var hit=cacheRead('fx'+days,FX_SHOW_MS);
+  if(hit&&hit.v.length>1){
+    renderGraph(hit.v);
+    applyRate(hit.v[hit.v.length-1].v);
+    setupConverter();
+    var dEl=$('#rc-date');if(dEl)dEl.textContent=fmtFull(hit.v[hit.v.length-1].d);
+    if(Date.now()-hit.t<FX_FRESH_MS)return; /* ECB moves once a day — reuse it */
+  }
   fxSeries(days).then(function(pts){
     return fetchLive().then(function(live){
       if(live){
@@ -211,6 +248,7 @@ function loadRange(days){
   }).then(function(pts){
     renderGraph(pts);
     applyRate(pts[pts.length-1].v);
+    cacheWrite('fx'+days,pts);
     var liveNow=pts[pts.length-1].live;
     var dateEl=$('#rc-date');
     if(dateEl)dateEl.textContent=fmtFull(pts[pts.length-1].d)+(liveNow?' · live':'');

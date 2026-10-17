@@ -272,6 +272,7 @@ body.cursor-hover #cursor-ring{width:56px;height:56px;margin:-28px 0 0 -28px;bac
 .spice em{font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:3px}
 .sp-dot{width:9px;height:9px;border-radius:50%;background:var(--bg-soft);border:1px solid var(--line)}
 .sp-dot.hot{background:var(--red);border-color:var(--red)}
+.sp-word{font-size:10.5px;font-weight:700;color:var(--ink);background:var(--bg-soft);border:1px solid var(--line);padding:3px 9px;border-radius:999px}
 #food-empty{display:none;text-align:center;padding:60px 20px;color:var(--muted);font-size:14.5px;border:1.5px dashed var(--line);border-radius:var(--radius)}
 #food-empty.show{display:block}
 .food-card.hide{display:none}
@@ -963,10 +964,10 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </div>
     </div>
     <aside class="glance hero-enter" style="--d:.56s" aria-label="Korea at a glance">
-      <div class="glance-item"><strong data-count="51.7" data-decimals="1">0</strong><small>Million People</small></div>
-      <div class="glance-item"><strong data-count="17">0</strong><small>Provinces &amp; Cities</small></div>
-      <div class="glance-item"><strong data-count="4">0</strong><small>Distinct Seasons</small></div>
-      <div class="glance-item"><strong data-count="5000" data-suffix="+">0</strong><small>Years of History</small></div>
+      <div class="glance-item"><strong data-count="51.7" data-decimals="1">51.7</strong><small>Million People</small></div>
+      <div class="glance-item"><strong data-count="17">17</strong><small>Provinces &amp; Cities</small></div>
+      <div class="glance-item"><strong data-count="4">4</strong><small>Distinct Seasons</small></div>
+      <div class="glance-item"><strong data-count="5000" data-suffix="+">5,000<em>+</em></strong><small>Years of History</small></div>
     </aside>
   </div>
   <div class="hero-scroll hero-enter" style="--d:.9s" aria-hidden="true"><i></i>Scroll</div>
@@ -1077,7 +1078,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
           <strong>Seoul 서울 — Capital · Metro</strong>
           The capital metropolis with 9 metro lines, Joseon dynasty palaces and the most popular starting point for travellers.
         </div>
-        <p class="map-ktx">🚄 KTX connects Seoul–Busan in about 2 hours 30 minutes — and nearly every destination on this page can be visited in a single 7-day trip.</p>
+        <p class="map-ktx">🚄 KTX connects Seoul–Busan in about 2 hours 30 minutes — and almost every destination on this page can be visited in a single 7-day trip. Jeju is the exception: the rail network stops at the shore, so reach it by a 1-hour flight from Seoul/Busan or by ferry.</p>
         <div class="map-legend">
           <span><i></i>Destination</span>
           <span><span class="lg-line"></span>KTX / rail line</span>
@@ -1226,7 +1227,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
         <div class="food-body">
           <h4>Bulgogi <small>불고기</small></h4>
           <p>Sweet-soy-marinated beef, grilled over the coals at your table — the friendliest gateway dish for beginners.</p>
-          <div class="spice"><em>spice</em><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span></div>
+          <div class="spice"><em>taste</em><span class="sp-word">Savory</span><span class="sp-word">Sweet</span></div>
         </div>
       </article>
 
@@ -1253,7 +1254,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
         <div class="food-body">
           <h4>Galbi <small>갈비</small></h4>
           <p>Marinated beef ribs, charcoal-grilled at your own table — a celebratory favourite.</p>
-          <div class="spice"><em>spice</em><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span></div>
+          <div class="spice"><em>taste</em><span class="sp-word">Savory</span><span class="sp-word">Smoky</span></div>
         </div>
       </article>
 
@@ -1262,7 +1263,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
         <div class="food-body">
           <h4>Gimbap <small>김밥</small></h4>
           <p>Rice, egg, veg and meat rolls wrapped in seaweed — the must-have picnic lunch of spring.</p>
-          <div class="spice"><em>spice</em><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span></div>
+          <div class="spice"><em>taste</em><span class="sp-word">Mild</span><span class="sp-word">Savory</span></div>
         </div>
       </article>
 
@@ -1271,7 +1272,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
         <div class="food-body">
           <h4>Hotteok <small>호떡</small></h4>
           <p>Sweet pancakes stuffed with brown sugar and nuts — a winter warmer at Namdaemun market.</p>
-          <div class="spice"><em>spice</em><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span><span class="sp-dot"></span></div>
+          <div class="spice"><em>taste</em><span class="sp-word">Sweet</span></div>
         </div>
       </article>
 
@@ -1472,8 +1473,8 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
               <button type="button" data-cur="myr">RM Ringgit</button>
             </div>
           </div>
-          <div class="pr-total" id="pr-total">&#8361;0</div>
-          <p class="pr-alt" id="pr-alt"></p>
+          <div class="pr-total" id="pr-total">&#8361;1,065,000</div>
+          <p class="pr-alt" id="pr-alt">&asymp; <b>RM 3,550</b> per traveller</p>
           <div class="pr-bars" id="pr-bars"></div>
           <p class="pr-note">Flights not included. Rate: RM1 &asymp; <span id="pr-rate">&#8361;300</span> <span id="pr-rate-src">(estimate &middot; loading live rate…)</span>.</p>
           <div class="pr-tip" id="pr-tip"></div>
