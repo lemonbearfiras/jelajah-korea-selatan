@@ -94,7 +94,7 @@ What the rules mean in short:
 
 **This is now deployed and switched on** — the Worker runs at `https://jelajah-korea-ai.firas12346haaha-e0d.workers.dev` and `DB_PROXY_URL` in `index.html` points at it, so it is the *first* tier the ask box tries. If you ever move it, edit that one line (no trailing slash) and publish.
 
-⚠️ **One re-paste is needed to enable grounded answers on GitHub Pages.** The build deployed on 16 October ignores the `ctx` field, so it answers from the model's own memory; the current `worker/ai-proxy.js` reads it and appends the database entries to the prompt. Re-pasting costs nothing and nothing else changes (same URL, same Secrets). Until you do it the site still works exactly as before — just without the database in the answer.
+✅ **Grounded answers are live on GitHub Pages.** The Worker was re-pasted on 17 October and now reads the `ctx` field, appending the matching database entries to the prompt before calling the model. Verified with one real ask — *"How much does Everland cost to enter, and is booking online cheaper?"* — `POST /ask` returned 200 from the first tier with `₩59,000` gate / `±₩39,000` online plus the Q-Pass tip, all values taken from `KOREA_DB`, and the footnote read "answered from 6 matching entries in the 126-place database". If you later edit `worker/ai-proxy.js` it needs another paste + **Deploy and restart**; the URL and Secrets stay untouched.
 
 How it behaves, because it matters when an answer looks slow:
 
