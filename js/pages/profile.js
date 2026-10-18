@@ -48,7 +48,7 @@ var db=firebase.firestore(), auth=firebase.auth();
 var me=null, prof=null;
 var isFriend=false, isFollowing=false, myReqId=null, incomingReqId=null;
 
-/* tunggu keadaan auth pertama kali pasti */
+/* wait until the first auth state is settled */
 var authReady=new Promise(function(res){
   var un=auth.onAuthStateChanged(function(u){un();me=u?u.uid:null;res()});
 });

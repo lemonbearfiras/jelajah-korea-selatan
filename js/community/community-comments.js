@@ -32,7 +32,6 @@ var replyTarget=null;   /* {id,name} while a reply is being composed */
 var pendingJump=true;
 
 /* ---------- util ---------- */
-var PROFILE_BASE='https://lemonbearfiras.github.io/jelajah-korea-selatan/profile?v=';
 var BM_M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function ago(ts){

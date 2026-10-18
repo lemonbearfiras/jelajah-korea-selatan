@@ -155,7 +155,7 @@ function loadDoc(){
     fill();
     $('#back-link').href='profile.html?v='+encodeURIComponent(me);
     $('#btn-cancel').setAttribute('href','profile.html?v='+encodeURIComponent(me));
-    var link='https://lemonbearfiras.github.io/jelajah-korea-selatan/profile?v='+encodeURIComponent(me);
+    var link=PROFILE_BASE+encodeURIComponent(me);
     $('#i-link').textContent=link;
     $('#i-link').title=link;
     $('#i-email').textContent=u.email||'—';

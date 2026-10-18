@@ -25,3 +25,11 @@ var FIREBASE_CONFIG = {
   appId:             "1:950161795507:web:97df07773ed36a387043c6",
   measurementId:     "G-C4KKCPHZ6E"
 };
+
+/* Shared profile links have to work on every host the site runs on — GitHub Pages under
+   /jelajah-korea-selatan/, the Qoder site at the root, and localhost — so the base is read
+   from the current URL. profile.html rather than the extensionless /profile because the
+   Qoder host only serves the file with its extension. This is the one script every page
+   loads before any code that needs a link, so it lives here. */
+var SITE_BASE=location.origin+location.pathname.replace(/[^/]*$/,'');
+var PROFILE_BASE=SITE_BASE+'profile.html?v=';

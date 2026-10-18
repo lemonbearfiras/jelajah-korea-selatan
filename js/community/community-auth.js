@@ -71,7 +71,7 @@ function paintNav(){
     var first=(user.name||'Account').trim().split(/\s+/)[0];
     navLogin.classList.add('signed');
     if(mode==='firebase'){
-      navLogin.href='https://lemonbearfiras.github.io/jelajah-korea-selatan/profile?v='+encodeURIComponent(user.uid);
+      navLogin.href=PROFILE_BASE+encodeURIComponent(user.uid);
       navLogin.target='_blank';
       navLogin.rel='noopener';
       navLogin.title='Hi, '+user.name+' — view your public profile page';
@@ -96,7 +96,7 @@ function paintUser(){
   var userLink=$('#km-user');
   if(userLink){
     if(user&&mode==='firebase'){
-      userLink.href='https://lemonbearfiras.github.io/jelajah-korea-selatan/profile?v='+encodeURIComponent(user.uid);
+      userLink.href=PROFILE_BASE+encodeURIComponent(user.uid);
       userLink.title='View your public profile page — opens in a new window';
     }else{
       userLink.removeAttribute('href');
@@ -125,7 +125,7 @@ function setNote(){
   }
 }
 
-/* ---------- tab masuk/daftar ---------- */
+/* ---------- login / sign-up tabs ---------- */
 function setTab(t){
   tab=t;
   tabIn.classList.toggle('active',t==='in');

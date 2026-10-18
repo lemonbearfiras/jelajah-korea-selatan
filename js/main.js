@@ -369,6 +369,13 @@ var PL_THEME={
   budaya:{pkg:20000,l:'Culture',c:'Seoul + Jeonju',d:'Bukchon Hanok, hanbok rental, Jogyesa Temple and the Jeonju hanok village.'}
 };
 var PL_LIM={santai:2,sederhana:4,padat:5};
+/* Days 5–7 of every theme are the KTX block: outbound, nights away, return leg. */
+var PL_KTX=[4,5,6];
+function plItinDays(tkey,dur){
+  var all=PL_DAYS[tkey];
+  if(dur>PL_KTX[2])return all.slice(0,dur);
+  return all.filter(function(d,i){return PL_KTX.indexOf(i)<0}).slice(0,dur);
+}
 var PL_DAYS={
   sejarah:[
     {t:'Arrive in Seoul — Historic Jongno',a:['Arrival at Incheon &amp; check-in in Jongno','Gyeongbokgung Palace &amp; Gwanghwamun Plaza','Royal guard changing ceremony at Gwanghwamun','National Museum of Korea','Walk along Cheonggyecheon']},
@@ -495,8 +502,10 @@ function renderPlanner(){
   requestAnimationFrame(function(){requestAnimationFrame(function(){
     Array.prototype.forEach.call(bars.querySelectorAll('.pr-fill'),function(f,i){f.style.width=Math.round(p.lines[i].a/p.total*100)+'%'});
   })});
-  $('#pr-tip').innerHTML='<strong>'+p.tema.l+' suggestion:</strong> '+p.tema.d+' Ideal route: '+p.tema.c+' · '+p.dur+' days · '+PL_PACE[p.kadar]+' · '+p.musim.l+'.';
-  var days=PL_DAYS[p.tkey].slice(0,p.dur),lim=PL_LIM[p.kadar];
+  var days=plItinDays(p.tkey,p.dur),lim=PL_LIM[p.kadar];
+  /* Short plans stay based in Seoul, so the tip must not advertise the KTX route they skip. */
+  var route=p.dur>PL_KTX[2]?p.tema.c:'Seoul city break';
+  $('#pr-tip').innerHTML='<strong>'+p.tema.l+' suggestion:</strong> '+p.tema.d+' Ideal route: '+route+' · '+p.dur+' days · '+PL_PACE[p.kadar]+' · '+p.musim.l+'.';
   $('#pl-itin-meta').textContent='— '+PL_THEME[p.tkey].l+' · '+p.dur+' days';
   $('#pl-itin-sub').textContent='Pace: '+PL_PACE_SHORT[p.kadar]+' — '+lim+' activities shown each day.';
   var itin=$('#pl-itin');
