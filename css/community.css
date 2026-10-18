@@ -7,6 +7,10 @@
 .sec-head .hangul{font-family:'Noto Sans KR',sans-serif;font-size:.4em;font-weight:700;letter-spacing:.22em;color:var(--red);vertical-align:.6em;margin:0 10px;white-space:nowrap}
 .sec-dark .sec-head .hangul{color:#ff8a80}
 .km-grid{display:grid;grid-template-columns:360px 1fr;gap:28px;align-items:start;margin-top:42px}
+/* Grid items default to min-width:auto, so one long token in a comment or the leaderboard
+   widens the 1fr track past the viewport (measured: 385px track inside a 340px grid on a
+   378px phone). The columns must be allowed to shrink. */
+.km-grid>*{min-width:0}
 .km-auth-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 18px 44px rgba(20,24,40,.07);position:sticky;top:calc(var(--nav-h) + 18px)}
 .km-auth-card.flash{animation:kmFlash 1s var(--ease)}
 @keyframes kmFlash{0%,100%{box-shadow:0 18px 44px rgba(20,24,40,.07)}30%{box-shadow:0 0 0 5px rgba(205,46,58,.25)}}

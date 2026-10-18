@@ -805,7 +805,7 @@ function dbReply(q){
     if(!window.JelajahAI||DB_AI_OFF)return Promise.reject(new Error('AI Logic not loaded'));
     return window.JelajahAI.ask(DB_DEC(q),ctxStr).then(function(text){
       var clean=(typeof text==='string')?text.trim():'';
-      if(clean.length<3)throw new Error('jawapan pendek');
+      if(clean.length<3)throw new Error('answer too short');
       return clean;
     },function(e){
       if(/App Check/i.test(String(e&&e.message||e)))DB_AI_OFF=true;

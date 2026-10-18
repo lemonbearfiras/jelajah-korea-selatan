@@ -1,4 +1,4 @@
-/* Jelajah Korea Selatan — data langsung: cuaca (Open-Meteo) + kadar MYR→KRW (ECB/Frankfurter) */
+/* Jelajah Korea Selatan — live data: weather (Open-Meteo) + MYR→KRW rate (ECB/Frankfurter). */
 (function(){
 'use strict';
 function $(s){return document.querySelector(s);}
@@ -17,7 +17,7 @@ function cacheWrite(k,v){
   try{localStorage.setItem(CK+k,JSON.stringify({t:Date.now(),v:v}))}catch(e){}
 }
 
-/* ---------- CUACA LANGSUNG ---------- */
+/* ---------- LIVE WEATHER ---------- */
 var ICON={
   sun:'<svg class="w-sun" viewBox="0 0 24 24" aria-hidden="true"><circle class="core" cx="12" cy="12" r="4.6"/><g class="rays"><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19"/></g></svg>',
   cloud:'<svg class="w-cloud" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .8-7.92A5.5 5.5 0 0 0 7.2 8.6 4.5 4.5 0 0 0 7 18z"/></svg>',
@@ -40,7 +40,15 @@ function wmo(c){
   if(c>=95)return['Thunderstorm','bolt'];
   return['—','cloud'];
 }
-var W_SHOW_MS=1800000, W_FRESH_MS=300000;
+var W_SHOW_MS=1800000, W_FRESH_MS=300000, W_TIMEOUT_MS=9000;
+/* If Open-Meteo is unreachable, slow or blocked, the chip must not stay on "Loading weather…".
+   It shows one honest offline state instead; the card itself is still fully usable. */
+function weatherOffline(chip){
+  chip.classList.remove('upd');
+  chip.classList.add('woff');
+  chip.innerHTML=ICON.cloud+'<span>Weather offline</span>';
+  chip.title='Live weather is unavailable right now — showing no estimate.';
+}
 function paintWeather(chip,d){
   var cur=d&&d.current;if(!cur)return false;
   var m=wmo(cur.weather_code);
@@ -77,13 +85,21 @@ function loadWeather(){
       +'&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code'
       +'&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&forecast_days=1'
       +'&timezone=Asia%2FSeoul';
-    fetch(url).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){
-      if(paintWeather(chip,d))cacheWrite(key,d);
-    }).catch(function(){});
+    var ctl=window.AbortController?new AbortController():null;
+    var settled=false;
+    var to=setTimeout(function(){if(!settled&&ctl)ctl.abort();},W_TIMEOUT_MS);
+    fetch(url,ctl?{signal:ctl.signal}:{}).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){
+      settled=true;clearTimeout(to);
+      if(paintWeather(chip,d))cacheWrite(key,d);else weatherOffline(chip);
+    }).catch(function(){
+      if(settled)return;
+      settled=true;clearTimeout(to);
+      weatherOffline(chip);
+    });
   });
 }
 
-/* ---------- KADAR LANGSUNG MYR→KRW ---------- */
+/* ---------- LIVE RATE MYR→KRW ---------- */
 var RATE=328, MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}

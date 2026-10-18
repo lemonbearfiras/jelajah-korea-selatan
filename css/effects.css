@@ -69,6 +69,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
 @keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}55%{box-shadow:0 0 0 6px rgba(37,211,102,0)}}
 .weather-chip{transition:background .5s var(--ease),border-color .5s}
 .weather-chip.upd{background:rgba(0,45,110,.66);border-color:rgba(255,255,255,.42)}
+.weather-chip.woff{background:rgba(8,10,16,.5);border-style:dashed;color:rgba(255,255,255,.78)}
 .weather-chip{flex-wrap:wrap;max-width:calc(100% - 32px);line-height:1.4;row-gap:3px}
 .weather-chip .w-x{flex-basis:100%;padding-left:26px;font-size:10.5px;font-weight:600;color:rgba(255,255,255,.82)}
 .weather-chip .w-rain{stroke:#bcd3ff;stroke-width:2;stroke-linecap:round;fill:none}

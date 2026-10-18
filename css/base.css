@@ -98,7 +98,7 @@ body.cursor-hover #cursor-ring{width:56px;height:56px;margin:-28px 0 0 -28px;bac
 #search-note{position:fixed;left:22px;bottom:22px;z-index:1090;display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;background:var(--ink);color:#fff;border-radius:999px;font-size:12px;box-shadow:0 14px 34px rgba(10,10,10,.28);opacity:0;visibility:hidden;transform:translateY(12px);transition:.35s var(--ease)}
 #search-note.show{opacity:1;visibility:visible;transform:none}
 #search-note b{font-weight:700;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#search-note button{padding:6px 13px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:700}
+#search-note button{padding:9px 15px;min-height:32px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:700}
 #mobile-menu{position:fixed;inset:0;z-index:990;background:var(--ink);color:var(--bg);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:calc(var(--nav-h) + 18px) 9% 30px;clip-path:circle(0 at calc(100% - 46px) 40px);transition:clip-path .6s var(--ease);visibility:hidden}
 #mobile-menu.open{clip-path:circle(150% at calc(100% - 46px) 40px);visibility:visible}
 /* auto margins centre the list when it fits and never clip it when it does not */

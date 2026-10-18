@@ -51,6 +51,11 @@
   .foot-grid{grid-template-columns:1fr}
   #progress-circle{right:18px;bottom:18px}
   #search-note{left:14px;right:14px;justify-content:space-between}
+  /* iOS Safari zooms the whole page when a focused field paints below 16px, which leaves the
+     converter and the comment box stuck zoomed in. Typeable fields only — the hidden radios and
+     checkboxes inside .p-chip labels keep their own sizes. */
+  input[type=text],input[type=number],input[type=search],input[type=email],input[type=tel],textarea,
+  .km-compose textarea,.km-field input{font-size:16px}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
