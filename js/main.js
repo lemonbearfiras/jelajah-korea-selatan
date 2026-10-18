@@ -611,6 +611,14 @@ buildLB();
 /* ===== PLACE DATABASE + ASK THE GUIDE ===== */
 if(typeof KOREA_DB!=='undefined'&&KOREA_DB.length){
 var DB_CATL={sejarah:'History',budaya:'Culture',bandar:'City',makanan:'Food',keluarga:'Family',alam:'Nature'};
+/* The intro count is read from the data, never typed by hand — the number went stale the
+   last time the database grew. */
+var dbTotalEl=$('#db-total');
+if(dbTotalEl){
+  var dbCities={};
+  KOREA_DB.forEach(function(e){dbCities[e.c]=1});
+  dbTotalEl.textContent=KOREA_DB.length+' places across '+Object.keys(dbCities).length+' cities and regions';
+}
 function dbFee(e){return e.fee?'±&#8361;'+String(e.fee).replace(/\B(?=(\d{3})+(?!\d))/g,','):'Free'}
 function dbBadges(e){return e.cat.map(function(c){return '<span class="db-badge '+c+'">'+DB_CATL[c]+'</span>'}).join('')}
 var dbGrid=$('#db-grid'),dbCount=$('#db-count'),dbQ=$('#db-q');
