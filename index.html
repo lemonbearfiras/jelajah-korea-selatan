@@ -557,6 +557,7 @@ footer{background:#070707;color:var(--bg);padding:78px 0 34px}
 .socials a:hover{background:var(--red);border-color:var(--red);transform:translateY(-4px)}
 .socials svg{width:16px;height:16px;fill:currentColor}
 .foot-bottom{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-top:26px;font-size:12px;color:rgba(250,249,246,.4)}
+.foot-bottom .foot-privacy{flex:1 0 100%;line-height:1.7}
 
 /* 17b — komuniti (firebase auth + komen) */
 .sec-head h2 em{font-style:italic;color:var(--red)}
@@ -949,7 +950,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
 
 <!-- HERO -->
 <section id="utama">
-  <div class="hero-bg"><img id="hero-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Gyeongbokgung_Palace_at_Night.jpg/1920px-Gyeongbokgung_Palace_at_Night.jpg" alt="Gyeongbokgung Palace at night, Seoul"></div>
+  <div class="hero-bg"><img id="hero-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Gyeongbokgung_Palace_at_Night.jpg/1920px-Gyeongbokgung_Palace_at_Night.jpg" alt="Gyeongbokgung Palace at night, Seoul" fetchpriority="high" decoding="async"></div>
   <div class="hero-overlay" aria-hidden="true"></div>
   <div id="hangul-field" aria-hidden="true"></div>
   <div class="hero-glyph" aria-hidden="true"><span>한</span><span>국</span></div>
@@ -1002,7 +1003,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
     <div id="dest-rail" data-reveal data-delay="80">
 
       <article class="dest-card searchable" data-target="seoul" data-lat="37.5665" data-lon="126.9780">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Lotte_World_Tower_In_Jamsil_%28144738473%29.jpeg/960px-Lotte_World_Tower_In_Jamsil_%28144738473%29.jpeg" alt="Lotte World Tower, Seoul">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Lotte_World_Tower_In_Jamsil_%28144738473%29.jpeg/960px-Lotte_World_Tower_In_Jamsil_%28144738473%29.jpeg" alt="Lotte World Tower, Seoul" loading="lazy" decoding="async">
         <div class="weather-chip"><svg class="w-cloud" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .8-7.92A5.5 5.5 0 0 0 7.2 8.6 4.5 4.5 0 0 0 7 18z"/></svg>Loading weather…</div>
         <div class="dest-body">
           <div class="dest-tags"><span>Capital</span><span>Metro</span></div>
@@ -1013,7 +1014,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="dest-card searchable" data-target="busan" data-lat="35.1796" data-lon="129.0756">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Gwangalli_Beach_Busan_%2831877282978%29.jpg/960px-Gwangalli_Beach_Busan_%2831877282978%29.jpg" alt="Gwangalli Beach, Busan">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Gwangalli_Beach_Busan_%2831877282978%29.jpg/960px-Gwangalli_Beach_Busan_%2831877282978%29.jpg" alt="Gwangalli Beach, Busan" loading="lazy" decoding="async">
         <div class="weather-chip"><svg class="w-sun" viewBox="0 0 24 24" aria-hidden="true"><circle class="core" cx="12" cy="12" r="4.6"/><g class="rays"><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19"/></g></svg>Loading weather…</div>
         <div class="dest-body">
           <div class="dest-tags"><span>Coastal</span><span>Beach</span></div>
@@ -1024,7 +1025,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="dest-card searchable" data-target="jeju" data-lat="33.4996" data-lon="126.5312">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Seongsan_Ilchulbong%2C_Jeju_Island.jpg/960px-Seongsan_Ilchulbong%2C_Jeju_Island.jpg" alt="Seongsan Ilchulbong, Jeju">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Seongsan_Ilchulbong%2C_Jeju_Island.jpg/960px-Seongsan_Ilchulbong%2C_Jeju_Island.jpg" alt="Seongsan Ilchulbong, Jeju" loading="lazy" decoding="async">
         <div class="weather-chip"><svg class="w-sun" viewBox="0 0 24 24" aria-hidden="true"><circle class="core" cx="12" cy="12" r="4.6"/><g class="rays"><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19"/></g></svg>Loading weather…</div>
         <div class="dest-body">
           <div class="dest-tags"><span>Island</span><span>Nature</span></div>
@@ -1035,7 +1036,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="dest-card searchable" data-target="gyeongju" data-lat="35.8300" data-lon="129.2100">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Bulguksa_temple_Gyeongju_South_Korea_20091111_104912.jpg/960px-Bulguksa_temple_Gyeongju_South_Korea_20091111_104912.jpg" alt="Bulguksa Temple, Gyeongju">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Bulguksa_temple_Gyeongju_South_Korea_20091111_104912.jpg/960px-Bulguksa_temple_Gyeongju_South_Korea_20091111_104912.jpg" alt="Bulguksa Temple, Gyeongju" loading="lazy" decoding="async">
         <div class="weather-chip"><svg class="w-cloud" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .8-7.92A5.5 5.5 0 0 0 7.2 8.6 4.5 4.5 0 0 0 7 18z"/></svg>Loading weather…</div>
         <div class="dest-body">
           <div class="dest-tags"><span>History</span><span>Heritage</span></div>
@@ -1046,7 +1047,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="dest-card searchable" data-target="seoraksan" data-lat="38.1196" data-lon="128.4528">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Seoraksan_in_the_Fall_2-_%EC%84%A4%EC%95%85%EC%82%B0_%EB%8B%A8%ED%92%8D.jpg/960px-Seoraksan_in_the_Fall_2-_%EC%84%A4%EC%95%85%EC%82%B0_%EB%8B%A8%ED%92%8D.jpg" alt="Autumn at Seoraksan">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Seoraksan_in_the_Fall_2-_%EC%84%A4%EC%95%85%EC%82%B0_%EB%8B%A8%ED%92%8D.jpg/960px-Seoraksan_in_the_Fall_2-_%EC%84%A4%EC%95%85%EC%82%B0_%EB%8B%A8%ED%92%8D.jpg" alt="Autumn at Seoraksan" loading="lazy" decoding="async">
         <div class="weather-chip"><svg viewBox="0 0 24 24" class="w-snow" fill="none" aria-hidden="true"><path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9M12 3l-2.4 2.4M12 3l2.4 2.4M12 21l-2.4-2.4M12 21l2.4-2.4"/></svg>Loading weather…</div>
         <div class="dest-body">
           <div class="dest-tags"><span>Mountain</span><span>Autumn</span></div>
@@ -1057,7 +1058,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="dest-card searchable" data-target="jeonju" data-lat="35.8242" data-lon="127.1485">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/20240727_Jeonju_Hanok_Village_001.jpg/960px-20240727_Jeonju_Hanok_Village_001.jpg" alt="Jeonju Hanok Village">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/20240727_Jeonju_Hanok_Village_001.jpg/960px-20240727_Jeonju_Hanok_Village_001.jpg" alt="Jeonju Hanok Village" loading="lazy" decoding="async">
         <div class="weather-chip"><svg class="w-cloud" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .8-7.92A5.5 5.5 0 0 0 7.2 8.6 4.5 4.5 0 0 0 7 18z"/></svg>Loading weather…</div>
         <div class="dest-body">
           <div class="dest-tags"><span>Hanok</span><span>Cuisine</span></div>
@@ -1205,7 +1206,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
     <div id="food-grid" data-reveal data-delay="80">
 
       <article class="food-card searchable" data-cat="utama pedas" data-name="kimchi">
-        <div class="food-fig"><span class="badge">Must Try</span><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Korean_cuisine-Kimchi_and_banchan-01.jpg/960px-Korean_cuisine-Kimchi_and_banchan-01.jpg" alt="Kimchi with banchan"></div>
+        <div class="food-fig"><span class="badge">Must Try</span><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Korean_cuisine-Kimchi_and_banchan-01.jpg/960px-Korean_cuisine-Kimchi_and_banchan-01.jpg" alt="Kimchi with banchan" loading="lazy" decoding="async"></div>
         <div class="food-body">
           <h4>Kimchi <small>김치</small></h4>
           <p>Fermented vegetables seasoned with gochugaru — the heart of every Korean table and a symbol of its culture.</p>
@@ -1214,7 +1215,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="food-card searchable" data-cat="utama" data-name="bibimbap">
-        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Dolsot_Bibimbap_%286352434359%29.jpg/960px-Dolsot_Bibimbap_%286352434359%29.jpg" alt="Dolsot bibimbap"></div>
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Dolsot_Bibimbap_%286352434359%29.jpg/960px-Dolsot_Bibimbap_%286352434359%29.jpg" alt="Dolsot bibimbap" loading="lazy" decoding="async"></div>
         <div class="food-body">
           <h4>Bibimbap <small>비빔밥</small></h4>
           <p>Hot rice in a stone bowl, neatly arranged vegetables, egg and gochujang — mix before eating.</p>
@@ -1223,7 +1224,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="food-card searchable" data-cat="utama barbeku" data-name="bulgogi">
-        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Bulgogi_%28Marinated_beef._Served_with_rice%29_-_Kogi_2023-09-11.jpg/960px-Bulgogi_%28Marinated_beef._Served_with_rice%29_-_Kogi_2023-09-11.jpg" alt="Bulgogi"></div>
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Bulgogi_%28Marinated_beef._Served_with_rice%29_-_Kogi_2023-09-11.jpg/960px-Bulgogi_%28Marinated_beef._Served_with_rice%29_-_Kogi_2023-09-11.jpg" alt="Bulgogi" loading="lazy" decoding="async"></div>
         <div class="food-body">
           <h4>Bulgogi <small>불고기</small></h4>
           <p>Sweet-soy-marinated beef, grilled over the coals at your table — the friendliest gateway dish for beginners.</p>
@@ -1232,7 +1233,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="food-card searchable" data-cat="jajanan pedas" data-name="tteokbokki">
-        <div class="food-fig"><span class="badge">Spiciest</span><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Korean_rice_cake_%28tteokbokki%29.jpg/960px-Korean_rice_cake_%28tteokbokki%29.jpg" alt="Tteokbokki"></div>
+        <div class="food-fig"><span class="badge">Spiciest</span><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Korean_rice_cake_%28tteokbokki%29.jpg/960px-Korean_rice_cake_%28tteokbokki%29.jpg" alt="Tteokbokki" loading="lazy" decoding="async"></div>
         <div class="food-body">
           <h4>Tteokbokki <small>떡볶이</small></h4>
           <p>Chewy rice cakes in a thick gochujang sauce — the street-food icon of Myeongdong.</p>
@@ -1241,7 +1242,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="food-card searchable" data-cat="jajanan" data-name="chicken">
-        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Yangnyeom_Chicken_Korean_fried_chicken.jpg/960px-Yangnyeom_Chicken_Korean_fried_chicken.jpg" alt="Korean fried chicken"></div>
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Yangnyeom_Chicken_Korean_fried_chicken.jpg/960px-Yangnyeom_Chicken_Korean_fried_chicken.jpg" alt="Korean fried chicken" loading="lazy" decoding="async"></div>
         <div class="food-body">
           <h4>K-Fried Chicken <small>치킨</small></h4>
           <p>Chimaek — crispy fried chicken paired with beer — Korea's weekend-night ritual.</p>
@@ -1250,7 +1251,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="food-card searchable" data-cat="barbeku" data-name="galbi">
-        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Korean_barbecue-Galbi-01.jpg/960px-Korean_barbecue-Galbi-01.jpg" alt="Galbi"></div>
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Korean_barbecue-Galbi-01.jpg/960px-Korean_barbecue-Galbi-01.jpg" alt="Galbi" loading="lazy" decoding="async"></div>
         <div class="food-body">
           <h4>Galbi <small>갈비</small></h4>
           <p>Marinated beef ribs, charcoal-grilled at your own table — a celebratory favourite.</p>
@@ -1259,7 +1260,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="food-card searchable" data-cat="jajanan utama" data-name="gimbap">
-        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Gimbap.jpg/960px-Gimbap.jpg" alt="Gimbap"></div>
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Gimbap.jpg/960px-Gimbap.jpg" alt="Gimbap" loading="lazy" decoding="async"></div>
         <div class="food-body">
           <h4>Gimbap <small>김밥</small></h4>
           <p>Rice, egg, veg and meat rolls wrapped in seaweed — the must-have picnic lunch of spring.</p>
@@ -1268,7 +1269,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
 
       <article class="food-card searchable" data-cat="jajanan" data-name="hotteok">
-        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Hotteok_2.jpg/960px-Hotteok_2.jpg" alt="Hotteok"></div>
+        <div class="food-fig"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Hotteok_2.jpg/960px-Hotteok_2.jpg" alt="Hotteok" loading="lazy" decoding="async"></div>
         <div class="food-body">
           <h4>Hotteok <small>호떡</small></h4>
           <p>Sweet pancakes stuffed with brown sugar and nuts — a winter warmer at Namdaemun market.</p>
@@ -1292,7 +1293,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
     <div class="cult-grid">
       <article class="cult-card searchable" data-reveal>
         <span class="cult-glyph" aria-hidden="true">한복</span>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Hanbok_-_Korean_traditional_dress_05.jpg/960px-Hanbok_-_Korean_traditional_dress_05.jpg" alt="Traditional hanbok">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Hanbok_-_Korean_traditional_dress_05.jpg/960px-Hanbok_-_Korean_traditional_dress_05.jpg" alt="Traditional hanbok" loading="lazy" decoding="async">
         <div class="cult-body">
           <h3>Hanbok <small style="font-family:'Noto Sans KR',sans-serif;font-weight:400;color:var(--muted)">한복</small></h3>
           <p>Traditional dress with curved lines and bright colours — worn for Seollal, weddings and palace photo sessions.</p>
@@ -1300,7 +1301,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
       <article class="cult-card searchable" data-reveal data-delay="80">
         <span class="cult-glyph" aria-hidden="true">한옥</span>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Traditional_hanok_houses_at_golden_hour_in_Bukchon_Hanok_Village_in_Seoul.jpg/960px-Traditional_hanok_houses_at_golden_hour_in_Bukchon_Hanok_Village_in_Seoul.jpg" alt="Hanok houses in Bukchon">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Traditional_hanok_houses_at_golden_hour_in_Bukchon_Hanok_Village_in_Seoul.jpg/960px-Traditional_hanok_houses_at_golden_hour_in_Bukchon_Hanok_Village_in_Seoul.jpg" alt="Hanok houses in Bukchon" loading="lazy" decoding="async">
         <div class="cult-body">
           <h3>Hanok &amp; Heritage <small style="font-family:'Noto Sans KR',sans-serif;font-weight:400;color:var(--muted)">한옥</small></h3>
           <p>Timber houses with diamond roofs and the ancient ondol heating system — Bukchon and Jeonju are its living galleries.</p>
@@ -1308,7 +1309,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </article>
       <article class="cult-card searchable" data-reveal data-delay="160">
         <span class="cult-glyph" aria-hidden="true">예</span>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/2008-Korea-Seoul-Jongmyo_jeryeak-06.jpg/960px-2008-Korea-Seoul-Jongmyo_jeryeak-06.jpg" alt="Jongmyo jeryeak ceremony">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/2008-Korea-Seoul-Jongmyo_jeryeak-06.jpg/960px-2008-Korea-Seoul-Jongmyo_jeryeak-06.jpg" alt="Jongmyo jeryeak ceremony" loading="lazy" decoding="async">
         <div class="cult-body">
           <h3>Etiquette &amp; Respect <small style="font-family:'Noto Sans KR',sans-serif;font-weight:400;color:var(--muted)">예의</small></h3>
           <p>Bowing when you meet, two hands when giving and receiving — the Jongmyo jeryeak ceremony is still held every year.</p>
@@ -1342,23 +1343,23 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
     </div>
     <div class="trad-gallery" data-reveal data-delay="60">
       <figure class="trad-item searchable">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Tteokguk_%28rice_cake_soup%29_01.jpg" alt="Tteokguk — Seollal rice cake soup">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Tteokguk_%28rice_cake_soup%29_01.jpg" alt="Tteokguk — Seollal rice cake soup" loading="lazy" decoding="async">
         <figcaption><b>Seollal</b>Tteokguk, New Year rice cake soup</figcaption>
       </figure>
       <figure class="trad-item searchable">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Lanterns_in_the_Tree_at_Jogyesa.jpg/960px-Lanterns_in_the_Tree_at_Jogyesa.jpg" alt="Lanterns at Jogyesa Temple">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Lanterns_in_the_Tree_at_Jogyesa.jpg/960px-Lanterns_in_the_Tree_at_Jogyesa.jpg" alt="Lanterns at Jogyesa Temple" loading="lazy" decoding="async">
         <figcaption><b>Yeondeunghoe</b>Lanterns at Jogyesa Temple</figcaption>
       </figure>
       <figure class="trad-item searchable">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg/960px-Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg" alt="Gangneung Danoje Festival">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg/960px-Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg" alt="Gangneung Danoje Festival" loading="lazy" decoding="async">
         <figcaption><b>Danoje</b>Gangneung earth festival</figcaption>
       </figure>
       <figure class="trad-item searchable">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Korea_Chuseok_Songpyeon_03.jpg/960px-Korea_Chuseok_Songpyeon_03.jpg" alt="Songpyeon Chuseok">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Korea_Chuseok_Songpyeon_03.jpg/960px-Korea_Chuseok_Songpyeon_03.jpg" alt="Songpyeon Chuseok" loading="lazy" decoding="async">
         <figcaption><b>Chuseok</b>Songpyeon, moon-filled rice cakes</figcaption>
       </figure>
       <figure class="trad-item searchable">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Jinju_namgang_lantern_festival_domestic_local_symbol.jpg/960px-Jinju_namgang_lantern_festival_domestic_local_symbol.jpg" alt="Jinju Lantern Festival">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Jinju_namgang_lantern_festival_domestic_local_symbol.jpg/960px-Jinju_namgang_lantern_festival_domestic_local_symbol.jpg" alt="Jinju Lantern Festival" loading="lazy" decoding="async">
         <figcaption><b>Jinju Yudeung</b>Lanterns on the Nam River</figcaption>
       </figure>
     </div>
@@ -1374,23 +1375,23 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       </div>
       <div id="tl-panels">
         <div class="tl-panel" data-tp="0">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Tteokguk_%28rice_cake_soup%29_01.jpg" alt="Tteokguk">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Tteokguk_%28rice_cake_soup%29_01.jpg" alt="Tteokguk" loading="lazy" decoding="async">
           <div><strong>Seollal · 설날</strong><p>The first day of the lunar calendar — children eat a bowl of tteokguk and symbolically "add a year", while the whole country slows down for the busiest homecoming journey of the year.</p></div>
         </div>
         <div class="tl-panel active" data-tp="1">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Lanterns_in_the_Tree_at_Jogyesa.jpg/960px-Lanterns_in_the_Tree_at_Jogyesa.jpg" alt="Yeondeunghoe lanterns">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Lanterns_in_the_Tree_at_Jogyesa.jpg/960px-Lanterns_in_the_Tree_at_Jogyesa.jpg" alt="Yeondeunghoe lanterns" loading="lazy" decoding="async">
           <div><strong>Yeondeunghoe · 연등회</strong><p>On Buddha's Birthday in early May, tens of thousands of paper lanterns light up Jongno in Seoul — listed as UNESCO Intangible Cultural Heritage since 2020.</p></div>
         </div>
         <div class="tl-panel" data-tp="2">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg/960px-Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg" alt="Gangneung Danoje">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg/960px-Korea_Gangneung_Danoje_Festival_04_%2814140525058%29.jpg" alt="Gangneung Danoje" loading="lazy" decoding="async">
           <div><strong>Danoje · 단오제</strong><p>Korea's oldest earth festival in Gangneung — shamanic rites, mask dances and traditional games over 20 days, UNESCO-recognised.</p></div>
         </div>
         <div class="tl-panel" data-tp="3">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Korea_Chuseok_Songpyeon_03.jpg/960px-Korea_Chuseok_Songpyeon_03.jpg" alt="Songpyeon">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Korea_Chuseok_Songpyeon_03.jpg/960px-Korea_Chuseok_Songpyeon_03.jpg" alt="Songpyeon" loading="lazy" decoding="async">
           <div><strong>Chuseok · 추석</strong><p>On the eighth month of the lunar calendar, families gather for charye, visit ancestral graves and share songpyeon under the full moon.</p></div>
         </div>
         <div class="tl-panel" data-tp="4">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Jinju_namgang_lantern_festival_domestic_local_symbol.jpg/960px-Jinju_namgang_lantern_festival_domestic_local_symbol.jpg" alt="Jinju Namgang Yudeung">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Jinju_namgang_lantern_festival_domestic_local_symbol.jpg/960px-Jinju_namgang_lantern_festival_domestic_local_symbol.jpg" alt="Jinju Namgang Yudeung" loading="lazy" decoding="async">
           <div><strong>Jinju Yudeung · 진주 남강 유등축제</strong><p>For two weeks every October, thousands of lanterns light the Nam River in Jinju — remembering the defence of Jinjuseong fortress in 1592.</p></div>
         </div>
       </div>
@@ -1597,32 +1598,32 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
     </div>
     <div class="mosaic" data-reveal>
       <div class="mo-item" data-g="0" role="button" tabindex="0" aria-label="Zoom: Seoul at night">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Seoul_cityscape_by_night_%2802%29.jpg/960px-Seoul_cityscape_by_night_%2802%29.jpg" alt="Seoul night skyline">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Seoul_cityscape_by_night_%2802%29.jpg/960px-Seoul_cityscape_by_night_%2802%29.jpg" alt="Seoul night skyline" loading="lazy" decoding="async">
         <span class="mo-zoom" aria-hidden="true">⤢</span>
         <div class="mo-cap"><b>Seoul at Night</b>City mood from atop Bukhansan</div>
       </div>
       <div class="mo-item" data-g="1" role="button" tabindex="0" aria-label="Zoom: Namsan Tower">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Namsan_Tower_sunset%2C_Seoul.jpg/960px-Namsan_Tower_sunset%2C_Seoul.jpg" alt="Namsan Tower at sunset">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Namsan_Tower_sunset%2C_Seoul.jpg/960px-Namsan_Tower_sunset%2C_Seoul.jpg" alt="Namsan Tower at sunset" loading="lazy" decoding="async">
         <span class="mo-zoom" aria-hidden="true">⤢</span>
         <div class="mo-cap"><b>Namsan Tower</b>Sunset over the capital</div>
       </div>
       <div class="mo-item" data-g="2" role="button" tabindex="0" aria-label="Zoom: Gwangandaegyo Bridge">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Gwangandaegyo_Diamond_Bridge_Gwangalli_Beach_Busan_%2831877282428%29.jpg/960px-Gwangandaegyo_Diamond_Bridge_Gwangalli_Beach_Busan_%2831877282428%29.jpg" alt="Gwangandaegyo Bridge, Busan">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Gwangandaegyo_Diamond_Bridge_Gwangalli_Beach_Busan_%2831877282428%29.jpg/960px-Gwangandaegyo_Diamond_Bridge_Gwangalli_Beach_Busan_%2831877282428%29.jpg" alt="Gwangandaegyo Bridge, Busan" loading="lazy" decoding="async">
         <span class="mo-zoom" aria-hidden="true">⤢</span>
         <div class="mo-cap"><b>Gwangandaegyo</b>Diamond Bridge, Busan</div>
       </div>
       <div class="mo-item" data-g="3" role="button" tabindex="0" aria-label="Zoom: Seongsan-ri, Jeju">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Seongsan-ri_town_at_blue_hour_seen_from_Seongsan_Ilchulbong_volcano_Jeju_Island_South_Korea.jpg/960px-Seongsan-ri_town_at_blue_hour_seen_from_Seongsan_Ilchulbong_volcano_Jeju_Island_South_Korea.jpg" alt="Seongsan-ri town, Jeju">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Seongsan-ri_town_at_blue_hour_seen_from_Seongsan_Ilchulbong_volcano_Jeju_Island_South_Korea.jpg/960px-Seongsan-ri_town_at_blue_hour_seen_from_Seongsan_Ilchulbong_volcano_Jeju_Island_South_Korea.jpg" alt="Seongsan-ri town, Jeju" loading="lazy" decoding="async">
         <span class="mo-zoom" aria-hidden="true">⤢</span>
         <div class="mo-cap"><b>Seongsan-ri</b>Jeju in the blue hour</div>
       </div>
       <div class="mo-item" data-g="4" role="button" tabindex="0" aria-label="Zoom: Bukchon Hanok">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bukchon_Hanok_Village_03.jpg/960px-Bukchon_Hanok_Village_03.jpg" alt="Bukchon Hanok Village">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bukchon_Hanok_Village_03.jpg/960px-Bukchon_Hanok_Village_03.jpg" alt="Bukchon Hanok Village" loading="lazy" decoding="async">
         <span class="mo-zoom" aria-hidden="true">⤢</span>
         <div class="mo-cap"><b>Bukchon</b>Hanok village, Seoul</div>
       </div>
       <div class="mo-item" data-g="5" role="button" tabindex="0" aria-label="Zoom: Jongno Street">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Night_view_of_Downtown_Seoul_along_Jongno_Street_in_2020.jpg" alt="Jongno Street at night">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Night_view_of_Downtown_Seoul_along_Jongno_Street_in_2020.jpg" alt="Jongno Street at night" loading="lazy" decoding="async">
         <span class="mo-zoom" aria-hidden="true">⤢</span>
         <div class="mo-cap"><b>Jongno</b>The pulse of old Seoul streets</div>
       </div>
@@ -1790,6 +1791,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
       <span>© 2026 Jelajah Korea Selatan. All rights reserved.</span>
       <span>Culture · History · Nature · Cities</span>
       <span>Made with ♥ for Korea 🇰🇷</span>
+      <span class="foot-privacy">Privacy: signing in and posting comments runs on Firebase Authentication &amp; Cloud Firestore, which store your display name, profile photo and comments. Your email address is kept by Firebase for sign-in only and is never shown on the site. No advertising trackers or analytics scripts run here. Edit your profile any time in ⚙ Settings, and delete your own comments with one click.</span>
     </div>
   </div>
 </footer>
@@ -1807,7 +1809,7 @@ footer{background:radial-gradient(720px 400px at 88% -8%,rgba(205,46,58,.12),tra
   </div>
   <div class="lb-stage">
     <button class="lb-side" id="lb-prev" aria-label="Previous">←</button>
-    <img id="lb-img" src="" alt="">
+    <img id="lb-img" src="" alt="" loading="lazy" decoding="async">
     <button class="lb-side" id="lb-next" aria-label="Next">→</button>
   </div>
   <p id="lb-caption"></p>
@@ -2478,7 +2480,7 @@ var carCur=0,carTimer=null,carPaused=false;
 carTrack.innerHTML=carIdx.map(function(gi){
   var g=GALLERY[gi];
   var src=gi===5?g.src:g.src.replace('1920px-','1280px-');
-  return '<figure class="car-slide"><img src="'+src+'" alt="'+g.t+'"><figcaption>'+g.t+'</figcaption></figure>';
+  return '<figure class="car-slide"><img src="'+src+'" alt="'+g.t+'" loading="lazy" decoding="async"><figcaption>'+g.t+'</figcaption></figure>';
 }).join('');
 $$('img',carTrack).forEach(guardImg);
 function restartBar(){
