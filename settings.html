@@ -6,70 +6,35 @@
 <title>Profile Settings · Jelajah Korea Selatan</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="Member profile settings for the Jelajah Korea Selatan Community Space — update your name, photo and introduction.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230047A0'/%3E%3Cpath d='M32 2a30 30 0 0 1 0 60 15 15 0 0 1 0-30 15 15 0 0 0 0-30z' fill='%23CD2E3A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/subpages.css">
 <style>
-:root{
-  --bg:#faf9f6; --bg-soft:#f2f0ea; --ink:#0a0a0a; --muted:#8a8a8a;
-  --line:rgba(10,10,10,.14); --red:#CD2E3A; --blue:#0047A0;
-  --red-soft:rgba(205,46,58,.08); --blue-soft:rgba(0,71,160,.08);
-  --radius:20px; --radius-sm:12px;
-  --font:'Plus Jakarta Sans','Noto Sans KR',Arial,sans-serif;
-  --ease:cubic-bezier(.22,1,.36,1);
-}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
-a{color:inherit;text-decoration:none}
-button{font-family:var(--font)}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:22px 5%;border-bottom:1px solid var(--line)}
-.topbar .brand{font-weight:800;font-size:16px;letter-spacing:-.02em}
-.topbar .brand em{font-style:normal;color:var(--red)}
-.topbar .back{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;padding:10px 18px;border-radius:999px;background:var(--ink);color:#fff;transition:background .3s}
-.topbar .back:hover{background:var(--red)}
-.wrap{width:min(720px,92%);margin:42px auto 80px;flex:1}
-.page-title{font-size:26px;font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
-.page-sub{color:var(--muted);font-size:14px;margin-bottom:26px}
-
-.state{display:none;text-align:center;padding:70px 20px}
-.state.show{display:block}
-.state .big{font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1.1}
-.state .big i{font-style:normal;color:var(--red)}
-.state p{color:var(--muted);margin-top:14px;font-size:15px}
-.state .act{display:inline-flex;align-items:center;gap:8px;margin-top:26px;padding:12px 24px;border-radius:999px;background:var(--ink);color:#fff;font-size:13px;font-weight:700;transition:background .3s}
-.state .act:hover{background:var(--red)}
-.skeleton{display:none;animation:pulse 1.3s ease-in-out infinite}
-.skeleton.show{display:block}
-.skeleton .sk-ava{width:96px;height:96px;border-radius:50%;margin:0 auto 22px;background:var(--bg-soft)}
-.skeleton .sk-line{height:18px;border-radius:9px;background:var(--bg-soft);margin:12px auto}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
-
-#card{display:none}
-#card.show{display:block}
-[hidden]{display:none!important}
-.blk{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px 32px;box-shadow:0 14px 38px rgba(20,24,40,.06);margin-bottom:18px}
-.blk h2{font-size:14px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.blk h2 .spacer{flex:1}
+.wrap{width:min(760px,92%)}
 
 /* ---- avatar + hover edit badge ---- */
 .ava-stage{display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 0 4px}
 .ava-edit-wrap{position:relative;width:112px;height:112px;border-radius:50%}
-.ava-ring{width:112px;height:112px;border-radius:50%;padding:4px;background:conic-gradient(var(--red) 0 50%,var(--blue) 50% 100%)}
+.ava-ring{width:112px;height:112px;border-radius:50%;padding:4px;background:conic-gradient(var(--red) 0 50%,var(--blue) 50% 100%);box-shadow:0 12px 30px rgba(20,24,40,.18)}
 .ava{width:100%;height:100%;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:34px;overflow:hidden;cursor:pointer}
 .ava img{width:100%;height:100%;object-fit:cover;display:block}
 .ava-badge{position:absolute;right:-2px;bottom:-2px;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;border:3px solid #fff;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transform:scale(.7);transition:opacity .22s var(--ease),transform .22s var(--ease);box-shadow:0 4px 14px rgba(20,24,40,.22)}
 .ava-badge svg{width:18px;height:18px}
 .ava-edit-wrap:hover .ava-badge,.ava-edit-wrap:focus-within .ava-badge,.ava-badge:focus-visible{opacity:1;transform:scale(1)}
 .ava-badge:hover{background:var(--red)}
-.ava-hint{font-size:12.5px;color:var(--muted);text-align:center;max-width:280px}
+.ava-hint{font-size:12.5px;color:var(--muted);text-align:center;max-width:300px}
 
 /* ---- fields ---- */
 .set-field{display:block;margin-bottom:18px}
 .set-field>span.lbl{display:block;font-size:12px;font-weight:700;color:#333;margin-bottom:6px;letter-spacing:.02em}
 .set-field>span.lbl i{font-style:normal;color:var(--muted);font-weight:500}
-.set-input,.set-area{width:100%;border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:13px 14px;font:inherit;font-size:14.5px;background:var(--bg);color:var(--ink)}
+.set-input,.set-area{width:100%;border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:13px 14px;font:inherit;font-size:14.5px;background:var(--bg);color:var(--ink);transition:border-color .25s,box-shadow .25s}
 .set-area{min-height:120px;resize:vertical;line-height:1.55}
-.set-input:focus,.set-area:focus{outline:none;border-color:var(--blue)}
-.set-input.shake{border-color:var(--red)}
+.set-input:focus,.set-area:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
+.set-input.shake{border-color:var(--red);animation:shakeX .4s var(--ease)}
+@keyframes shakeX{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .set-row{display:flex;gap:8px;align-items:flex-start}
 .set-row .set-input{flex:1}
 .set-hint{font-size:12px;color:var(--muted);margin-top:6px}
@@ -82,12 +47,7 @@ button{font-family:var(--font)}
 .url-alt summary::before{content:'▸ ';font-weight:700}
 .url-alt[open] summary::before{content:'▾ '}
 .url-alt summary:hover{text-decoration:underline}
-.pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;padding:11px 20px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;transition:border-color .25s,background .25s;white-space:nowrap}
-.pill:hover{border-color:var(--ink)}
-.pill.solid{background:var(--ink);border-color:var(--ink);color:#fff}
-.pill.solid:hover{background:var(--red);border-color:var(--red)}
-.pill.mini{padding:11px 14px}
-.pill[disabled]{opacity:.55;cursor:not-allowed}
+
 .foot{display:flex;gap:10px;justify-content:flex-end;margin-top:6px;align-items:center}
 .note{font-size:12.5px;color:var(--muted);margin-right:auto;font-weight:600}
 .note.ok{color:#0b7a52}
@@ -101,24 +61,37 @@ button{font-family:var(--font)}
 .info-row .v.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
 .link-copy{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--blue);background:none;border:0;cursor:pointer;padding:6px 10px;border-radius:8px;transition:background .2s}
 .link-copy:hover{background:var(--blue-soft)}
-footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-size:12px;color:var(--muted)}
 @media (max-width:640px){
-  .blk{padding:22px 18px}
-  .page-title{font-size:22px}
   .info-row{flex-wrap:wrap}
   .info-row .k{min-width:auto;width:100%;margin-bottom:2px}
   .link-copy{margin-left:0}
+  .foot{flex-wrap:wrap}
 }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <a class="brand" href="index.html">Jelajah&nbsp;<em>Korea</em> <span style="font-weight:500;color:var(--muted)">· Settings</span></a>
-  <a class="back" id="back-link" href="index.html#komuniti">← My profile</a>
+<div class="sub-hero">
+  <div class="topbar">
+    <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Jelajah&nbsp;<em>Korea</em> <span class="brand-sub">· Settings</span></a>
+    <span class="links"><a class="pill-link" id="btn-cancel" href="index.html#komuniti">Cancel</a><a class="back" id="back-link" href="index.html#komuniti">← My profile</a></span>
+  </div>
+  <div class="hero-inner">
+    <p class="sec-label">Your account · 내 정보</p>
+    <h1>Profile <span class="accent">Settings</span><span class="hangul">설정</span></h1>
+    <p class="hero-sub">Update the information other community members see on your public profile page — photo, name, handle and introduction.</p>
+  </div>
+  <span class="hero-glyph" aria-hidden="true">설정</span>
 </div>
 
-<div class="wrap">
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <div class="ticker-set"><span><b>사진</b> Photo <i>◆</i></span><span><b>이름</b> Name <i>◆</i></span><span><b>소개</b> About <i>◆</i></span><span><b>프로필</b> Profile <i>◆</i></span><span><b>저장</b> Save <i>◆</i></span></div>
+    <div class="ticker-set"><span><b>사진</b> Photo <i>◆</i></span><span><b>이름</b> Name <i>◆</i></span><span><b>소개</b> About <i>◆</i></span><span><b>프로필</b> Profile <i>◆</i></span><span><b>저장</b> Save <i>◆</i></span></div>
+  </div>
+</div>
+
+<main class="wrap">
 
   <div class="state skeleton show" id="st-load" aria-label="Loading settings">
     <div class="sk-ava"></div>
@@ -145,9 +118,6 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
   </div>
 
   <div id="card">
-    <h1 class="page-title">Profile Settings</h1>
-    <p class="page-sub">Update the information other community members see on your public profile page.</p>
-
     <div class="blk">
       <div class="ava-stage">
         <div class="ava-edit-wrap">
@@ -174,8 +144,8 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
       <div class="set-field">
         <span class="lbl" style="display:block;font-size:12px;font-weight:700;color:#333;margin-bottom:6px">Profile photo</span>
         <div class="up-row">
-          <button class="pill mini" id="btn-upload" type="button">Upload photo</button>
-          <button class="pill mini" id="s-photo-clear" type="button">Clear</button>
+          <button class="pill" id="btn-upload" type="button">Upload photo</button>
+          <button class="pill" id="s-photo-clear" type="button">Clear</button>
           <span class="up-state" id="up-state">No photo — initials are used.</span>
         </div>
         <input type="file" id="photo-file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
@@ -191,7 +161,7 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
 
     <div class="blk">
       <h2>About you</h2>
-      <label class="set-field">
+      <label class="set-field" style="margin-bottom:0">
         <textarea class="set-area" id="s-about" maxlength="500" rows="5" placeholder="Tell us a little about yourself — interests, travel style, favourite food…"></textarea>
         <span class="set-hint" id="s-about-chars">0 / 500</span>
       </label>
@@ -209,14 +179,39 @@ footer{border-top:1px solid var(--line);padding:22px 5%;text-align:center;font-s
 
     <div class="foot">
       <span class="note" id="save-note"></span>
-      <a class="pill" id="btn-cancel" href="index.html#komuniti">Cancel</a>
       <button class="pill solid" id="btn-save" type="button">Save changes</button>
     </div>
   </div>
 
-</div>
+</main>
 
-<footer>Jelajah Korea Selatan · 대한민국 — member profile settings</footer>
+<footer>
+  <span class="foot-mark" aria-hidden="true">설정</span>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div>
+        <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Jelajah&nbsp;<em>Korea</em></a>
+        <p>Member profile settings for the Jelajah Korea Selatan Community Space — 대한민국.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Explore</h4>
+        <a href="index.html">Travel guide</a>
+        <a href="index.html#destinasi">Destinations</a>
+        <a href="index.html#rancang">Budget planner</a>
+      </div>
+      <div class="foot-col">
+        <h4>Community</h4>
+        <a href="index.html#komuniti">Community Space</a>
+        <a href="profile.html">My profile</a>
+        <a href="chat.html">Private chat</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Jelajah Korea Selatan. All rights reserved.</span>
+      <span>Only you can edit these settings — nothing here is public except what your profile shows.</span>
+    </div>
+  </div>
+</footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>

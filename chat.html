@@ -6,83 +6,63 @@
 <title>Chat · Jelajah Korea Selatan</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="Private chat between friends in the Jelajah Korea Selatan community.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230047A0'/%3E%3Cpath d='M32 2a30 30 0 0 1 0 60 15 15 0 0 1 0-30 15 15 0 0 0 0-30z' fill='%23CD2E3A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/subpages.css">
 <style>
-:root{
-  --bg:#faf9f6; --bg-soft:#f2f0ea; --ink:#0a0a0a; --muted:#8a8a8a;
-  --line:rgba(10,10,10,.14); --red:#CD2E3A; --blue:#0047A0;
-  --red-soft:rgba(205,46,58,.08); --blue-soft:rgba(0,71,160,.08);
-  --radius:20px; --radius-sm:12px;
-  --font:'Plus Jakarta Sans','Noto Sans KR',Arial,sans-serif;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-[hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
-a{color:inherit;text-decoration:none}
-button,textarea{font-family:var(--font)}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 5%;border-bottom:1px solid var(--line);gap:12px}
-.topbar .brand{font-weight:800;font-size:15px;letter-spacing:-.02em}
-.topbar .brand em{font-style:normal;color:var(--red)}
-.topbar .links{display:flex;gap:10px}
-.topbar a.back,.topbar a.pill-link{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;padding:9px 18px;border-radius:999px;background:var(--ink);color:#fff;transition:background .3s}
-.topbar a.back:hover{background:var(--red)}
-.topbar a.pill-link{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
-.topbar a.pill-link:hover{border-color:var(--ink)}
-.wrap{width:min(720px,94%);margin:26px auto 30px;flex:1;display:flex;flex-direction:column;min-height:0}
-.state{display:none;text-align:center;padding:70px 20px}
-.state.show{display:block}
-.state .big{font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1.1}
-.state .big i{font-style:normal;color:var(--red)}
-.state p{color:var(--muted);margin-top:14px;font-size:15px}
-.state .act{display:inline-flex;align-items:center;gap:8px;margin-top:26px;padding:12px 24px;border-radius:999px;background:var(--ink);color:#fff;font-size:13px;font-weight:700;transition:background .3s}
-.state .act:hover{background:var(--red)}
-.skeleton{display:none;animation:pulse 1.3s ease-in-out infinite}
-.skeleton.show{display:block}
-.skeleton .sk-line{height:34px;border-radius:16px;background:var(--bg-soft);margin:12px 0;max-width:65%}
-.skeleton .sk-line.right{margin-left:auto;max-width:55%}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.wrap{width:min(760px,94%);margin:30px auto 44px;display:flex;flex-direction:column;min-height:0}
+.sub-hero.slim h1{font-size:clamp(26px,3.6vw,40px)}
+.sub-hero.slim .hero-inner{margin-top:26px}
 
-#room{display:none;flex-direction:column;flex:1;min-height:0;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 14px 38px rgba(20,24,40,.06);overflow:hidden}
+/* ---- chat room ---- */
+#room{display:none;flex-direction:column;flex:1;min-height:0;position:relative;background:#fff;border:1px solid rgba(10,10,10,.05);border-radius:calc(var(--radius) + 6px);box-shadow:0 18px 44px rgba(20,24,40,.09);overflow:hidden}
+#room::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;z-index:5;background:linear-gradient(90deg,var(--red),#e2564b 40%,var(--blue))}
 #room.show{display:flex}
-.who{display:flex;align-items:center;gap:14px;padding:16px 22px;border-bottom:1px solid var(--line);background:var(--bg)}
-.ava{width:48px;height:48px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;overflow:hidden;flex:0 0 auto}
+.who{display:flex;align-items:center;gap:14px;padding:18px 22px;background:linear-gradient(150deg,#0a0a0a,#141a2e 60%,#0a0a0a);color:#fff}
+.ava{width:48px;height:48px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;overflow:hidden;flex:0 0 auto;box-shadow:0 0 0 2px rgba(10,12,18,.9),0 0 0 4.5px rgba(255,138,128,.75)}
 .ava img{width:100%;height:100%;object-fit:cover;display:block}
-.who .nm{font-weight:800;font-size:16px;line-height:1.2}
-.who .sub{font-size:12px;color:var(--muted);font-weight:600}
-.who .sub i{font-style:normal;color:#0b7a52}
-.msgs{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:10px;background:var(--bg);min-height:240px;max-height:58vh}
-.msg{max-width:78%;padding:11px 16px;border-radius:18px;font-size:14.5px;white-space:pre-wrap;word-wrap:break-word;box-shadow:0 2px 8px rgba(20,24,40,.05)}
+.who .nm{font-weight:800;font-size:16px;line-height:1.2;letter-spacing:-.01em}
+.who .sub{font-size:11.5px;color:rgba(250,249,246,.6);font-weight:600;letter-spacing:.04em}
+.who .sub i{font-style:normal;color:#4ade80}
+.msgs{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:10px;background:var(--bg);min-height:240px;max-height:52vh}
+.msg{max-width:78%;padding:11px 16px;border-radius:18px;font-size:14.5px;white-space:pre-wrap;word-wrap:break-word;box-shadow:0 2px 8px rgba(20,24,40,.05);animation:msgIn .45s var(--ease) both}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .msg time{display:block;font-size:10px;opacity:.65;margin-top:4px;font-weight:600}
 .msg.them{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:6px}
-.msg.me{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:6px}
+.msg.me{align-self:flex-end;background:linear-gradient(120deg,var(--blue),#0b58bd 55%,#1f6fd0);color:#fff;border-bottom-right-radius:6px;box-shadow:0 8px 20px rgba(0,71,160,.25)}
 .msg-sys{align-self:center;background:var(--bg-soft);color:var(--muted);font-size:12px;font-weight:600;padding:8px 16px;border-radius:999px;text-align:center}
 .form{display:flex;gap:10px;padding:14px 18px;border-top:1px solid var(--line);background:#fff;align-items:flex-end}
-.form textarea{flex:1;border:1.5px solid var(--line);border-radius:16px;padding:12px 16px;font-size:14.5px;resize:none;max-height:120px;background:var(--bg);line-height:1.45}
-.form textarea:focus{outline:none;border-color:var(--blue)}
-.send{width:48px;height:48px;border-radius:50%;border:0;background:var(--ink);color:#fff;font-size:18px;cursor:pointer;transition:background .3s;flex:0 0 auto}
-.send:hover{background:var(--red)}
-.send[disabled]{opacity:.45;cursor:not-allowed}
-footer{border-top:1px solid var(--line);padding:16px 5%;text-align:center;font-size:12px;color:var(--muted)}
+.form textarea{flex:1;border:1.5px solid var(--line);border-radius:16px;padding:12px 16px;font-size:14.5px;resize:none;max-height:120px;background:var(--bg);color:var(--ink);line-height:1.45;transition:border-color .25s,box-shadow .25s}
+.form textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
+.send{width:48px;height:48px;border-radius:50%;border:0;background:var(--grad-cta);background-size:170% 170%;color:#fff;font-size:18px;cursor:pointer;box-shadow:0 10px 22px rgba(205,46,58,.3);transition:background-position .55s var(--ease),transform .3s var(--ease);flex:0 0 auto}
+.send:hover{background-position:100% 100%;transform:translateY(-2px)}
+.send[disabled]{opacity:.45;cursor:not-allowed;transform:none}
 @media (max-width:640px){
   .msgs{padding:14px;max-height:none}
   .who{padding:12px 14px}
   .form{padding:10px 12px}
-  .topbar{padding:12px 4%}
 }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <a class="brand" href="index.html">Jelajah&nbsp;<em>Korea</em> <span style="font-weight:500;color:var(--muted)">· Chat</span></a>
-  <div class="links">
-    <a class="pill-link" id="lnk-profile" href="#" hidden>Profile ↔</a>
-    <a class="back" href="index.html#komuniti">← Community</a>
+<div class="sub-hero slim">
+  <div class="topbar">
+    <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Jelajah&nbsp;<em>Korea</em> <span class="brand-sub">· Chat</span></a>
+    <span class="links">
+      <a class="pill-link" id="lnk-profile" href="#" hidden>View profile</a>
+      <a class="back" href="index.html#komuniti">← Community</a>
+    </span>
+  </div>
+  <div class="hero-inner">
+    <p class="sec-label">Private chat · 개인 대화</p>
+    <h1>Just the <span class="accent">two of you</span></h1>
   </div>
 </div>
 
-<div class="wrap">
+<main class="wrap">
 
   <div class="skeleton show" id="st-load" aria-label="Loading chat">
     <div class="sk-line"></div>
@@ -136,9 +116,35 @@ footer{border-top:1px solid var(--line);padding:16px 5%;text-align:center;font-s
     </form>
   </div>
 
-</div>
+</main>
 
-<footer>Jelajah Korea Selatan · 대한민국 — private chat between friends</footer>
+<footer>
+  <span class="foot-mark" aria-hidden="true">대화</span>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div>
+        <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Jelajah&nbsp;<em>Korea</em></a>
+        <p>Private chat between friends in the Jelajah Korea Selatan community — 대한민국.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Explore</h4>
+        <a href="index.html">Travel guide</a>
+        <a href="index.html#destinasi">Destinations</a>
+        <a href="index.html#rancang">Budget planner</a>
+      </div>
+      <div class="foot-col">
+        <h4>Community</h4>
+        <a href="index.html#komuniti">Community Space</a>
+        <a href="profile.html">My profile</a>
+        <a href="settings.html">Profile settings</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Jelajah Korea Selatan. All rights reserved.</span>
+      <span>Messages are visible only to you and your friend.</span>
+    </div>
+  </div>
+</footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
