@@ -12,9 +12,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/subpages.css">
 <style>
-.wrap{width:min(760px,94%);margin:30px auto 44px;display:flex;flex-direction:column;min-height:0}
-.sub-hero.slim h1{font-size:clamp(26px,3.6vw,40px)}
-.sub-hero.slim .hero-inner{margin-top:26px}
+.wrap{width:min(760px,94%);margin:28px auto 44px;display:flex;flex-direction:column;min-height:0}
+.page-intro{margin-bottom:18px}
 
 /* ---- chat room ---- */
 #room{display:none;flex-direction:column;flex:1;min-height:0;position:relative;background:#fff;border:1px solid rgba(10,10,10,.05);border-radius:calc(var(--radius) + 6px);box-shadow:0 18px 44px rgba(20,24,40,.09);overflow:hidden}
@@ -48,7 +47,7 @@
 </head>
 <body>
 
-<div class="sub-hero slim">
+<header class="sub-head">
   <div class="topbar">
     <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Jelajah&nbsp;<em>Korea</em> <span class="brand-sub">· Chat</span></a>
     <span class="links">
@@ -56,14 +55,14 @@
       <a class="back" href="index.html#komuniti">← Community</a>
     </span>
   </div>
-  <div class="hero-inner">
-    <p class="sec-label">Private chat · 개인 대화</p>
-    <h1>Just the <span class="accent">two of you</span></h1>
-  </div>
-  <span class="hero-glyph" aria-hidden="true">대화</span>
-</div>
+</header>
 
 <main class="wrap">
+
+  <div class="page-intro">
+    <p class="sec-label">Private chat · 개인 대화</p>
+    <h1>Private Chat<span class="hangul">대화</span></h1>
+  </div>
 
   <div class="skeleton show" id="st-load" aria-label="Loading chat">
     <div class="sk-line"></div>
@@ -107,7 +106,7 @@
       <div class="ava" id="c-ava">?</div>
       <div>
         <p class="nm" id="c-name">—</p>
-        <p class="sub" id="c-sub"><i>●</i> Private chat · just the two of you</p>
+        <p class="sub" id="c-sub"><i>●</i> Only the two of you can read this</p>
       </div>
     </div>
     <div class="msgs" id="msgs" aria-live="polite"></div>
