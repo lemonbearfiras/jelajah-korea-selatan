@@ -24,26 +24,42 @@ An interactive English-language website for planning a trip to South Korea — a
 - **Frontend:** plain HTML + CSS + JavaScript — no build step, no framework. All the main styles and scripts live in `index.html`; external scripts are in `js/`.
 - **Community backend:** Firebase (Auth + Firestore, compat SDK via CDN).
 - **Live data:** [Open-Meteo](https://open-meteo.com) (weather), [Frankfurter](https://api.frankfurter.dev) (ECB MYR→KRW rates).
-- **AI:** two routes to Gemini — Firebase AI Logic called from the browser (`js/ai-logic.js`, authorised by the Firebase project identity, no key in the page) and the Deno edge Function (`functions/index.ts`, keys held as application Secrets) with an OpenAI-compatible gateway (MiniMax/DeepSeek) and Qoder Cloud Agents as automatic backups. No secret is ever shipped to the browser or committed to this repository.
+- **AI:** two routes to Gemini — Firebase AI Logic called from the browser (`js/community/ai-logic.js`, authorised by the Firebase project identity, no key in the page) and the Deno edge Function (`functions/index.ts`, keys held as application Secrets) with an OpenAI-compatible gateway (MiniMax/DeepSeek) and Qoder Cloud Agents as automatic backups. No secret is ever shipped to the browser or committed to this repository.
 - **Hosting:** GitHub Pages (static) + Qoder Sites (static + Function).
 
 ## Folder structure
 
 ```
-├── index.html            # Home page (all main CSS/JS + the destination database)
+├── index.html            # Home page
 ├── profile.html          # Public member profile page
 ├── settings.html         # Profile settings for the signed-in member
 ├── chat.html             # Real-time chat between friends
+├── css/
+│   ├── base.css          # Tokens, reset, header/nav/search/mobile menu
+│   ├── home.css          # Home page sections: hero → footer
+│   ├── community.css     # Community Space section
+│   ├── effects.css       # Ken Burns, marquee, live-data widgets
+│   ├── responsive.css    # Media queries + reduced motion
+│   ├── subpages.css      # Shared utility-page system (header, intro, cards)
+│   ├── profile.css       # Profile page rules
+│   ├── settings.css      # Settings page rules
+│   └── chat.css          # Chat page rules
 ├── js/
+│   ├── main.js           # Home page interactions
+│   ├── korea-data.js     # The 126-place destination database
 │   ├── live.js           # Live weather + ECB rate chart + hover/tooltip
-│   ├── firebase-config.js# Firebase project config (fill it in yourself — see README-FIREBASE.md)
-│   ├── komuniti-auth.js  # Sign up/sign in/Google (Firebase Auth, offline demo mode)
-│   ├── komuniti-comments.js # Firestore comments
-│   ├── profile.js        # Profile, following/friends
-│   ├── settings.js       # Settings form + photo upload/resize
-│   ├── ai-logic.js       # Tier 1: Gemini through Firebase AI Logic, in the browser
-│   ├── firestore.js      # App Check bootstrap (inert by design — see README-FIREBASE.md Step 5)
-│   └── chat.js           # Real-time chat
+│   ├── community/
+│   │   ├── firebase-config.js # Firebase project config (fill it in yourself — see README-FIREBASE.md)
+│   │   ├── community-auth.js  # Sign up/sign in/Google (Firebase Auth, offline demo mode)
+│   │   ├── community-comments.js # Firestore comments
+│   │   ├── ai-logic.js   # Tier 1: Gemini through Firebase AI Logic, in the browser
+│   │   └── firestore.js  # App Check bootstrap (inert by design — see README-FIREBASE.md Step 5)
+│   └── pages/
+│       ├── profile.js    # Profile, following/friends
+│       ├── settings.js   # Settings form + photo upload/resize
+│       └── chat.js       # Real-time chat
+├── data/
+│   └── destinations-korea.json # Backup copy of the destination database
 ├── functions/
 │   ├── index.ts          # AI endpoint: /functions/v1/app?action=ask|health
 │   └── cloud-agents.mjs  # Qoder Cloud Agents client
@@ -63,7 +79,7 @@ An interactive English-language website for planning a trip to South Korea — a
    python -m http.server 8000
    ```
 3. Open `http://localhost:8000`. Weather & rates work straight away (cloud APIs, no key).
-4. Community: if `js/firebase-config.js` has not been filled in yet, the site automatically uses **Demo Mode** (localStorage). For real Firebase, follow [README-FIREBASE.md](README-FIREBASE.md). `localhost` is authorised by Firebase by default; for a hosted domain add it under *Authentication → Settings → Authorized domains*.
+4. Community: if `js/community/firebase-config.js` has not been filled in yet, the site automatically uses **Demo Mode** (localStorage). For real Firebase, follow [README-FIREBASE.md](README-FIREBASE.md). `localhost` is authorised by Firebase by default; for a hosted domain add it under *Authentication → Settings → Authorized domains*.
 5. "Ask Jelajah AI" tries up to four tiers: an optional CORS proxy → Firebase AI Logic (Gemini) straight from the browser → the Qoder Sites Function → the local matching engine. Which tiers are live depends on where the page is hosted and on `DB_PROXY_URL` — see **AI** below. Every live tier also receives the database entries that match the question (`ctx`), so answers quote this site's own fees and closing days.
 
 ## Publishing
@@ -77,7 +93,7 @@ An interactive English-language website for planning a trip to South Korea — a
 
 **Answer grounding (all tiers).** Every ask now carries `ctx`: `dbAskEngine()` scores the question against the 126-place `KOREA_DB` (region, category, entry fee, season, and a strong bonus when a word matches a place *name*), and the top entries are sent as a compact reference block (`name (city, entry ₩…, closed …, best season): description. Tip: …`, capped at 2 600 characters, at most 6 places). Each server layer appends that block after the question with the instruction *"use these for names, entry fees, best seasons and tips instead of guessing"*. If nothing in the database matches (e.g. "what's the weather today"), `ctx` is empty and the prompt is exactly what it was before, and the answer footnote then says it came from general knowledge instead of the database. So entry fees, closing days and tips in an AI answer come from the site's own verified data rather than the model's memory — and the model never has to be retrained.
 
-**Tier 1 — Firebase AI Logic (Gemini) from the browser** (`js/ai-logic.js`, ES modules from the Firebase CDN v12.9.0, a separate Firebase app named `jelajah-ai`; `js/firestore.js` can attach App Check to that same app but is deliberately left unconfigured — see [README-FIREBASE.md](README-FIREBASE.md) Step 5, because AI Logic rejects Google Cloud Fraud Defense tokens). It needs no API key in this repository: the project's own Firebase identity authorises the call. Models are tried in order — `gemini-3.8-flash`, then the `gemini-flash-latest` alias — because Google retires model names periodically (`gemini-2.5-flash` is already closed to new projects). The free tier caps this at roughly 20 requests/day per model and a single answer can take ~30 s, so `dbReply()` never cancels a tier it has started: the first tier that replies wins, a tier that fails immediately hands over to the next one, and after 8 s of silence the next tier is started in parallel. If every live tier fails, it falls through to tier 3 instead of erroring.
+**Tier 1 — Firebase AI Logic (Gemini) from the browser** (`js/community/ai-logic.js`, ES modules from the Firebase CDN v12.9.0, a separate Firebase app named `jelajah-ai`; `js/community/firestore.js` can attach App Check to that same app but is deliberately left unconfigured — see [README-FIREBASE.md](README-FIREBASE.md) Step 5, because AI Logic rejects Google Cloud Fraud Defense tokens). It needs no API key in this repository: the project's own Firebase identity authorises the call. Models are tried in order — `gemini-3.8-flash`, then the `gemini-flash-latest` alias — because Google retires model names periodically (`gemini-2.5-flash` is already closed to new projects). The free tier caps this at roughly 20 requests/day per model and a single answer can take ~30 s, so `dbReply()` never cancels a tier it has started: the first tier that replies wins, a tier that fails immediately hands over to the next one, and after 8 s of silence the next tier is started in parallel. If every live tier fails, it falls through to tier 3 instead of erroring.
 
 **Tier 2 — the Qoder Sites Function** (`functions/index.ts`), which tries its providers in this order and moves to the next one on any failure. Keys are application Secrets read only inside the Function — they never reach the browser or this repository. This tier exists only on the Qoder host: GitHub Pages has no server, so the same-origin call there fails instantly.
 

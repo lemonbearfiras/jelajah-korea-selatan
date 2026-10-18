@@ -1,0 +1,41 @@
+/* =========================================================
+   css/chat.css — Private Chat page
+   Page-specific rules; shared utility-page system lives in css/subpages.css
+   ========================================================= */
+
+.wrap{width:min(760px,94%);margin:28px auto 44px;display:flex;flex-direction:column;min-height:0}
+.page-intro{margin-bottom:18px}
+
+/* ---- room header ---- */
+#room{display:none;flex-direction:column;flex:1;min-height:0;position:relative;background:#fff;border:1px solid rgba(10,10,10,.05);border-radius:calc(var(--radius) + 6px);box-shadow:0 18px 44px rgba(20,24,40,.09);overflow:hidden}
+#room::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;z-index:5;background:linear-gradient(90deg,var(--red),#e2564b 40%,var(--blue))}
+#room.show{display:flex}
+.who{display:flex;align-items:center;gap:14px;padding:18px 22px;background:linear-gradient(150deg,#0a0a0a,#141a2e 60%,#0a0a0a);color:#fff}
+.ava{width:48px;height:48px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;overflow:hidden;flex:0 0 auto;box-shadow:0 0 0 2px rgba(10,12,18,.9),0 0 0 4.5px rgba(255,138,128,.75)}
+.ava img{width:100%;height:100%;object-fit:cover;display:block}
+.who .nm{font-weight:800;font-size:16px;line-height:1.2;letter-spacing:-.01em}
+.who .sub{font-size:11.5px;color:rgba(250,249,246,.6);font-weight:600;letter-spacing:.04em}
+.who .sub i{font-style:normal;color:#4ade80}
+
+/* ---- message thread ---- */
+.msgs{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:10px;background:var(--bg);min-height:240px;max-height:52vh}
+.msg{max-width:78%;padding:11px 16px;border-radius:18px;font-size:14.5px;white-space:pre-wrap;word-wrap:break-word;box-shadow:0 2px 8px rgba(20,24,40,.05);animation:msgIn .45s var(--ease) both}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.msg time{display:block;font-size:10px;opacity:.65;margin-top:4px;font-weight:600}
+.msg.them{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:6px}
+.msg.me{align-self:flex-end;background:linear-gradient(120deg,var(--blue),#0b58bd 55%,#1f6fd0);color:#fff;border-bottom-right-radius:6px;box-shadow:0 8px 20px rgba(0,71,160,.25)}
+.msg-sys{align-self:center;background:var(--bg-soft);color:var(--muted);font-size:12px;font-weight:600;padding:8px 16px;border-radius:999px;text-align:center}
+
+/* ---- composer ---- */
+.form{display:flex;gap:10px;padding:14px 18px;border-top:1px solid var(--line);background:#fff;align-items:flex-end}
+.form textarea{flex:1;border:1.5px solid var(--line);border-radius:16px;padding:12px 16px;font-size:14.5px;resize:none;max-height:120px;background:var(--bg);color:var(--ink);line-height:1.45;transition:border-color .25s,box-shadow .25s}
+.form textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
+.send{width:48px;height:48px;border-radius:50%;border:0;background:var(--grad-cta);background-size:170% 170%;color:#fff;font-size:18px;cursor:pointer;box-shadow:0 10px 22px rgba(205,46,58,.3);transition:background-position .55s var(--ease),transform .3s var(--ease);flex:0 0 auto}
+.send:hover{background-position:100% 100%;transform:translateY(-2px)}
+.send[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+
+@media (max-width:640px){
+  .msgs{padding:14px;max-height:none}
+  .who{padding:12px 14px}
+  .form{padding:10px 12px}
+}

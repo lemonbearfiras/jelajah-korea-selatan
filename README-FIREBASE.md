@@ -12,12 +12,12 @@ but accounts & comments are stored only in your browser.
 2. Click **Create a project / Add project**.
 3. Project name: e.g. `jelajah-korea` → continue (Google Analytics can be turned off).
 
-## Step 2 — Copy the configuration into `js/firebase-config.js`
+## Step 2 — Copy the configuration into `js/community/firebase-config.js`
 
 1. On the project's main page, click the **Web** icon `</>` (Add app → Web).
 2. Type a nickname, e.g. `jelajah-korea-web` → **Register app**.
 3. Firebase shows a `const firebaseConfig = {...}` block — **copy every value**.
-4. Open the **`js/firebase-config.js`** file and replace every placeholder value (they all start with `MASUKKAN_`) with the value Firebase shows you:
+4. Open the **`js/community/firebase-config.js`** file and replace every placeholder value (they all start with `MASUKKAN_`) with the value Firebase shows you:
 
 ```js
 var FIREBASE_CONFIG = {
@@ -73,7 +73,7 @@ What the rules mean in short:
 
 ## Step 5 — Enable the AI answers (Firebase AI Logic)
 
-"Ask Jelajah AI" calls Gemini through **Firebase AI Logic** straight from the browser (`js/ai-logic.js`), so it works on GitHub Pages too — no API key is ever put in the code. It uses the same project as Step 2.
+"Ask Jelajah AI" calls Gemini through **Firebase AI Logic** straight from the browser (`js/community/ai-logic.js`), so it works on GitHub Pages too — no API key is ever put in the code. It uses the same project as Step 2.
 
 1. Open [the Firebase console](https://console.firebase.google.com) and pick **jelajah-korea**.
 2. In the left menu, under **Build**, click **Gemini AI** (it may be labelled *AI Logic* / *Vertex AI in Firebase*), then click **Get started** / **Enable**.
@@ -81,10 +81,10 @@ What the rules mean in short:
 4. **App Check — leave it NOT enforced for this project.** This is the part that cost the most debugging, so here is the verified state (2026-10-15):
    - Google retired **reCAPTCHA Classic (v3)**, so the Firebase console only offers **Google Cloud Fraud Defense**, which is reCAPTCHA **Enterprise**. Console → **App Check → Apps**: App ID `1:950161795507:web:97df07773ed36a387043c6` shows provider **Fraud Defense**.
    - With that provider, the token exchange itself **succeeds** (`…:exchangeReCaptchaEnterpriseToken` → 200, `provider:"recaptcha_enterprise"`), but **Firebase AI Logic rejects any request carrying that token**: `generateContent` → `[401] Firebase App Check token is invalid` — for regular *and* limited-use tokens, and even after enforcement is switched off. A request that carries **no** token is accepted.
-   - So: **Console → App Check → Enforcement → Not enforced**, and keep **`APP_CHECK_SITE_KEY = ''`** in `js/firestore.js`. That is the working configuration; the file's header comment explains why, and `ReCaptchaEnterpriseProvider` is already wired for the day Google accepts Fraud Defense tokens on AI Logic (then just paste the public site key back in).
+   - So: **Console → App Check → Enforcement → Not enforced**, and keep **`APP_CHECK_SITE_KEY = ''`** in `js/community/firestore.js`. That is the working configuration; the file's header comment explains why, and `ReCaptchaEnterpriseProvider` is already wired for the day Google accepts Fraud Defense tokens on AI Logic (then just paste the public site key back in).
    - If enforcement is switched back **on**, AI Logic answers 401 and the ask box silently drops to tier 2 (the Qoder Function) or the offline engine — on GitHub Pages that means **no real AI**, because Pages has no server Function.
    - ⚠️ Never put a **secret/API key** in this chat or in git. The reCAPTCHA site key is public by design; it is the only value this site ever needs.
-5. **Free-tier limits and latency.** Google's free tier for this project allows about **20 Gemini requests per day per model**, plus a per-minute cap, and the counter resets after roughly 12 hours of usage. `gemini-2.5-flash` (the name in older guides) is no longer open to new projects, so `js/ai-logic.js` asks for `gemini-3.8-flash` and falls back to the `gemini-flash-latest` alias. A free-tier answer can take **~30 seconds**, so `dbReply()` does not cancel tier 1: after 8 s of silence it *also* asks tier 2 (the Qoder Sites Function on your MiniMax gateway credit) and shows whichever replies first, giving up at 40 s in favour of the offline matching engine. On GitHub Pages tier 2 fails instantly (there is no Function there), which is exactly why tier 1 is allowed to run long. If you want more quota for demo day, enable billing on the project — Google then charges per request instead of blocking at 20/day.
+5. **Free-tier limits and latency.** Google's free tier for this project allows about **20 Gemini requests per day per model**, plus a per-minute cap, and the counter resets after roughly 12 hours of usage. `gemini-2.5-flash` (the name in older guides) is no longer open to new projects, so `js/community/ai-logic.js` asks for `gemini-3.8-flash` and falls back to the `gemini-flash-latest` alias. A free-tier answer can take **~30 seconds**, so `dbReply()` does not cancel tier 1: after 8 s of silence it *also* asks tier 2 (the Qoder Sites Function on your MiniMax gateway credit) and shows whichever replies first, giving up at 40 s in favour of the offline matching engine. On GitHub Pages tier 2 fails instantly (there is no Function there), which is exactly why tier 1 is allowed to run long. If you want more quota for demo day, enable billing on the project — Google then charges per request instead of blocking at 20/day.
 
 6. **This free tier has an expiry date: 2 November 2026.** Google announced that from that day *App Check enforcement is required to use Firebase AI Logic and cannot be un-enforced* — every request without a valid App Check token is blocked. Since this project's only registrable provider (Fraud Defense) produces a token AI Logic refuses (item 4), tier 1 will stop answering on **GitHub Pages** at that point; localhost and the Qoder site keep working through the server Function. There is nothing to fix in the Firebase console — the way to keep real AI on Pages is to stop calling Firebase for the answer, and that route (**Step 5b**, the tier-0 proxy) is already deployed and switched on, so nothing breaks on 2 November.
 
@@ -134,18 +134,18 @@ Then open <http://localhost:8000>.
 |---|---|
 | `index.html` | Home page — includes the `09 — Community` section |
 | `profile.html` | **Public** profile page of each member — `profile?v=<uid>` (the avatar/name links in comments & the top bar) |
-| `js/profile.js` | Profile logic — Follow button, Add Friend / Accept / Chat, statistics & editing About |
+| `js/pages/profile.js` | Profile logic — Follow button, Add Friend / Accept / Chat, statistics & editing About |
 | `chat.html` | **Private chat** page between two friends — `chat?v=<friend uid>` |
-| `js/chat.js` | Real-time chat logic (onSnapshot) — send & display messages |
+| `js/pages/chat.js` | Real-time chat logic (onSnapshot) — send & display messages |
 | `settings.html` | **Profile settings** page for the signed-in owner — name, photo, username, about |
-| `js/settings.js` | Settings logic — form validation, photo upload/resize, saving to `users` |
-| `js/firebase-config.js` | **You fill in** the project configuration here |
-| `js/komuniti-auth.js` | Sign up / sign in / Google / log out (two modes) |
-| `js/komuniti-comments.js` | Display, send & delete comments (Firestore / demo) |
-| `js/ai-logic.js` | Ask Jelajah AI → Gemini through Firebase AI Logic (ES modules, Step 5) |
-| `js/firestore.js` | App Check bootstrap for the same Firebase app (reCAPTCHA Enterprise or debug token; **intentionally inert** — `APP_CHECK_SITE_KEY` stays empty, see Step 5) |
+| `js/pages/settings.js` | Settings logic — form validation, photo upload/resize, saving to `users` |
+| `js/community/firebase-config.js` | **You fill in** the project configuration here |
+| `js/community/community-auth.js` | Sign up / sign in / Google / log out (two modes) |
+| `js/community/community-comments.js` | Display, send & delete comments (Firestore / demo) |
+| `js/community/ai-logic.js` | Ask Jelajah AI → Gemini through Firebase AI Logic (ES modules, Step 5) |
+| `js/community/firestore.js` | App Check bootstrap for the same Firebase app (reCAPTCHA Enterprise or debug token; **intentionally inert** — `APP_CHECK_SITE_KEY` stays empty, see Step 5) |
 | `firestore.rules` | Firestore security rules (paste into the Console — Step 4) |
-| `destinations-korea.json` | Backup copy of the 126-place database |
+| `data/destinations-korea.json` | Backup copy of the 126-place database |
 
 ## Data that is stored
 
@@ -165,6 +165,6 @@ Then open <http://localhost:8000>.
 |---|---|
 | `auth/unauthorized-domain` | Open through `http://localhost:8000`, or add your domain in Authentication → Settings → Authorized domains |
 | `permission-denied` when submitting | The Firestore rules have not been published yet (Step 4) |
-| Comments do not appear | Check that you are using the correct project in `js/firebase-config.js`; open the Console (F12) for errors |
+| Comments do not appear | Check that you are using the correct project in `js/community/firebase-config.js`; open the Console (F12) for errors |
 | `auth/operation-not-allowed` | Enable the Email/Password or Google method in Authentication |
 | Forgot password | Click "Forgot password?" — a reset link is sent to your email |

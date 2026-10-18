@@ -1,0 +1,77 @@
+/* =========================================================
+   css/profile.css — Member Profile page
+   Page-specific rules; shared utility-page system lives in css/subpages.css
+   ========================================================= */
+
+/* ---- member header ---- */
+.p-head{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.ava-ring{width:96px;height:96px;border-radius:50%;padding:4px;background:conic-gradient(var(--red) 0 50%,var(--blue) 50% 100%);flex:0 0 auto;box-shadow:0 10px 26px rgba(20,24,40,.16)}
+.ava{width:100%;height:100%;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:30px;overflow:hidden}
+.ava img{width:100%;height:100%;object-fit:cover;display:block}
+.p-id-block{flex:1;min-width:200px}
+.p-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--red)}
+.p-name{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.15;margin:3px 0 3px}
+.p-uid{font-size:11.5px;color:var(--muted);font-weight:600;font-family:ui-monospace,Consolas,monospace;word-break:break-all}
+.p-actions{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:wrap}
+.pill.dot{padding:9px 14px;font-size:18px;line-height:1;font-weight:800}
+.pill.own{background:var(--blue-soft);border-color:transparent;color:var(--blue);cursor:default}
+.pill.own:hover{border-color:transparent;transform:none}
+
+/* ---- overflow menu ---- */
+.menu-wrap{position:relative}
+.menu{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:0 16px 40px rgba(20,24,40,.14);min-width:200px;padding:7px;display:none;z-index:30}
+.menu.open{display:block}
+.menu button{display:block;width:100%;text-align:left;background:none;border:0;font:inherit;font-size:13px;font-weight:600;padding:11px 13px;border-radius:9px;cursor:pointer;color:var(--ink)}
+.menu button:hover{background:var(--bg-soft)}
+.menu button.danger{color:var(--red)}
+
+/* ---- dark stats band, mirroring the homepage glance panel ---- */
+.stats{display:flex;gap:14px 34px;flex-wrap:wrap;padding:26px 34px;background:linear-gradient(150deg,#0a0a0a,#141a2e 58%,#0a0a0a);border-color:rgba(255,255,255,.1);color:rgba(250,249,246,.82)}
+.stats::before{opacity:.85;left:34px;right:34px}
+.stat{font-size:14px;color:rgba(250,249,246,.82)}
+.stat b{font-weight:800;color:#fff}
+.stat span{color:rgba(250,249,246,.6);font-weight:500}
+
+/* ---- about ---- */
+.about-text{font-size:15px;white-space:pre-wrap;color:#1c1c1c}
+.about-empty{color:var(--muted);font-size:14px}
+.about-edit{width:100%;min-height:110px;border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:14px;font:inherit;font-size:14.5px;resize:vertical;background:var(--bg);color:var(--ink)}
+.about-edit:focus{outline:none;border-color:var(--blue)}
+.about-foot{display:flex;gap:10px;justify-content:flex-end;margin-top:12px;align-items:center}
+.about-chars{font-size:12px;color:var(--muted);margin-right:auto}
+.about-chars.ok{color:#0b7a52}
+.about-chars.bad{color:var(--red)}
+
+/* ---- profile settings ---- */
+.set-field{display:block;margin-bottom:16px}
+.set-field>span{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:.02em}
+.set-input{width:100%;border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:13px 14px;font:inherit;font-size:14.5px;background:var(--bg);color:var(--ink)}
+.set-input:focus{outline:none;border-color:var(--blue)}
+.set-hint{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* ---- friend requests ---- */
+.req-item{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px dashed var(--line)}
+.req-item:last-child{border-bottom:0}
+.ava-sm{width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;overflow:hidden;flex:0 0 auto}
+.ava-sm img{width:100%;height:100%;object-fit:cover;display:block}
+.nm-wrap{flex:1;min-width:0}
+.req-item .nm{display:block;font-weight:800;font-size:14.5px}
+.req-item .sub{display:block;font-size:12px;color:var(--muted)}
+.req-empty{color:var(--muted);font-size:14px}
+
+/* ---- member comments ---- */
+.c-item{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:10px}
+.c-item time{display:block;font-size:11px;color:var(--muted);font-weight:600;margin-bottom:5px}
+.c-item p{font-size:14.5px;white-space:pre-wrap}
+.c-empty{text-align:center;color:var(--muted);font-size:14px;padding:26px;border:1.5px dashed var(--line);border-radius:var(--radius-sm)}
+
+/* ---- footer call to action ---- */
+.foot{margin-top:26px;text-align:center}
+.foot a{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:700;padding:13px 26px;border-radius:999px;background:var(--grad-cta);background-size:170% 100%;color:#fff;box-shadow:0 10px 26px rgba(205,46,58,.3);transition:background-position .55s var(--ease),transform .3s var(--ease)}
+.foot a:hover{background-position:100% 0;transform:translateY(-3px)}
+
+@media (max-width:640px){
+  .stats{padding:20px 20px}
+  .p-name{font-size:24px}
+  .p-actions{margin-left:0;width:100%}
+}

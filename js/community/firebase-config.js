@@ -1,18 +1,18 @@
 /* ============================================================
-   KONFIGURASI FIREBASE — Jelajah Korea Selatan
+   FIREBASE CONFIGURATION — Jelajah Korea Selatan
    ------------------------------------------------------------
-   Nilai di bawah telah diisi — laman kini menggunakan Firebase
-   sebenar (Authentication + Firestore + AI Logic).
+   The values below are filled in — the site now runs on real
+   Firebase (Authentication + Firestore + AI Logic).
 
-   Nota penting:
-   - Email/Kata laluan: berfungsi terus (termasuk buka fail terus).
-   - Log masuk Google: perlu buka melalui http://localhost:8000
-     (domain file:// tidak dibenarkan Firebase).
-   - Firestore mesti dicipta dahulu di konsol — panduan penuh
-     dalam README-FIREBASE.md.
-   - databaseURL (Realtime Database) disertakan supaya config ini
-     sama dengan yang dipaparkan konsol, tetapi laman TIDAK
-     menggunakannya — semua data berada di Firestore.
+   Worth knowing:
+   - Email/password: works immediately, including file:// opening.
+   - Google sign-in: must be served through http://localhost:8000
+     (Firebase refuses the file:// domain).
+   - Firestore has to be created in the console first — full guide
+     in README-FIREBASE.md.
+   - databaseURL (Realtime Database) is included so this config
+     matches what the console shows, but the site does NOT use it
+     — every document lives in Firestore.
    ============================================================ */
 
 var FIREBASE_CONFIG = {

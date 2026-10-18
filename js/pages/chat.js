@@ -1,8 +1,8 @@
 /* ============================================================
-   SEMBANG PERIBADI — js/chat.js
-   chat.html?v=<uid rakan>  ·  realtime melalui onSnapshot
-   Dokumen: chats/<pairId>/messages/{auto}
-   pairId = kedua-dua uid tersusun a-z (kumpul dalam rules)
+   PRIVATE CHAT — js/pages/chat.js
+   chat.html?v=<friend uid>  ·  realtime through onSnapshot
+   Documents: chats/<pairId>/messages/{auto}
+   pairId = both uids sorted a-z (they are grouped in firestore.rules)
    ============================================================ */
 (function(){
 'use strict';
@@ -94,7 +94,7 @@ function startChat(){
     });
   }).catch(errState);
 
-  /* hantar mesej */
+  /* send the message */
   var inputEl=$('#chat-input'), sendBtn=$('#chat-send');
   $('#chat-form').onsubmit=function(ev){
     ev.preventDefault();

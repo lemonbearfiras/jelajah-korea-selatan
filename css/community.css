@@ -1,0 +1,113 @@
+/* =========================================================
+   css/community.css — Community Space: sign-in card, comment
+   list, likes, replies and the member leaderboard.
+   ========================================================= */
+/* 17b — Community Space (Firebase auth + comments) */
+.sec-head h2 em{font-style:italic;color:var(--red)}
+.sec-head .hangul{font-family:'Noto Sans KR',sans-serif;font-size:.4em;font-weight:700;letter-spacing:.22em;color:var(--red);vertical-align:.6em;margin:0 10px;white-space:nowrap}
+.sec-dark .sec-head .hangul{color:#ff8a80}
+.km-grid{display:grid;grid-template-columns:360px 1fr;gap:28px;align-items:start;margin-top:42px}
+.km-auth-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 18px 44px rgba(20,24,40,.07);position:sticky;top:calc(var(--nav-h) + 18px)}
+.km-auth-card.flash{animation:kmFlash 1s var(--ease)}
+@keyframes kmFlash{0%,100%{box-shadow:0 18px 44px rgba(20,24,40,.07)}30%{box-shadow:0 0 0 5px rgba(205,46,58,.25)}}
+.km-tabs{display:flex;background:var(--bg-soft);border-radius:999px;padding:4px;margin-bottom:20px}
+.km-tab{flex:1;border:none;background:none;padding:9px 0;border-radius:999px;font-weight:700;font-size:13px;cursor:pointer;color:var(--muted);transition:.3s}
+.km-tab.active{background:var(--red);color:#fff}
+.km-field{display:block;margin-bottom:14px}
+.km-field span{display:block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.km-field span i{font-style:normal;font-weight:600;letter-spacing:.06em;opacity:.7}
+.km-field input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink);transition:.3s}
+.km-field input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(205,46,58,.14)}
+.km-err{display:none;font-size:12.5px;font-weight:600;color:var(--red);margin:-2px 0 14px;line-height:1.55}
+.km-err.show{display:block}
+.km-err.ok{color:#0b7a52}
+.km-submit{width:100%;border:none;background:var(--red);color:#fff;font-weight:800;font-size:14px;padding:13px;border-radius:999px;cursor:pointer;transition:.3s var(--ease)}
+.km-submit:hover:not(:disabled){background:#a8232d;transform:translateY(-1px)}
+.km-submit:disabled{opacity:.55;cursor:wait}
+.km-reset{display:block;margin:12px auto 0;border:none;background:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.km-reset:hover{color:var(--red)}
+.km-div{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted);font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}
+.km-div::before,.km-div::after{content:"";flex:1;height:1px;background:var(--line)}
+.km-google{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:12px;font-weight:700;font-size:13.5px;cursor:pointer;transition:.3s var(--ease)}
+.km-google:hover{border-color:var(--ink);transform:translateY(-1px);box-shadow:0 8px 20px rgba(20,24,40,.08)}
+.km-google svg{width:17px;height:17px}
+.km-auth-card[data-mode=demo] .km-tabs,.km-auth-card[data-mode=demo] .km-f-fb,.km-auth-card[data-mode=demo] .km-div,.km-auth-card[data-mode=demo] .km-google,.km-auth-card[data-mode=demo] .km-reset{display:none}
+.km-user{display:flex;align-items:center;gap:13px;cursor:pointer}
+.km-user[href]{cursor:pointer}
+.km-user:hover b{text-decoration:underline}
+.km-ava{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;flex:none;overflow:hidden}
+.km-ava img{width:100%;height:100%;object-fit:cover}
+.km-user b{display:block;font-size:15px;letter-spacing:-.01em}
+.km-user small{color:var(--muted);font-size:12px;word-break:break-all}
+.km-badge{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:7px 13px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.06em}
+.km-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.km-badge.cloud{background:rgba(11,122,82,.1);color:#0b7a52}
+.km-badge.demo{background:rgba(201,164,92,.18);color:#8a6d2f}
+.km-out{margin-top:14px;width:100%;border:1px solid var(--line);background:none;border-radius:999px;padding:11px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink);transition:.3s}
+.km-out:hover{border-color:var(--red);color:var(--red)}
+.km-note{margin-top:14px;font-size:12px;line-height:1.65;color:var(--muted);padding:0 4px}
+.km-note a{color:var(--red);font-weight:700}
+.km-hint{display:flex;align-items:center;gap:9px;background:rgba(205,46,58,.07);border:1px dashed rgba(205,46,58,.35);border-radius:var(--radius-sm);padding:11px 15px;font-size:12.5px;font-weight:600;color:var(--red);margin-bottom:14px}
+.km-compose{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;transition:.3s}
+.km-compose textarea{width:100%;border:none;resize:vertical;min-height:74px;font:inherit;font-size:14px;line-height:1.6;background:none;color:var(--ink)}
+.km-compose textarea:focus{outline:none}
+.km-compose textarea:disabled{cursor:not-allowed}
+.km-compose-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:12px;border-top:1px solid var(--line)}
+#km-chars{font-size:11.5px;color:var(--muted);font-weight:600}
+.km-send{border:none;background:var(--ink);color:#fff;font-weight:800;font-size:13px;padding:10px 20px;border-radius:999px;cursor:pointer;transition:.3s var(--ease)}
+.km-send:hover:not(:disabled){background:var(--red)}
+.km-send:disabled{opacity:.45;cursor:not-allowed}
+.km-head{display:flex;align-items:baseline;justify-content:space-between;margin:26px 2px 14px}
+.km-head h3{font-size:17px}
+.km-head span{font-size:12px;font-weight:700;color:var(--muted)}
+.km-item{display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:12px;animation:kmIn .5s var(--ease)}
+@keyframes kmIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.km-item .km-ava{width:38px;height:38px;font-size:15px}
+.km-prof{display:inline-flex;text-decoration:none;color:inherit;transition:opacity .25s}
+.km-prof:hover{opacity:.65}
+.km-prof .km-ava{transition:transform .25s var(--ease)}
+.km-prof:hover .km-ava{transform:scale(1.06)}
+.km-body{flex:1;min-width:0}
+.km-meta{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.km-meta b{font-size:13.5px}
+.km-meta time{font-size:11.5px;color:var(--muted)}
+.km-del{margin-left:auto;border:none;background:none;color:var(--muted);font-size:11.5px;font-weight:700;cursor:pointer;padding:2px 7px;border-radius:6px;transition:.25s}
+.km-del:hover{color:var(--red);background:rgba(205,46,58,.08)}
+.km-text{margin-top:5px;font-size:13.5px;line-height:1.7;color:#3c3c3c;word-break:break-word}
+.km-empty{border:1px dashed var(--line);border-radius:var(--radius-sm);padding:28px 20px;text-align:center;color:var(--muted);font-size:13px}
+#km-list{max-height:min(560px,70vh);overflow-y:auto;overflow-x:hidden;padding:2px 8px 2px 2px;overscroll-behavior:contain;scroll-behavior:smooth}
+@media (max-width:640px){#km-list{max-height:420px}}
+.km-hint.km-ok{background:rgba(11,122,82,.08);border-color:rgba(11,122,82,.35);color:#0b7a52}
+.km-replyrow{display:flex;align-items:center;gap:8px;margin:8px 0 0;padding:8px 12px;background:var(--bg-soft);border-radius:10px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.km-replyrow b{color:var(--ink)}
+.km-replyrow button{margin-left:auto;border:none;background:none;color:var(--muted);font-weight:800;cursor:pointer;font-size:13px;padding:2px 6px;border-radius:6px;transition:.25s}
+.km-replyrow button:hover{color:var(--red);background:rgba(205,46,58,.1)}
+.km-replytag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:var(--blue);background:rgba(0,71,160,.08);padding:2px 9px;border-radius:999px}
+.km-acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:9px}
+.km-acts button{border:1px solid var(--line);background:none;border-radius:999px;padding:5px 13px;font:inherit;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.25s var(--ease)}
+.km-acts button:hover{border-color:var(--ink);color:var(--ink)}
+.km-like i{font-style:normal;font-weight:800}
+.km-like.on{color:var(--red);border-color:rgba(205,46,58,.45);background:rgba(205,46,58,.07)}
+.km-like.on:hover{color:var(--red);border-color:var(--red)}
+.km-acts .done{color:#0b7a52;border-color:rgba(11,122,82,.45);background:rgba(11,122,82,.07)}
+.km-toggle{margin-top:10px;border:1px solid var(--line);background:none;border-radius:999px;padding:6px 14px;font:inherit;font-size:11.5px;font-weight:800;color:var(--blue);cursor:pointer;transition:.25s var(--ease)}
+.km-toggle:hover{border-color:var(--blue);background:var(--blue-soft)}
+.km-replies{margin-top:12px;display:flex;flex-direction:column;gap:10px;border-left:3px solid rgba(0,71,160,.2);padding-left:12px}
+.km-inthread{margin-bottom:0;padding:13px 15px;background:#fcfbf8}
+.km-inthread .km-ava{width:30px;height:30px;font-size:12px}
+.km-inthread .km-text{font-size:13px}
+.km-item.flash{animation:kmItemFlash 2.2s var(--ease)}
+@keyframes kmItemFlash{0%,55%{box-shadow:0 0 0 3px rgba(201,164,92,.55)}100%{box-shadow:none}}
+.km-board{background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px 20px;margin-top:18px}
+.km-board h4{font-size:13px;letter-spacing:.04em;margin-bottom:12px}
+.km-board h4 small{font-weight:600;color:var(--muted);font-size:10.5px;margin-left:6px}
+.km-board ol{list-style:none;display:flex;flex-direction:column;gap:9px}
+.km-board li{display:flex;align-items:center;gap:10px;font-size:13px}
+.km-board li b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.km-rank{width:20px;height:20px;border-radius:50%;background:var(--bg-soft);color:var(--muted);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.km-board li:first-child .km-rank{background:var(--red);color:#fff}
+.km-board li:nth-child(2) .km-rank{background:var(--blue);color:#fff}
+.km-ava.km-ava-xs{width:26px;height:26px;font-size:11px;flex:none}
+.km-bscore{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;flex:none}
+@media (max-width:640px){.km-replies{padding-left:8px}}
+@media (max-width:900px){.km-grid{grid-template-columns:1fr}.km-auth-card{position:static}}

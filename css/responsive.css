@@ -1,0 +1,60 @@
+/* =========================================================
+   css/responsive.css — Breakpoints and reduced-motion overrides.
+   Loaded last so it wins the cascade.
+   ========================================================= */
+/* 18 — responsive + reduced motion */
+@media (max-width:1080px){
+  .why-grid{grid-template-columns:1fr 1fr}
+  .why-card:nth-child(2){border-right:none}
+  .why-card:nth-child(-n+2){border-bottom:1px solid rgba(250,249,246,.16)}
+  #food-grid{grid-template-columns:1fr 1fr}
+  .map-panel{grid-template-columns:1fr;padding:38px;gap:34px}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:900px){
+  .nav-cta{display:none}
+  .hero-inner{grid-template-columns:1fr;gap:34px}
+  .glance{max-width:520px}
+  .trad-gallery{grid-template-columns:repeat(3,1fr)}
+  .trad-item:nth-child(n+4){display:none}
+  .cult-grid{grid-template-columns:1fr}
+  .trad-cols{grid-template-columns:1fr;gap:26px}
+  .tl-panel{grid-template-columns:1fr}
+  .tl-panel img{height:220px}
+  #plan-days{grid-template-columns:1fr}
+  .mosaic{grid-template-columns:1fr 1fr;grid-auto-rows:190px}
+  .mo-item:nth-child(n+6){display:none}
+  .mo-item:nth-child(1){grid-column:span 2;grid-row:span 1}
+}
+@media (max-width:640px){
+  :root{--nav-h:66px}
+  .nav-login{padding:7px;border-color:transparent}
+  .nav-login:hover{border-color:var(--red)}
+  .nav-login .nl-name{display:none}
+  .sec{padding:84px 0}
+  #utama{padding-top:calc(var(--nav-h) + 40px)}
+  .glance{grid-template-columns:1fr 1fr}
+  .glance-item{padding:18px 16px}
+  #food-grid{grid-template-columns:1fr}
+  .why-grid{grid-template-columns:1fr}
+  .why-card{border-right:none;border-bottom:1px solid rgba(250,249,246,.16)}
+  .why-card:last-child{border-bottom:none}
+  .trad-gallery{grid-template-columns:1fr 1fr}
+  .trad-item:nth-child(n+4){display:block}
+  .trad-item:nth-child(n+5){display:none}
+  .mosaic{grid-template-columns:1fr 1fr;grid-auto-rows:160px}
+  .mo-item:nth-child(n+5){display:none}
+  .mo-item:nth-child(1){grid-column:span 2}
+  .car-slide img{height:340px}
+  .plan-panel{padding:26px}
+  .plan-tab{padding:10px 16px}
+  .foot-grid{grid-template-columns:1fr}
+  #progress-circle{right:18px;bottom:18px}
+  #search-note{left:14px;right:14px;justify-content:space-between}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  [data-reveal]{opacity:1;transform:none}
+  .hero-enter{opacity:1;transform:none}
+}

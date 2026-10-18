@@ -1,14 +1,14 @@
 /* ============================================================
-   TETAPAN PROFIL — js/settings.js
-   settings.html — hanya pemilik akaun (auth.currentUser).
-   Username, nama, foto (muat naik fail / URL), tentang +
-   maklumat akaun bacaan sahaja. Simpan menulis dokumen users
-   (merge) — dokumen menjadi sumber foto untuk seluruh laman.
+   PROFILE SETTINGS — js/pages/settings.js
+   settings.html — the account owner only (auth.currentUser).
+   Username, name, photo (file upload / URL), about + read-only
+   account information. Saving writes the users document as a
+   merge — that document is the photo source for the whole site.
    ============================================================ */
 (function(){
 'use strict';
 var $=function(s){return document.querySelector(s)};
-var BM_M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var GRADS=['linear-gradient(135deg,#CD2E3A,#8e1f28)','linear-gradient(135deg,#0047A0,#2e6fd8)','linear-gradient(135deg,#c9a45c,#8a6d2f)','linear-gradient(135deg,#5b8def,#0047A0)','linear-gradient(135deg,#3d7a4f,#6b9c5a)','linear-gradient(135deg,#7a3dd1,#4a2a8e)'];
 var AVA_PX=160, AVA_MAX_CHARS=100000, AVA_MAX_BYTES=6*1024*1024;
 var PHOTO_RE=/^(https?:\/\/\S+|data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+)$/i;
@@ -21,7 +21,7 @@ function show(id){
 function fmtDate(ts){
   if(!ts)return null;
   var dt=new Date(ts);
-  return dt.getDate()+' '+BM_M[dt.getMonth()]+' '+dt.getFullYear();
+  return dt.getDate()+' '+MONTHS[dt.getMonth()]+' '+dt.getFullYear();
 }
 function tsOf(v){return v&&v.toMillis?v.toMillis():null}
 function initials(n){
@@ -52,7 +52,7 @@ var nameIn=$('#s-name'), userIn=$('#s-username'), photoIn=$('#s-photo'),
 
 function note(msg,cls){noteEl.textContent=msg;noteEl.className='note'+(cls?' '+cls:'')}
 
-/* ---------- foto: nilai sebenar (data URL / URL) ---------- */
+/* ---------- photo: the real value (data URL / URL) ---------- */
 var photoVal='';
 function isDataUrl(s){return /^data:image\//i.test(s||'')}
 function syncPhotoUI(){
@@ -74,7 +74,7 @@ function bindPreview(){
   photoIn.addEventListener('input',function(){setPhoto(photoIn.value.trim())});
 }
 
-/* ---------- muat naik fail: potong segi empat + kecilkan ---------- */
+/* ---------- file upload: crop to a square + shrink ---------- */
 function resizeImage(file){
   return new Promise(function(resolve,reject){
     if(!file){reject(new Error('empty'));return}
@@ -203,7 +203,7 @@ saveBtn.addEventListener('click',function(){
   db.collection('users').doc(me).set(data,{merge:true}).then(function(){
     prof.username=data.username;prof.name=data.name;prof.photo=data.photo;prof.about=data.about;
     var u=auth.currentUser;
-    /* Firebase Auth hadla data URL panjang — foto muat naik hanya dalam dokumen */
+    /* Firebase Auth caps long data URLs — uploaded photos go into the document only */
     return u.updateProfile({displayName:data.name,photoURL:isDataUrl(data.photo)?null:(data.photo||null)})
       .then(function(){return null},function(pe){return pe});
   }).then(function(authErr){

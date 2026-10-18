@@ -1,14 +1,14 @@
 /* ============================================================
-   PROFIL AWAM — js/profile.js
-   profile.html?v=<uid> — ikut, rakan, permintaan, tentang,
-   statistik & senarai komen. Semua bacaan koleksi baharu
-   (follows / friendRequests / friends) mempunyai fallback
-   sekiranya peraturan Firestore belum diterbitkan lagi.
+   PUBLIC PROFILE — js/pages/profile.js
+   profile.html?v=<uid> — follow, friends, requests, about,
+   statistics and the comment list. Every read of the new
+   collections (follows / friendRequests / friends) has a
+   fallback in case the Firestore rules are not published yet.
    ============================================================ */
 (function(){
 'use strict';
 var $=function(s){return document.querySelector(s)};
-var BM_M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var GRADS=['linear-gradient(135deg,#CD2E3A,#8e1f28)','linear-gradient(135deg,#0047A0,#2e6fd8)','linear-gradient(135deg,#c9a45c,#8a6d2f)','linear-gradient(135deg,#5b8def,#0047A0)','linear-gradient(135deg,#3d7a4f,#6b9c5a)','linear-gradient(135deg,#7a3dd1,#4a2a8e)'];
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -20,7 +20,7 @@ function show(id){
 function fmtDate(ts){
   if(!ts)return null;
   var dt=new Date(ts);
-  return dt.getDate()+' '+BM_M[dt.getMonth()]+' '+dt.getFullYear();
+  return dt.getDate()+' '+MONTHS[dt.getMonth()]+' '+dt.getFullYear();
 }
 function tsOf(v){return v&&v.toMillis?v.toMillis():null}
 function initials(n){
@@ -65,7 +65,7 @@ function needLogin(){
   location.href='index.html#komuniti';
 }
 
-/* ---------- status butang rakan ---------- */
+/* ---------- friend button state ---------- */
 function paintFriendBtn(){
   var b=$('#btn-friend');
   b.style.display='';
@@ -107,9 +107,9 @@ function cancelRequest(){
   return db.collection('friendRequests').doc(myReqId).delete()
     .then(function(){myReqId=null;paintFriendBtn()});
 }
-/* PENTING: dua tulisan berturutan — peraturan membaca status
-   friendRequests SEBELUM commit, jadi dokumen friends mesti
-   dicipta selepas status 'accepted' benar-benar tersimpan. */
+/* IMPORTANT: two writes in a row — the rules read the friendRequests
+   status BEFORE committing, so the friends document must be created
+   only after the 'accepted' status has really been stored. */
 function acceptReq(rid,otherUid){
   var id=pairId(me,otherUid);
   return db.collection('friendRequests').doc(rid).update({status:'accepted'})
@@ -158,7 +158,7 @@ function loadStats(){
   count(db.collection('friends').where('participants','array-contains',uid),'#st-friends');
 }
 
-/* ---------- permintaan rakan (profil sendiri) ---------- */
+/* ---------- friend requests (own profile) ---------- */
 var reqRows=[];
 function loadRequests(){
   if(me!==uid)return;
@@ -235,7 +235,7 @@ function initAbout(){
   };
 }
 
-/* ---------- tetapan profil sendiri ---------- */
+/* ---------- own-profile settings ---------- */
 function settingsUrl(){return 'settings.html'}
 
 /* ---------- menu ⋮ ---------- */
@@ -298,7 +298,7 @@ function paintCard(){
   $('#card').classList.add('show');
 }
 
-/* ---------- muat profil + komen ---------- */
+/* ---------- load profile + comments ---------- */
 Promise.all([
   authReady,
   db.collection('users').doc(uid).get(),

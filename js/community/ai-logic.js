@@ -1,23 +1,23 @@
 /* ============================================================
-   Firebase AI Logic (Gemini) — lapisan AI pertama kotak "Tanya".
+   Firebase AI Logic (Gemini) — the first AI tier behind "Ask Jelajah AI".
    ------------------------------------------------------------
-   SDK modul ESM dimuat terus dari CDN Google (v12), jadi tiada
-   build step. Aplikasi Firebase berasingan ('jelajah-ai') supaya
-   kod compat 10.12.2 untuk auth + Firestore tidak diusik.
+   The ESM SDK loads straight from Google's CDN (v12), so there is
+   no build step. A separate Firebase app ('jelajah-ai') keeps the
+   10.12.2 compat code for auth + Firestore untouched.
 
-   Perlu siap di konsol Firebase (panduan: README-FIREBASE.md):
-   1. Build → Gemini AI / "AI Logic" diaktifkan (tier percuma).
-   2. App Check → daftar aplikasi web ini, dapat kunci reCAPTCHA v3.
-   3. Tampal kunci itu ke APP_CHECK_SITE_KEY di bawah.
+   Needs this done in the Firebase console (guide: README-FIREBASE.md):
+   1. Build → Gemini AI / "AI Logic" enabled (free tier).
+   2. App Check → register this web app, get the reCAPTCHA v3 key.
+   3. Paste that key into APP_CHECK_SITE_KEY below.
 
-   Tanpa App Check, panggilan Gemini ditolak — fungsi ini akan
-   reject dan index.html jatuh ke Function / enjin offline.
+   Without App Check, Gemini calls are refused — this module then
+   rejects and index.html falls back to the Function / local engine.
    ============================================================ */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js';
 import { getAI, GoogleAIBackend, getGenerativeModel } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-ai.js';
 
-/* Gemini 2.5 dah tidak dibuka untuk projek baharu; alias latest sebagai penampan
-   kalau Google menamatkan nama model. Tier percuma = 20 permintaan/hari untuk projek ini. */
+/* Gemini 2.5 is no longer opened to new projects; the latest alias is a buffer in case
+   Google retires a model name. Free tier = 20 requests/day for this project. */
 var MODELS = ['gemini-3.8-flash', 'gemini-flash-latest'];
 
 var SYSTEM = 'You are "Jelajah AI", a South Korea travel assistant for Malaysian travellers. ' +
@@ -37,12 +37,12 @@ function clean(raw) {
     .trim();
 }
 
-/* Aplikasi Firebase berasingan ('jelajah-ai') — firestore.js melekatkan App Check
-   pada aplikasi yang sama, jadi tiada aplikasi kedua dicipta. */
+/* Separate Firebase app ('jelajah-ai') — firestore.js attaches App Check to this same
+   app, so no second app is created. */
 var CFG = window.FIREBASE_CONFIG;
 var app = (CFG && CFG.apiKey && CFG.projectId) ? initializeApp(CFG, 'jelajah-ai') : null;
 
-/* Gemini melalui Firebase: satu instance AI untuk semua model. */
+/* Gemini through Firebase: one AI instance shared by all models. */
 var aiPromise = null;
 
 function buildAI() {
@@ -77,9 +77,9 @@ function readAnswer(res) {
     : (res?.response?.text ? res.response.text() : ''));
 }
 
-/* Google tamat sokongan model secara berkala — cuba senarai Model apabila satu ditolak. */
+/* Google retires model names regularly — walk the MODELS list when one is refused. */
 function attempt(i, q) {
-  if (i >= MODELS.length) return Promise.reject(new Error('tiada model Gemini tersedia'));
+  if (i >= MODELS.length) return Promise.reject(new Error('no Gemini model available'));
   return buildModel(MODELS[i]).then(function (model) {
     return model.generateContent([{ text: q }]);
   }).then(function (res) {
@@ -93,10 +93,10 @@ function attempt(i, q) {
   });
 }
 
-/* window.JelajahAI.ask(soalan, konteks?) → Promise<teks jawapan>
-   `konteks` ialah entri pangkalan data tempat yang paling sepadan dengan soalan (dibina
-   oleh index.html). Ia ditempel selepas soalan supaya Gemini menjawab dari data laman
-   ini dan bukan rekaan. Kosong = prompt sama seperti dahulu. */
+/* window.JelajahAI.ask(question, context?) → Promise<answer text>
+   `context` holds the database entries that best match the question (built by index.html).
+   It is appended after the question so Gemini answers from this site's own data instead of
+   inventing it. Empty = the prompt is exactly what it always was. */
 var CTX_MAX=2600;
 var CTX_NOTE='\n\nMatching entries from this site\'s own places database — use these for names, entry fees, best seasons and tips instead of guessing:\n';
 

@@ -1,6 +1,9 @@
-/* Jelajah Korea Selatan — shared design system for the member sub-pages
-   (profile.html, settings.html, chat.html). Same design language as the main page
-   (paper texture, red→blue accents, dark footer) with a compact utility header instead of a hero. */
+/* =========================================================
+   css/subpages.css — Shared design system for the member
+   sub-pages (profile.html, settings.html, chat.html). Same
+   language as the home page — paper texture, red→blue accents,
+   sticky utility header instead of a marketing hero.
+   ========================================================= */
 :root{
   --bg:#faf9f6; --bg-soft:#f2f0ea; --ink:#0a0a0a; --muted:#8a8a8a;
   --line:rgba(10,10,10,.14); --red:#CD2E3A; --blue:#0047A0;

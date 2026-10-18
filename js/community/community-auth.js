@@ -1,15 +1,15 @@
 /* ============================================================
-   KOMUNITI — AUTENTIKASI (Jelajah Korea Selatan)
+   COMMUNITY — AUTHENTICATION (Jelajah Korea Selatan)
    ------------------------------------------------------------
-   Dua mod automatik:
-   • firebase — FIREBASE_CONFIG sudah diisi + CDN Firebase siap
-   • demo     — konfigurasi belum diisi / offline; profil &
-                sesi disimpan dalam localStorage pelayar sahaja
+   Two modes, chosen automatically:
+   • firebase — FIREBASE_CONFIG is filled in and the Firebase CDN is ready
+   • demo     — config not filled in / offline; profiles & sessions are
+                kept in this browser's localStorage only
 
-   Interface untuk komuniti-comments.js:
+   Interface used by community-comments.js:
      KomAuth.getMode()  -> 'firebase' | 'demo'
      KomAuth.getUser()  -> {uid,name,email,photo} | null
-     event 'komuniti:auth' di-dispatch pada setiap perubahan
+     the 'komuniti:auth' event fires on every change
    ============================================================ */
 (function(){
 'use strict';
@@ -121,7 +121,7 @@ function setNote(){
   if(mode==='firebase'){
     noteEl.innerHTML='<b style="color:#0b7a52">✓ Connected to Firebase</b> — accounts &amp; comments are stored in the cloud, visible to every visitor.';
   }else{
-    noteEl.innerHTML='<b>Demo Mode</b> — profiles &amp; comments are stored in this browser only. Connect your Firebase project (fill in <b>js/firebase-config.js</b>, guide in <b>README-FIREBASE.md</b>) for real comments.';
+    noteEl.innerHTML='<b>Demo Mode</b> — profiles &amp; comments are stored in this browser only. Connect your Firebase project (fill in <b>js/community/firebase-config.js</b>, guide in <b>README-FIREBASE.md</b>) for real comments.';
   }
 }
 
@@ -155,7 +155,7 @@ function demoIn(n){
   paintUser();setNote();emit();
 }
 
-/* ---------- hantar borang ---------- */
+/* ---------- submit the form ---------- */
 form.addEventListener('submit',function(ev){
   ev.preventDefault();hideErr();
   var name=nameIn.value.trim(), email=emailIn.value.trim(), pass=passIn.value;
@@ -217,7 +217,7 @@ googleBtn.addEventListener('click',function(){
   }).catch(function(e){showErr(errMsg(e.code||e.message))});
 });
 
-/* ---------- log keluar ---------- */
+/* ---------- log out ---------- */
 outBtn.addEventListener('click',function(){
   if(mode==='demo'){
     user=null;
@@ -228,7 +228,7 @@ outBtn.addEventListener('click',function(){
   }
 });
 
-/* ---------- simpan profil ke koleksi "users" ---------- */
+/* ---------- save the profile into the "users" collection ---------- */
 function unameFrom(email,uid){
   var base=String(email||'').split('@')[0].toLowerCase().replace(/[^a-z0-9._]/g,'');
   if(base.length<3)base=(base+'u'+String(uid||'')).replace(/[^a-z0-9._]/g,'');
@@ -238,7 +238,7 @@ function saveUserProfile(u,username){
   if(!fb||!u)return Promise.resolve();
   var ref=fb.collection('users').doc(u.uid);
   return ref.get().then(function(snap){
-    if(snap.exists)return; /* profil sudah ada */
+    if(snap.exists)return; /* profile already exists */
     var doc={
       uid:u.uid,
       name:u.displayName||'',

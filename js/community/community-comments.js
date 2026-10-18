@@ -1,16 +1,16 @@
 /* ============================================================
-   KOMUNITI — KOMEN (Jelajah Korea Selatan)
+   COMMUNITY — COMMENTS (Jelajah Korea Selatan)
    ------------------------------------------------------------
-   • Mod firebase : komen disimpan dalam koleksi "comments"
-                    (Cloud Firestore), kemas kini masa nyata.
-   • Mod demo     : komen disimpan dalam localStorage pelayar.
+   • Firebase mode: comments live in the "comments" collection
+                    (Cloud Firestore) with real-time updates.
+   • Demo mode    : comments are kept in this browser's localStorage.
 
-   Struktur dokumen Firestore:
+   Firestore document shape:
      comments/{id} = { uid, name, photo, text, replyTo, replyName, createdAt }
      likes/{commentId_uid} = { commentId, uid, createdAt }
 
-   Ciri engagement: suka (♥), balas (↩), kongsi pautan, papan
-   peneraju "paling aktif" + notifikasi balasan ringkas.
+   Engagement features: like (♥), reply (↩), share link, a "most active"
+   leaderboard and lightweight reply notifications.
    ============================================================ */
 (function(){
 'use strict';
@@ -28,7 +28,7 @@ var boardEl=$('#km-board'), boardList=$('#km-board-list');
 var mode='demo', user=null, unsubs=null;
 var items=[];
 var likeInfo={};        /* commentId -> {n:number, mine:boolean} */
-var replyTarget=null;   /* {id,name} bila sedang membalas */
+var replyTarget=null;   /* {id,name} while a reply is being composed */
 var pendingJump=true;
 
 /* ---------- util ---------- */
@@ -85,7 +85,7 @@ function threadHTML(c){
     '<div class="km-replies" id="rep-'+esc(c.id)+'"'+(open?'':' hidden')+'>'+reps.map(function(r){return itemHTML(r,true)}).join('')+'</div>';
 }
 var threads={};
-var openThreads={};  /* id utas yang sedang dibuka — kekal rentang render semula */
+var openThreads={};  /* id of the thread being opened — survives re-renders */
 function rootOf(cid){
   var ids={};items.forEach(function(c){ids[c.id]=c});
   var cur=ids[cid];if(!cur)return cid;
@@ -99,7 +99,7 @@ function buildThreads(){
   items.forEach(function(c){ids[c.id]=c});
   items.forEach(function(c){
     if(!c.replyTo||!ids[c.replyTo]){roots.push(c);return}
-    /* cari induk tahap-1 (rantai balasan diratakan ke punca) */
+    /* find the top-level parent (reply chains flatten to the root) */
     var cur=c,guard=0;
     while(cur.replyTo&&ids[cur.replyTo]&&guard<20){cur=ids[cur.replyTo];guard++}
     (threads[cur.id]=threads[cur.id]||[]).push(c);
@@ -138,7 +138,7 @@ function openThread(box){
 }
 window.addEventListener('hashchange',tryJump);
 
-/* ---------- papan peneraju ---------- */
+/* ---------- leaderboard ---------- */
 function renderBoard(){
   if(!boardEl)return;
   if(!items.length){boardEl.hidden=true;return}
@@ -271,7 +271,7 @@ function cancelReply(){
 }
 if(replyCancel)replyCancel.addEventListener('click',cancelReply);
 
-/* ---------- hantar ---------- */
+/* ---------- send ---------- */
 textEl.addEventListener('input',function(){
   charsEl.textContent=textEl.value.length+' / 600';
 });
@@ -282,7 +282,7 @@ compose.addEventListener('submit',function(ev){
   if(!text)return;
   sendBtn.disabled=true;
   var rt=replyTarget;
-  if(rt)openThreads[rootOf(rt.id)]=true; /* utas kekal terbuka selepas membalas */
+  if(rt)openThreads[rootOf(rt.id)]=true; /* the thread stays open after replying */
   var clear=function(){
     textEl.value='';charsEl.textContent='0 / 600';
     sendBtn.disabled=false;cancelReply();
@@ -364,7 +364,7 @@ function shareComment(c,btn){
   copyText(url).then(function(){flashBtn(btn,'Link copied!')},function(){flashBtn(btn,'Copy failed')});
 }
 
-/* ---------- delegasi klik pada senarai ---------- */
+/* ---------- click delegation on the list ---------- */
 list.addEventListener('click',function(ev){
   var t=ev.target;
   var tg=t.closest('.km-toggle');
