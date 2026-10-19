@@ -10,6 +10,13 @@ service cloud.firestore {
     function myProfile() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
     }
+    /* A username is only usable by the account that holds its reservation document. Rules can
+       read that document through get() even though nobody is allowed to list the collection,
+       which is what makes uniqueness a server-side guarantee instead of a frontend hint. */
+    function handleHeld(handle) {
+      return exists(/databases/$(database)/documents/usernames/$(handle))
+             && get(/databases/$(database)/documents/usernames/$(handle)).data.uid == request.auth.uid;
+    }
 
     match /comments/{commentId} {
       allow read: if true;
@@ -62,8 +69,10 @@ service cloud.firestore {
          above closes (no document -> no stored identity to check). */
       /* Profile documents are public, so only the fields the site actually shows may be
          written. Without this a member could quietly park extra personal data in their own
-         document and have every visitor read it. The application writes exactly these six. */
-      allow create, update: if request.auth != null
+         document and have every visitor read it. The application writes exactly these six.
+         On top of that, a username may only be written by the account holding its reservation
+         in /usernames — two accounts cannot end up with the same handle. */
+      allow create: if request.auth != null
                     && request.auth.uid == userId
                     && request.resource.data.keys().hasOnly(['uid','name','photo','about','username','createdAt'])
                     && request.resource.data.uid == request.auth.uid
@@ -74,7 +83,47 @@ service cloud.firestore {
                     && request.resource.data.about is string
                     && request.resource.data.about.size() <= 500
                     && request.resource.data.username is string
-                    && request.resource.data.username.matches('^[a-z0-9._]{3,20}$');
+                    && request.resource.data.username.matches('^[a-z0-9._]{3,20}$')
+                    && handleHeld(request.resource.data.username);
+      /* An existing profile may keep the handle it already has even if no reservation covers it
+         — several members registered before this rule existed and two of them can share a handle.
+         They must still be able to edit their name or "about"; only a *new* handle has to be
+         reserved first. Once a member claims theirs the exemption no longer applies to anybody. */
+      allow update: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.data.keys().hasOnly(['uid','name','photo','about','username','createdAt'])
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() <= 40
+                    && request.resource.data.photo is string
+                    && request.resource.data.photo.size() <= 120000
+                    && request.resource.data.about is string
+                    && request.resource.data.about.size() <= 500
+                    && request.resource.data.username is string
+                    && request.resource.data.username.matches('^[a-z0-9._]{3,20}$')
+                    && (resource.data.get('username', '') == request.resource.data.username
+                        || handleHeld(request.resource.data.username));
+    }
+
+    /* one document per claimed username handle: ID = the handle itself, so claiming a handle
+       that already exists is a document-ID collision rather than a second row. The browser
+       claims it inside a transaction (js/community/firebase-config.js -> handleEnsure), which
+       is the atomic server-side step; the /users rules above then refuse any profile that
+       carries an unreserved handle. The documents hold nothing but an opaque uid. */
+    match /usernames/{handle} {
+      /* A single handle may be looked up by any signed-in member (that is how the transaction
+         learns a name is taken); the whole list may not be pulled down in one query. */
+      allow get: if request.auth != null;
+      allow list: if false;
+      allow create: if request.auth != null
+                    && handle.matches('^[a-z0-9._]{3,20}$')
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.keys().hasOnly(['uid','createdAt']);
+      /* No update: a handle moves between accounts by being released and re-claimed, never by
+         rewriting the uid field, which would let anyone hand over or steal a reservation. */
+      allow update: if false;
+      /* Only ever called after the account's own profile has been rewritten to a new handle. */
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
     }
 
     /* one document per follow: ID = <follower>_<followed> */
@@ -142,6 +191,15 @@ service cloud.firestore {
       allow create: if request.auth != null
                     && request.resource.data.participants is list
                     && request.resource.data.participants.size() == 2
+                    /* two different accounts, in the order pairId() always writes them */
+                    && request.resource.data.participants[0] is string
+                    && request.resource.data.participants[1] is string
+                    && request.resource.data.participants[0] != request.resource.data.participants[1]
+                    && request.resource.data.participants[0] < request.resource.data.participants[1]
+                    /* the document ID is the pair, so one accepted request can only ever produce
+                       one friendship document — without this a recipient could write any number of
+                       copies under random IDs and multiply their own friend count */
+                    && fid == request.resource.data.participants[0] + '_' + request.resource.data.participants[1]
                     && request.auth.uid in request.resource.data.participants
                     && request.resource.data.reqId is string
                     && exists(/databases/$(database)/documents/friendRequests/$(request.resource.data.reqId))

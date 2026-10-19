@@ -89,7 +89,7 @@ function rootOf(cid){
   var ids={};items.forEach(function(c){ids[c.id]=c});
   var cur=ids[cid];if(!cur)return cid;
   var guard=0;
-  while(cur.replyTo&&ids[cur.replyTo]&&guard<20){cur=ids[cur.replyTo];guard++}
+  while(cur.replyTo&&ids[cur.replyTo]&&guard<CHAIN_MAX){cur=ids[cur.replyTo];guard++}
   return cur.id;
 }
 function buildThreads(){
@@ -100,7 +100,7 @@ function buildThreads(){
     if(!c.replyTo||!ids[c.replyTo]){roots.push(c);return}
     /* find the top-level parent (reply chains flatten to the root) */
     var cur=c,guard=0;
-    while(cur.replyTo&&ids[cur.replyTo]&&guard<20){cur=ids[cur.replyTo];guard++}
+    while(cur.replyTo&&ids[cur.replyTo]&&guard<CHAIN_MAX){cur=ids[cur.replyTo];guard++}
     (threads[cur.id]=threads[cur.id]||[]).push(c);
   });
   roots.sort(function(a,b){return b.ts-a.ts});
@@ -266,12 +266,19 @@ function docItem(id,v){
   return {id:id,uid:v.uid||'',name:v.name||'Traveller',photo:v.photo||'',text:v.text||'',
     replyTo:v.replyTo||'',replyName:v.replyName||'',ts:v.createdAt&&v.createdAt.toMillis?v.createdAt.toMillis():null};
 }
+/* Reply chains are followed all the way up, not just a few generations: the live window holds the
+   50 newest comments, so an old thread can be missing every one of its parents. The two limits are
+   safety stops for bad data (a cycle, or a comment replying to itself), not the normal path —
+   CHAIN_MAX is how many generations one walk accepts, CTX_ROUNDS how many query rounds a single
+   list may need, CTX_DOCS the most ancestors kept in memory for the session. */
+var CHAIN_MAX=40, CTX_ROUNDS=12, CTX_DOCS=240;
+function ctxSize(){return Object.keys(ctxCache).length+Object.keys(ctxMiss).length}
 function missingAncestors(list){
   var ids={},out=[];
   list.forEach(function(c){ids[c.id]=1});
   list.forEach(function(c){
     var r=c.replyTo,guard=0;
-    while(r&&!ids[r]&&guard<20){
+    while(r&&!ids[r]&&guard<CHAIN_MAX){
       if(out.indexOf(r)<0)out.push(r);
       var p=ctxCache[r];
       r=p?p.replyTo:'';
@@ -281,7 +288,7 @@ function missingAncestors(list){
   return out;
 }
 function fetchAncestors(base,depth){
-  if(depth>3)return Promise.resolve();
+  if(depth>CTX_ROUNDS||ctxSize()>=CTX_DOCS)return Promise.resolve();
   var need=missingAncestors(base).filter(function(id){return !ctxCache[id]&&!ctxMiss[id]});
   if(!need.length)return Promise.resolve();
   var db=KomAuth.db();
@@ -299,11 +306,11 @@ function fetchAncestors(base,depth){
 function withAncestors(base){
   var out=base.slice(),ids={},round=0;
   base.forEach(function(c){ids[c.id]=1});
-  while(round++<5){
+  while(round++<CTX_ROUNDS){
     var added=false;
     out.forEach(function(c){
       var r=c.replyTo,guard=0;
-      while(r&&!ids[r]&&ctxCache[r]&&guard++<20){
+      while(r&&!ids[r]&&ctxCache[r]&&guard++<CHAIN_MAX){
         ids[r]=1;
         /* the cached copy stands for a comment outside the live window — flag it so the
            count and the leaderboard leave it out */

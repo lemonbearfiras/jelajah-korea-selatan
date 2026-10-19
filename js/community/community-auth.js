@@ -184,8 +184,9 @@ form.addEventListener('submit',function(ev){
   if(tab==='up'){
     fbAuth.createUserWithEmailAndPassword(email,pass).then(function(cred){
       return cred.user.updateProfile({displayName:name}).then(function(){
-        return saveUserProfile(cred.user,un).then(function(){
+        return saveUserProfile(cred.user,un).then(function(handle){
           setUser(cred.user);done();
+          if(handle&&handle!==un)showErr('That username was already taken, so yours is now "'+handle+'". Pick another one any time in Settings.',true);
         },function(e){
           /* The Auth account exists whether Firestore answered or not, so finish the login
              rather than pretending sign-up failed — but say what is still missing. */
@@ -253,13 +254,17 @@ function saveUserProfile(u,username){
   function write(){
     return ref.get().then(function(snap){
       if(snap.exists)return; /* profile already exists */
-      return ref.set({
-        uid:u.uid,
-        name:u.displayName||'',
-        photo:u.photoURL||'',
-        about:'',
-        username:username||unameFrom(u.email,u.uid),
-        createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      var want=username||unameFrom(u.email,u.uid);
+      /* Reserve the handle first: the rules reject a profile whose username nobody claimed. */
+      return handleEnsure(fb,want,u.uid).then(function(handle){
+        return ref.set({
+          uid:u.uid,
+          name:u.displayName||'',
+          photo:u.photoURL||'',
+          about:'',
+          username:handle||want,
+          createdAt:firebase.firestore.FieldValue.serverTimestamp()
+        }).then(function(){return handle||want});
       });
     });
   }

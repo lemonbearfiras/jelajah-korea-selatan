@@ -163,6 +163,7 @@ function loadDoc(){
     $('#i-member').textContent=fmtDate(prof.createdAt)||'—';
     show(null);
     $('#card').classList.add('show');
+    reserveOwnHandle();
   });
 }
 function fill(){
@@ -183,6 +184,19 @@ userIn.addEventListener('input',function(){
   try{userIn.setSelectionRange(Math.min(p,userIn.value.length),Math.min(p,userIn.value.length))}catch(e){}
 });
 
+/* A courtesy check while typing. It only reads the reservation list — saving stays authoritative,
+   because the rules refuse a profile carrying a handle this account does not hold. */
+userIn.addEventListener('blur',function(){
+  var un=userIn.value.trim();
+  if(!un||un===prof.username||saveBtn.disabled)return;
+  if(!/^[a-z0-9._]{3,20}$/.test(un))return;
+  handlePeek(db,un,me).then(function(r){
+    if(saveBtn.disabled||userIn.value.trim()!==un)return;
+    if(r==='taken')note('Username "'+un+'" is already used by another account — choose another one.','bad');
+    else if(r==='free')note('Username "'+un+'" is available.','ok');
+  });
+});
+
 function validate(){
   var un=userIn.value.trim(), n=nameIn.value.trim(), p=photoVal, a=aboutIn.value.trim();
   if(!un){note('A username is required — 3–20 characters: lowercase letters, numbers, _ or .','bad');return null}
@@ -194,29 +208,59 @@ function validate(){
   return {username:un,name:n,photo:p,about:a};
 }
 
+/* Claiming a handle is what makes the rename real: the Firestore rules refuse a profile whose
+   username is not reserved for that account, so a taken handle must be reported before the
+   profile write rather than after it. Anything else — rules not published yet, offline — is
+   passed through as 'skip' and the profile write answers for itself. */
+function claimHandle(un){
+  if(un===prof.username)return Promise.resolve('same');
+  return handleTake(db,un,me).then(function(r){
+    if(r==='taken'){var e=new Error('already used');e.code='username-taken';throw e}
+    return r;
+  },function(){return 'skip'});
+}
+
 saveBtn.addEventListener('click',function(){
   var data=validate();
   if(!data){return}
   saveBtn.disabled=true;
   note('Saving…','');
   data.uid=me;
-  db.collection('users').doc(me).set(data,{merge:true}).then(function(){
-    prof.username=data.username;prof.name=data.name;prof.photo=data.photo;prof.about=data.about;
-    var u=auth.currentUser;
-    /* Firebase Auth caps long data URLs — uploaded photos go into the document only */
-    return u.updateProfile({displayName:data.name,photoURL:isDataUrl(data.photo)?null:(data.photo||null)})
-      .then(function(){return null},function(pe){return pe});
+  var movedFrom=prof.username===data.username?'':prof.username;
+  var claimed='';
+  claimHandle(data.username).then(function(res){
+    claimed=res==='ok'||res==='mine'?data.username:'';
+    return db.collection('users').doc(me).set(data,{merge:true}).then(function(){
+      prof.username=data.username;prof.name=data.name;prof.photo=data.photo;prof.about=data.about;
+      var u=auth.currentUser;
+      /* Firebase Auth caps long data URLs — uploaded photos go into the document only */
+      return u.updateProfile({displayName:data.name,photoURL:isDataUrl(data.photo)?null:(data.photo||null)})
+        .then(function(){return null},function(pe){return pe});
+    });
   }).then(function(authErr){
+    /* Only after the profile really moved: the old handle becomes free for someone else. */
+    if(movedFrom&&claimed)handleFree(db,movedFrom);
     if(authErr)note('✓ Profile saved, but the photo could not be attached to your account ('+(authErr.code||authErr.message)+').','bad');
     else note('✓ Changes saved.','ok');
   }).catch(function(e){
     var msg='Could not save: '+(e.code||e.message);
-    if(e.code==='permission-denied'){
+    if(e.code==='username-taken'){
+      msg='That username is already used by another account — choose another one.';
+    }else if(e.code==='permission-denied'){
       msg='Could not save — please deploy the latest Firestore rules (firestore.rules, see README-FIREBASE.md).';
     }
     note(msg,'bad');
   }).then(function(){saveBtn.disabled=false});
 });
+
+/* Members who registered before the reservation collection existed hold no handle document, so
+   their profile would fail the moment they change anything else. Claiming the handle they already
+   display fixes that quietly; a collision is left alone, because the rules let an unchanged
+   username through and Settings will ask for a new handle if they ever rename. */
+function reserveOwnHandle(){
+  if(!prof.username)return;
+  handleTake(db,prof.username,me).then(function(){},function(){});
+}
 
 /* ---------- boot ---------- */
 bindPreview();
