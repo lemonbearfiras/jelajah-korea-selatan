@@ -186,6 +186,11 @@ form.addEventListener('submit',function(ev){
       return cred.user.updateProfile({displayName:name}).then(function(){
         return saveUserProfile(cred.user,un).then(function(){
           setUser(cred.user);done();
+        },function(e){
+          /* The Auth account exists whether Firestore answered or not, so finish the login
+             rather than pretending sign-up failed — but say what is still missing. */
+          setUser(cred.user);done();
+          showErr(profileFailMsg(e));
         });
       });
     }).catch(function(e){submitBtn.disabled=false;showErr(errMsg(e.code||e.message))});
@@ -193,6 +198,9 @@ form.addEventListener('submit',function(ev){
     fbAuth.signInWithEmailAndPassword(email,pass).then(function(cred){
       return saveUserProfile(cred.user).then(function(){
         setUser(cred.user);done();
+      },function(e){
+        setUser(cred.user);done();
+        showErr(profileFailMsg(e));
       });
     }).catch(function(e){submitBtn.disabled=false;showErr(errMsg(e.code||e.message))});
   }
@@ -213,7 +221,9 @@ googleBtn.addEventListener('click',function(){
   hideErr();
   var p=new firebase.auth.GoogleAuthProvider();
   fbAuth.signInWithPopup(p).then(function(cred){
-    return saveUserProfile(cred.user).then(function(){setUser(cred.user)});
+    return saveUserProfile(cred.user).then(function(){setUser(cred.user)},function(e){
+      setUser(cred.user);showErr(profileFailMsg(e));
+    });
   }).catch(function(e){showErr(errMsg(e.code||e.message))});
 });
 
@@ -234,27 +244,50 @@ function unameFrom(email,uid){
   if(base.length<3)base=(base+'u'+String(uid||'')).replace(/[^a-z0-9._]/g,'');
   return base.slice(0,20);
 }
+/* Failures are deliberately NOT caught here: without this document a member cannot be
+   followed or friended (the Firestore rules require the target account to exist) and their
+   profile page reads "Profile not found", so the caller has to hear about it. */
 function saveUserProfile(u,username){
   if(!fb||!u)return Promise.resolve();
   var ref=fb.collection('users').doc(u.uid);
-  return ref.get().then(function(snap){
-    if(snap.exists)return; /* profile already exists */
-    var doc={
-      uid:u.uid,
-      name:u.displayName||'',
-      photo:u.photoURL||'',
-      about:'',
-      username:username||unameFrom(u.email,u.uid),
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    };
-    return ref.set(doc);
-  }).catch(function(e){
-    console.warn('Could not save profile:',e.code||e.message);
+  function write(){
+    return ref.get().then(function(snap){
+      if(snap.exists)return; /* profile already exists */
+      return ref.set({
+        uid:u.uid,
+        name:u.displayName||'',
+        photo:u.photoURL||'',
+        about:'',
+        username:username||unameFrom(u.email,u.uid),
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+  }
+  /* One retry, because this used to be a hiccup nobody heard about: a member with no profile
+     document cannot be followed or friended (the rules require the target to exist) and their
+     profile page reads "Profile not found". */
+  return write().catch(function(e){
+    return write().catch(function(){throw e});
   });
+}
+function profileFailMsg(e){
+  return 'You are signed in, but your profile row could not be saved ('+
+    ((e&&e.code)||(e&&e.message)||'unknown error')+'). Reload this page to try again.';
+}
+/* Even with the message above, a member who closes the tab right away would have no profile
+   row in the database, so the next load fills the gap by itself — once per account, so a
+   write that keeps failing cannot loop. */
+var profileRepaired=null;
+function repairProfile(u){
+  if(!u||!fb||profileRepaired===u.uid)return;
+  profileRepaired=u.uid;
+  saveUserProfile(u).then(function(){loadProfileDoc(u.uid)},function(){});
 }
 
 /* ---------- firebase boot ---------- */
+var fbUser=null;
 function setUser(u){
+  fbUser=u||null;
   user=u?{uid:u.uid,name:u.displayName||(u.email||'').split('@')[0],email:u.email||'',photo:u.photoURL||''}:null;
   paintUser();setNote();emit();
   if(u&&fb)loadProfileDoc(u.uid);
@@ -263,7 +296,11 @@ var profileUid=null;
 function loadProfileDoc(uid){
   profileUid=uid;
   fb.collection('users').doc(uid).get().then(function(snap){
-    if(!snap.exists||!user||user.uid!==uid||profileUid!==uid)return;
+    if(!snap.exists){
+      if(fbUser&&fbUser.uid===uid&&profileUid===uid)repairProfile(fbUser);
+      return;
+    }
+    if(!user||user.uid!==uid||profileUid!==uid)return;
     var v=snap.data()||{};
     if(v.name)user.name=v.name;
     if(typeof v.photo==='string')user.photo=v.photo;

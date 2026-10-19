@@ -55,7 +55,19 @@ var FIREBASE_CONFIG = {
    this project folder → **Ctrl+A then Ctrl+C** (copy ALL of its contents) →
    paste it in the Rules tab → click **Publish**.
 
-> ⚠️ This version of the rules adds new collections: `follows`, `friendRequests`,
+> ⚠️ Publish this file again after every change — the Console keeps using the last version you
+> pasted, not the copy in this folder.
+>
+> This revision of the rules **locks down ownership**: comments can no longer be edited at all
+> (only deleted by their author, because an owner-only update rule would still let a member
+> rewrite `uid` and hand their comment to someone else), follows and friend requests must use
+> their canonical document ID (so one account cannot write many copies of the same pair and
+> inflate public counts), a request can only be addressed to an account that really exists, and
+> `friends`/`chats` are unchanged. It also means **every member you follow or befriend must
+> already have a profile document** in `users`; the site creates one at sign-up and rebuilds it
+> automatically if that write ever failed.
+>
+> Collections covered: `comments`, `likes`, `users`, `follows`, `friendRequests`,
 > `friends`, `chats`, the required `username` field (3–20 characters, `^[a-z0-9._]{3,20}$`) and the editable
 > `about` field (≤ 500 characters) in `users`. Without publishing them, the profile page still
 > loads (name, comments, date)
@@ -64,12 +76,20 @@ var FIREBASE_CONFIG = {
 
 What the rules mean in short:
 
-- `comments` — anyone can read; only signed-in members can write; you can delete only your own.
+- `comments` — anyone can read; only signed-in members can write; **no editing**, you can delete only your own.
 - `users` — public profile (name, photo, `about` ≤ 500 characters, required `username` of 3–20 characters matching `^[a-z0-9._]{3,20}$`, `createdAt`); only the owner can edit/delete. Email is not stored here. Members without a username yet must set one in **settings.html** before any other change can be saved. Can be updated through the **settings.html** page (the ⚙ Settings button on your own profile). The photo is either an image link or an **uploaded photo** stored as a `data:image/...` text (up to 120,000 characters) — the rules must allow that length or saving a new photo is rejected.
-- `follows` — one document per follow, `ID = follower_following`; anyone can read the counts; only the follower can create or delete their own follow.
-- `friendRequests` — `ID = sender_receiver`; only the two people involved can read; only the recipient can accept (pending → accepted).
+- `follows` — one document per follow, **ID exactly `follower_following`**; anyone can read the counts; only the follower can create or delete their own follow; the account being followed must exist in `users`.
+- `friendRequests` — **ID exactly `sender_receiver`**, recipient must exist in `users`; only the two people involved can read; only the recipient can accept (pending → accepted), and only once.
 - `friends` — `ID = the two uids sorted a-z`; anyone can read (proof of friendship); created only by the recipient after the request is accepted.
 - `chats` — messages in `chats/<pairId>/messages`; only the two friends involved can read or send; text 1–1000 characters; you can delete only your own messages.
+
+> 🔒 **Privacy decision, recorded:** `follows` and `friends` stay publicly readable on purpose —
+> the profile page counts followers / following / friends by querying those collections, and
+> Firestore can only count documents the caller is allowed to read. The documents contain
+> nothing but a pair of opaque Firebase UIDs (no name, no email). Making them private means
+> moving the three numbers onto `users/{uid}` as counters and then restricting the reads; the
+> counters would then be written by the browser, so any member could inflate their own numbers.
+> Friend requests, chat messages and the email address are not public in any of these designs.
 
 ## Step 5 — Enable the AI answers (Firebase AI Logic)
 
@@ -92,7 +112,7 @@ What the rules mean in short:
 
 `worker/ai-proxy.js` is a small **Cloudflare Worker**: an HTTPS endpoint that holds the API key server-side and answers `POST /ask {q, ctx}` with `{ok:true, answer}` — `q` is the question, `ctx` is the block of matching places from the site's own database (see *Answer grounding* below). It calls the Gemini Developer API first and, if that Secret is absent or fails, the same MiniMax gateway the Qoder Function uses. **No Firebase is involved, therefore no App Check requirement and no 2 November expiry.** Cloudflare's free plan covers this site easily, and the key-based free quota is far larger than the 20/day that Firebase's AI Logic tier gives; check [ai.google.dev/gemini-api/docs/rate-limits](https://ai.google.dev/gemini-api/docs/rate-limits) for the current numbers.
 
-**This is now deployed and switched on** — the Worker runs at `https://jelajah-korea-ai.firas12346haaha-e0d.workers.dev` and `DB_PROXY_URL` in `index.html` points at it, so it is the *first* tier the ask box tries. If you ever move it, edit that one line (no trailing slash) and publish.
+**This is now deployed and switched on** — the Worker runs at `https://jelajah-korea-ai.firas12346haaha-e0d.workers.dev` and `DB_PROXY_URL` in `js/main.js` points at it, so it is the *first* tier the ask box tries. If you ever move it, edit that one line (no trailing slash) and publish.
 
 ✅ **Grounded answers are live on GitHub Pages.** The Worker was re-pasted on 17 October and now reads the `ctx` field, appending the matching database entries to the prompt before calling the model. Verified with one real ask — *"How much does Everland cost to enter, and is booking online cheaper?"* — `POST /ask` returned 200 from the first tier with `₩59,000` gate / `±₩39,000` online plus the Q-Pass tip, all values taken from `KOREA_DB`, and the footnote read "answered from 6 matching entries in the 126-place database". If you later edit `worker/ai-proxy.js` it needs another paste + **Deploy and restart**; the URL and Secrets stay untouched.
 
@@ -109,7 +129,12 @@ Deploying it (or re-deploying after a code change) takes about two minutes:
 2. Select everything in the editor, delete it, paste the whole current contents of `worker/ai-proxy.js`, then **Deploy and restart**. A code-only change keeps the same URL, so nothing else needs updating.
 3. **Secrets** (first time only): that Worker page → **Settings** → **Variables and Secrets** → *Secrets* → **Add** → Name `GEMINI_API_KEY`, Value = a key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey) → **Save and deploy**. **Never paste a key into this chat, into git, or into any site file.** Adding `A2AGENT_API_KEY` as a second Secret gives you the MiniMax models as backup.
 
-The Worker refuses any request whose `Origin` is not the site's own addresses (they are listed in its `ALLOW` set), so a stranger's web page cannot spend your quota from a browser.
+The Worker refuses any request whose `Origin` is not the site's own addresses (they are listed in its `ALLOW` set), so a stranger's web page cannot spend your quota from a browser. **That check alone is not enough, and the code does not rely on it**: a browser `Origin` header is easy to forge from a script, and the same is true of CORS. Both AI endpoints therefore carry their own request budget —
+
+- `worker/ai-proxy.js`: **6 asks a minute and 120 a day per client IP**, counted in Cloudflare's edge cache under a SHA-256 hash of `cf-connecting-ip` (the IP itself is never stored). Over budget → `429 {ok:false, error:"rate_limited"}` with a `Retry-After: 60` header.
+- `functions/index.ts`: the same shape, **6/min + 120/day**, kept in a small per-instance table keyed on the client address from `X-Forwarded-For`. A fresh instance starts a clean window and no client address is exposed by the browser call, so the caps are a ceiling on runaway scripts rather than an exact ledger; when the platform gives no address at all the budget becomes site-wide (40/min, 1000/day) so real visitors are never locked out.
+
+The ask box treats a rate-limited tier as any other failure and tries the next one, so a single visitor spamming the box cannot exhaust all three tiers at once — and the keys stay server-side in both cases.
 
 ⚠️ If the key ever leaks into a public file or chat, delete it in AI Studio and make a new one — a leaked key lets anyone spend your quota, and Google can suspend the key.
 

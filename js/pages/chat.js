@@ -27,6 +27,20 @@ function fmtTime(ts){
   var sameDay=d.getDate()===today.getDate()&&d.getMonth()===today.getMonth()&&d.getFullYear()===today.getFullYear();
   return sameDay?t:(d.getDate()+'/'+(d.getMonth()+1)+' '+t);
 }
+/* The realtime listener keeps working after sign-out only until the next rules check, but the
+   messages already painted stay in the DOM, so logging out would leave a private conversation on
+   screen for the next person to use this browser. Everything room-related is dropped here. */
+function teardown(){
+  if(unsub){try{unsub()}catch(e){}unsub=null}
+  me=null;chatId=null;
+  $('#msgs').innerHTML='';
+  $('#room').classList.remove('show');
+  $('#chat-input').value='';
+  $('#c-name').textContent='—';
+  paintAva($('#c-ava'),{});
+  $('#lnk-profile').hidden=true;
+  document.title='Chat · Jelajah Korea Selatan';
+}
 
 var other=(new URLSearchParams(location.search).get('v')||'').trim();
 if(!other||other.indexOf('demo-')===0){show('#st-param');return}
@@ -99,7 +113,7 @@ function startChat(){
   $('#chat-form').onsubmit=function(ev){
     ev.preventDefault();
     var text=inputEl.value.trim();
-    if(!text||sendBtn.disabled)return;
+    if(!text||sendBtn.disabled||!me||!chatId)return;
     sendBtn.disabled=true;
     db.collection('chats').doc(chatId).collection('messages').add({
       from:me,to:other,text:text,createdAt:firebase.firestore.FieldValue.serverTimestamp()
@@ -118,6 +132,8 @@ function startChat(){
 }
 
 auth.onAuthStateChanged(function(u){
+  var switched=!!me&&!!u&&me!==u.uid;
+  if(!u||switched)teardown();
   if(!u){show('#st-login');return}
   me=u.uid;
   if(me===other){show('#st-param');return}

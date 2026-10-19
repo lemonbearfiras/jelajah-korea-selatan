@@ -107,22 +107,44 @@ function cancelRequest(){
   return db.collection('friendRequests').doc(myReqId).delete()
     .then(function(){myReqId=null;paintFriendBtn()});
 }
-/* IMPORTANT: two writes in a row — the rules read the friendRequests
-   status BEFORE committing, so the friends document must be created
-   only after the 'accepted' status has really been stored. */
-function acceptReq(rid,otherUid){
+/* Accepting takes two writes: the request becomes 'accepted', then the friendship document is
+   made. If the second write is lost — no signal, tab closed — the rules refuse to accept the
+   same request twice, so nothing else could ever complete it. The friendship needs no permission
+   on the request (only that it is still there and accepted), so it is the part that gets retried. */
+function makeFriends(rid,otherUid){
   var id=pairId(me,otherUid);
+  return db.collection('friends').doc(id).get().then(function(s){
+    if(s.exists)return false;
+    return db.collection('friends').doc(id).set({
+      participants:[me,otherUid].sort(),reqId:rid
+    }).then(function(){return true});
+  });
+}
+function acceptReq(rid,otherUid){
+  function done(){
+    if(otherUid===uid){incomingReqId=null;isFriend=true;paintFriendBtn();loadStats();}
+    reqRows=reqRows.filter(function(x){return x.id!==rid});
+    return renderRequests();
+  }
   return db.collection('friendRequests').doc(rid).update({status:'accepted'})
-    .then(function(){
-      return db.collection('friends').doc(id).set({
-        participants:[me,otherUid].sort(),reqId:rid
-      });
-    })
-    .then(function(){
-      if(otherUid===uid){incomingReqId=null;isFriend=true;paintFriendBtn();loadStats();}
-      reqRows=reqRows.filter(function(x){return x.id!==rid});
-      return renderRequests();
+    .then(function(){return makeFriends(rid,otherUid)})
+    .then(done,function(e){
+      /* 'accepted' is already stored, so this is an interrupted attempt — finish it. */
+      if(!e||e.code!=='permission-denied')throw e;
+      return makeFriends(rid,otherUid).then(done);
     });
+}
+/* Same recovery for requests accepted in an earlier session: any accepted request without a
+   friendship document gets one, quietly, before the list of pending requests is drawn. */
+function repairFriendships(){
+  return db.collection('friendRequests').where('to','==',me).where('status','==','accepted').get()
+    .then(function(snap){
+      return Promise.all(snap.docs.map(function(d){
+        return makeFriends(d.id,d.data().from).catch(function(){return false});
+      }));
+    }).then(function(out){
+      if(out.some(function(made){return made}))loadStats();
+    }).catch(function(){});
 }
 function toggleFollow(){
   var id=me+'_'+uid;
@@ -163,6 +185,7 @@ var reqRows=[];
 function loadRequests(){
   if(me!==uid)return;
   $('#req-blk').hidden=false;
+  repairFriendships();
   return db.collection('friendRequests').where('to','==',me).where('status','==','pending').get()
     .then(function(snap){
       reqRows=snap.docs.map(function(d){return {id:d.id,from:d.data().from}});

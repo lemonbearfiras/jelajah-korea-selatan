@@ -18,11 +18,14 @@ service cloud.firestore {
                     && request.resource.data.replyTo.size() <= 40
                     && request.resource.data.replyName is string
                     && request.resource.data.replyName.size() <= 40;
-      allow update, delete: if request.auth != null
+      /* No update allowed on purpose: the site has no comment editing, and an owner-only
+         update rule would let a member rewrite `uid` and hand their comment to someone
+         else. Editing, if it ever ships, must keep uid and name immutable. */
+      allow delete: if request.auth != null
                     && resource.data.uid == request.auth.uid;
     }
 
-    /* satu dokumen setiap tanda suka: ID = <komen>_<uid> */
+    /* one document per like: ID = <comment>_<uid> */
     match /likes/{likeId} {
       allow read: if true;
       allow create: if request.auth != null
@@ -51,25 +54,45 @@ service cloud.firestore {
                     && request.resource.data.username.matches('^[a-z0-9._]{3,20}$');
     }
 
-    /* satu dokumen setiap ikutan: ID = <pengikut>_<diikuti> */
+    /* one document per follow: ID = <follower>_<followed> */
     match /follows/{followId} {
+      /* Public read is a deliberate choice, not an oversight: the profile page counts
+         followers and following by querying this collection (js/pages/profile.js), and
+         Firestore can only count documents the caller may read. The documents hold
+         nothing but a pair of opaque Firebase UIDs — no name, email or any other
+         personal field. To make the graph private instead, move the counts onto
+         users/{uid} and change the line below to a participant check. */
       allow read: if true;
+      /* The canonical ID is what stops one account writing many follow documents for the
+         same pair under random IDs, which would inflate everybody's public follower
+         counts. The target must exist so fake uids cannot be stored either. */
       allow create: if request.auth != null
                     && request.resource.data.follower == request.auth.uid
-                    && request.resource.data.following != request.auth.uid;
+                    && request.resource.data.following is string
+                    && request.resource.data.following.size() <= 40
+                    && request.resource.data.following != request.auth.uid
+                    && followId == request.auth.uid + '_' + request.resource.data.following
+                    && exists(/databases/$(database)/documents/users/$(request.resource.data.following));
       allow delete: if request.auth != null
                     && resource.data.follower == request.auth.uid;
     }
 
-    /* permintaan rakan: ID = <penghantar>_<penerima>, status pending/accepted */
+    /* friend request: ID = <sender>_<recipient>, status pending/accepted */
     match /friendRequests/{reqId} {
       allow read: if request.auth != null
                   && (request.auth.uid == resource.data.from
                       || request.auth.uid == resource.data.to);
       allow create: if request.auth != null
                     && request.resource.data.from == request.auth.uid
+                    && request.resource.data.to is string
+                    && request.resource.data.to.size() <= 40
                     && request.resource.data.to != request.auth.uid
+                    && reqId == request.auth.uid + '_' + request.resource.data.to
+                    && exists(/databases/$(database)/documents/users/$(request.resource.data.to))
                     && request.resource.data.status == 'pending';
+      /* Only the recipient may flip pending -> accepted, and only once (the new status
+         has to be 'accepted' while the old one is still 'pending'), so a sender cannot
+         re-send or edit a request they already put out. */
       allow update: if request.auth != null
                     && request.auth.uid == resource.data.to
                     && resource.data.status == 'pending'
@@ -81,9 +104,10 @@ service cloud.firestore {
                         || request.auth.uid == resource.data.to);
     }
 
-    /* persahabatan: ID = kedua-dua uid tersusun a-z; dicipta oleh
-       penerima selepas permintaan diterima sahaja */
+    /* friendship: ID = both uids sorted a-z; written by the recipient only after a
+       request has really been accepted */
     match /friends/{fid} {
+      /* Public read for the same reason as /follows — the profile page counts friends. */
       allow read: if true;
       allow create: if request.auth != null
                     && request.resource.data.participants is list
@@ -101,8 +125,8 @@ service cloud.firestore {
                     && request.auth.uid in resource.data.participants;
     }
 
-    /* chat peribadi: chatId = kedua-dua uid tersusun a-z, hanya rakan.
-       Keahlian diperiksa melalui dokumen friends (rules tiada .split()) */
+    /* private chat: chatId = both uids sorted a-z, friends only.
+       Membership is checked through the friends document (rules have no .split()) */
     match /chats/{chatId}/messages/{msgId} {
       allow read: if request.auth != null
                   && exists(/databases/$(database)/documents/friends/$(chatId))

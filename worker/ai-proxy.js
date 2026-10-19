@@ -39,6 +39,55 @@ const MIN_TRY_MS = 4000;
 
 const THINK = /<think\b[^>]*>[\s\S]*?<\/think>/gi;
 
+/* Per-client request budget. The Origin list above is a CSRF guard, not authentication: a
+   non-browser client can send any Origin header it likes, and this Worker answers from the
+   owner's free-tier quota, which is counted per day. So every client also gets a hard
+   minute/day allowance, counted in the edge cache and keyed on a hash of the IP.
+   Cache writes are not atomic, so this is a firm ceiling rather than an exact counter —
+   which is all that is needed to stop one script draining the day's quota. */
+const RL_PER_MIN = 6;
+const RL_PER_DAY = 120;
+const MIN_SPAN_S = 60;
+const DAY_SPAN_S = 86400;
+
+function hashIp(ip) {
+  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip))
+    .then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+        return (b < 16 ? '0' : '') + b.toString(16);
+      }).join('');
+    });
+}
+
+function bump(name, ipHash, max, spanS) {
+  /* Buckets are absolute so the window cannot be extended by writing near its edge. */
+  const key = new Request('https://rl.jelajah-korea.workers.dev/' + name +
+    '/' + Math.floor(Date.now() / (spanS * 1000)) + '/' + ipHash);
+  let n = 0;
+  return caches.default.match(key)
+    .then(function (hit) { return hit ? hit.text() : ''; })
+    .then(function (text) { n = parseInt(text, 10) || 0; })
+    .catch(function () { /* no cache entry yet */ })
+    .then(function () {
+      if (n >= max) return false;
+      return caches.default.put(key, new Response(String(n + 1), {
+        headers: { 'cache-control': 'public, max-age=' + spanS },
+      })).then(function () { return true; }, function () { return true; });
+    });
+}
+
+function withinBudget(request) {
+  const ip = request.headers.get('cf-connecting-ip') ||
+    (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() || 'unknown';
+  return hashIp(ip).then(function (h) {
+    return bump('min', h, RL_PER_MIN, MIN_SPAN_S).then(function (okMin) {
+      return bump('day', h, RL_PER_DAY, DAY_SPAN_S).then(function (okDay) {
+        return okMin && okDay;
+      });
+    });
+  });
+}
+
 /* Secrets pasted from AI Studio often carry stray spaces/newlines, and a key with
    whitespace in it fails with a confusing 400 from Google. */
 function read(env, name, minLen) {
@@ -70,10 +119,10 @@ function cors(origin) {
   };
 }
 
-function json(body, status, origin) {
+function json(body, status, origin, extra) {
   return new Response(JSON.stringify(body), {
     status: status,
-    headers: Object.assign({ 'content-type': 'application/json; charset=utf-8' }, cors(origin)),
+    headers: Object.assign({ 'content-type': 'application/json; charset=utf-8' }, cors(origin), extra || {}),
   });
 }
 
@@ -242,6 +291,9 @@ export default {
       return json({ ok: false, error: 'bad_json' }, 400, origin);
     }
     if (q.length < 2 || q.length > 300) return json({ ok: false, error: 'bad_question' }, 400, origin);
+    if (!(await withinBudget(request))) {
+      return json({ ok: false, error: 'rate_limited' }, 429, origin, { 'retry-after': String(MIN_SPAN_S) });
+    }
     const prompt = withCtx(q, ctx);
 
     const chain = [];

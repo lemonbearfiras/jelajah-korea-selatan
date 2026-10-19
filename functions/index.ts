@@ -305,6 +305,52 @@ function json(payload, status) {
   });
 }
 
+// Per-client request budget. The endpoint is callable by anyone who can load the page, and every
+// ask spends the owner's provider quota, so a forged Origin or a direct script must not be able to
+// drain it. Counts live in this instance's memory in fixed windows — a firm ceiling, not a
+// distributed counter; a new instance starts clean, which is why the limits are generous.
+const RL_PER_MIN = 6;
+const RL_PER_DAY = 120;
+// When the platform does not hand over a client address the bucket is shared by every visitor,
+// so the same shape is used but sized for the whole site instead of one person.
+const RL_ALL_MIN = 40;
+const RL_ALL_DAY = 1000;
+const MIN_SPAN_MS = 60 * 1000;
+const DAY_SPAN_MS = 24 * 60 * 60 * 1000;
+const rlBuckets = new Map();
+
+function rlKey(req) {
+  const fwd = (req.headers.get('x-forwarded-for') || '').split(',')[0].trim();
+  return fwd || req.headers.get('cf-connecting-ip') || '';
+}
+
+function allow(key, spanMs, max) {
+  const bucket = Math.floor(Date.now() / spanMs);
+  const id = key + ':' + spanMs;
+  const hit = rlBuckets.get(id);
+  if (!hit || hit.bucket !== bucket) {
+    rlBuckets.set(id, { bucket: bucket, n: 1 });
+    if (rlBuckets.size > 5000) {
+      // Drop stale windows so long-lived instances cannot grow the map forever.
+      const stale = [];
+      rlBuckets.forEach(function (v, k) { if (v.bucket !== bucket) stale.push(k); });
+      stale.forEach(function (k) { rlBuckets.delete(k); });
+    }
+    return true;
+  }
+  if (hit.n >= max) return false;
+  hit.n++;
+  return true;
+}
+
+function withinBudget(req) {
+  const ip = rlKey(req);
+  const key = ip || 'everyone';
+  const okMin = allow(key, MIN_SPAN_MS, ip ? RL_PER_MIN : RL_ALL_MIN);
+  const okDay = allow(key, DAY_SPAN_MS, ip ? RL_PER_DAY : RL_ALL_DAY);
+  return okMin && okDay;
+}
+
 async function handler(req) {
   const url = new URL(req.url);
   const action = url.searchParams.get('action');
@@ -331,6 +377,7 @@ async function handler(req) {
     return json({ ok: false, error: 'bad_request' }, 400);
   }
   if (q.length < 2 || q.length > 300) return json({ ok: false, error: 'bad_request' }, 400);
+  if (!withinBudget(req)) return json({ ok: false, error: 'rate_limited' }, 429);
   try {
     const answer = await ask(withCtx(q, ctx));
     return json({ ok: true, answer });
