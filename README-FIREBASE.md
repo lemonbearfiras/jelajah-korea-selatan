@@ -58,14 +58,16 @@ var FIREBASE_CONFIG = {
 > ⚠️ Publish this file again after every change — the Console keeps using the last version you
 > pasted, not the copy in this folder.
 >
-> This revision of the rules **locks down ownership**: comments can no longer be edited at all
-> (only deleted by their author, because an owner-only update rule would still let a member
-> rewrite `uid` and hand their comment to someone else), a comment may only carry the display
-> name and photo that are already in the writer's own profile document, profile documents
-> accept only the six fields the site actually shows, follows and friend requests must use
-> their canonical document ID (so one account cannot write many copies of the same pair and
-> inflate public counts), a request can only be addressed to an account that really exists, and
-> `friends`/`chats` are unchanged. It also means **every member you follow or befriend must
+> This revision of the rules **locks down ownership and tightens privacy**: comments can no longer be
+> edited at all (only deleted by their author, because an owner-only update rule would still let a
+> member rewrite `uid` and hand their comment to someone else), a comment may only carry the display
+> name and photo that are already in the writer's own profile document **and that document must exist
+> — profile documents can no longer be deleted**, so removing your row is no longer a way to post
+> without an identity check, profile documents accept only the six fields the site actually shows,
+> follows and friend requests must use their canonical document ID (so one account cannot write many
+> copies of the same pair and inflate public counts), a request can only be addressed to an account
+> that really exists, `follows` is readable only by signed-in members and `friends` only by the two
+> people in it (see the privacy note below). It also means **every member you follow or befriend must
 > already have a profile document** in `users`; the site creates one at sign-up and rebuilds it
 > automatically if that write ever failed.
 >
@@ -74,24 +76,30 @@ var FIREBASE_CONFIG = {
 > `about` field (≤ 500 characters) in `users`. Without publishing them, the profile page still
 > loads (name, comments, date)
 > but the Followers / Following / Friends counts show "—" and the Follow / Add Friend / Chat
-> buttons fail.
+> buttons fail. After publishing, a **logged-out** visitor also sees "—" instead of those numbers —
+> that is the intended privacy behaviour, not a bug.
 
 What the rules mean in short:
 
-- `comments` — anyone can read; only signed-in members can write; **no editing**, you can delete only your own. The posted `name` and `photo` must **equal what is already in the writer's own `users` document**, so a modified browser cannot comment under somebody else's display name or avatar (a member whose profile document is missing yet — a sign-up whose write failed — falls back to plain length checks and the document is rebuilt on the next page load).
-- `users` — public profile (name, photo, `about` ≤ 500 characters, required `username` of 3–20 characters matching `^[a-z0-9._]{3,20}$`, `createdAt`); only the owner can edit/delete. **Only those six field names may be written** (`keys().hasOnly([...])`), because the document is public — an extra field a member adds by hand would be readable by every visitor. ⚠️ If an existing document still holds anything else (for example an old `email` field), every later save from the settings page is refused until that field is deleted in the Console (Firestore Data → the document → hover the field → delete). Members without a username yet must set one in **settings.html** before any other change can be saved. The photo is either an image link or an **uploaded photo** stored as a `data:image/...` text (up to 120,000 characters) — the rules must allow that length or saving a new photo is rejected.
-- `follows` — one document per follow, **ID exactly `follower_following`**; anyone can read the counts; only the follower can create or delete their own follow; the account being followed must exist in `users`.
+- `comments` — anyone can read; only signed-in members can write; **no editing**, you can delete only your own. The posted `name` and `photo` must be **byte-identical to what is already stored in the writer's own `users` document**, and that document must exist — so a modified browser cannot comment under somebody else's name or avatar, and deleting your own profile row no longer buys an anonymous identity. A missing row (a sign-up whose write failed) is rebuilt when the page loads; until then the site explains that a reload is needed instead of letting the comment look like a rules error.
+- `users` — public profile (name, photo, `about` ≤ 500 characters, required `username` of 3–20 characters matching `^[a-z0-9._]{3,20}$`, `createdAt`); **only the owner can write, and there is no delete permission at all** (the site has no delete-account feature, and a deletable identity is exactly what the comment rule above must not allow). **Only those six field names may be written** (`keys().hasOnly([...])`), because the document is public — an extra field a member adds by hand would be readable by every visitor. ⚠️ If an existing document still holds anything else (for example an old `email` field), every later save from the settings page is refused until that field is deleted in the Console (Firestore Data → the document → hover the field → delete). Members without a username yet must set one in **settings.html** before any other change can be saved. The photo is either an image link or an **uploaded photo** stored as a `data:image/...` text (up to 120,000 characters) — the rules must allow that length or saving a new photo is rejected.
+- `follows` — one document per follow, **ID exactly `follower_following`**; **only signed-in members can read** (so an anonymous crawler cannot pull the whole graph, while every member still sees real Follower/Following numbers on any profile); only the follower can create or delete their own follow; the account being followed must exist in `users`.
 - `friendRequests` — **ID exactly `sender_receiver`**, recipient must exist in `users`; only the two people involved can read; only the recipient can accept (pending → accepted), and only once.
-- `friends` — `ID = the two uids sorted a-z`; anyone can read (proof of friendship); created only by the recipient after the request is accepted.
+- `friends` — `ID = the two uids sorted a-z`; **only the two of them can read the document**; created only by the recipient after the request is accepted. Consequence: the **Friends** number on somebody else's profile shows **—**, because Firestore can only count documents the caller may read. Your own profile still shows your real count.
 - `chats` — messages in `chats/<pairId>/messages`; only the two friends involved can read or send; text 1–1000 characters; you can delete only your own messages.
 
-> 🔒 **Privacy decision, recorded:** `follows` and `friends` stay publicly readable on purpose —
-> the profile page counts followers / following / friends by querying those collections, and
-> Firestore can only count documents the caller is allowed to read. The documents contain
-> nothing but a pair of opaque Firebase UIDs (no name, no email). Making them private means
-> moving the three numbers onto `users/{uid}` as counters and then restricting the reads; the
-> counters would then be written by the browser, so any member could inflate their own numbers.
-> Friend requests, chat messages and the email address are not public in any of these designs.
+> 🔒 **Privacy decision, recorded (2026-10-19):** the relationship records are no longer open to
+> the whole internet. `follows` can be read by **any signed-in member** — the profile page counts
+> followers / following by querying that collection, and Firestore only counts documents the caller
+> may read, so members keep seeing real numbers while a logged-out crawler sees "—". `friends` is
+> stricter: **only the two people in the friendship**, because who somebody is friends with is a
+> personal association rather than a public handle; the cost is that the Friends number on another
+> member's profile reads "—". Chat access is unaffected either way — rules read the friendship
+> document with `get()`, which ignores read permissions.
+> To publish the friend count again it has to stop being a counted query and become a stored number
+> on `users/{uid}` kept up to date by a **server-side** job (a Cloud Function on a follow/friendship
+> write). A browser-written counter is not an option: any member could raise their own number, and
+> rules cannot count a collection to catch them.
 
 ## Step 5 — Enable the AI answers (Firebase AI Logic)
 

@@ -13,11 +13,13 @@ service cloud.firestore {
 
     match /comments/{commentId} {
       allow read: if true;
-      /* The list shows the name and avatar exactly as the browser sent them, so both are
-         checked against the caller's own profile document — otherwise a modified client could
-         post as somebody else. A member whose profile document is still missing (a sign-up
-         whose write failed, rebuilt automatically on the next load) falls back to the plain
-         size checks, so nobody is locked out of the community by that. */
+      /* The name and avatar shown in the list are exactly what the browser sent, so both are
+         required to be the values already stored in the writer's own profile document. There is
+         deliberately no "profile document missing" exemption: while members could delete their own
+         document, that exemption was an impersonation route (delete your row -> the identity check
+         is skipped -> post as anybody, with their avatar). The site never deletes profile documents
+         and a missing row is rebuilt automatically on the next page load, so requiring it costs
+         nothing. get(key, '') keeps older documents that lack a field working. */
       allow create: if request.auth != null
                     && request.resource.data.uid == request.auth.uid
                     && request.resource.data.text is string
@@ -31,23 +33,9 @@ service cloud.firestore {
                     && request.resource.data.name.size() <= 40
                     && request.resource.data.photo is string
                     && request.resource.data.photo.size() <= 120000
-                    && (
-                      !hasProfile()
-                      ? true
-                      : (
-                          /* Reading a field the document does not have would fail the whole
-                             rule, so both comparisons are guarded. A profile that has no name
-                             yet (sign-up before the settings page) may post any short display
-                             name — there is no stored name to steal; once a name exists it has
-                             to be used exactly as stored. */
-                          (!('name' in myProfile())
-                            || myProfile().name == ''
-                            || request.resource.data.name == myProfile().name)
-                          && (!('photo' in myProfile())
-                              ? request.resource.data.photo == ''
-                              : request.resource.data.photo == myProfile().photo)
-                        )
-                    );
+                    && hasProfile()
+                    && request.resource.data.name == myProfile().get('name', '')
+                    && request.resource.data.photo == myProfile().get('photo', '');
       /* No update allowed on purpose: the site has no comment editing, and an owner-only
          update rule would let a member rewrite `uid` and hand their comment to someone
          else. Editing, if it ever ships, must keep uid and name immutable. */
@@ -69,8 +57,9 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if true;
-      allow delete: if request.auth != null
-                    && request.auth.uid == userId;
+      /* No delete rule at all: the site has no delete-account feature, and a member being able to
+         remove their own profile document would open the impersonation route the comment rule
+         above closes (no document -> no stored identity to check). */
       /* Profile documents are public, so only the fields the site actually shows may be
          written. Without this a member could quietly park extra personal data in their own
          document and have every visitor read it. The application writes exactly these six. */
@@ -90,13 +79,12 @@ service cloud.firestore {
 
     /* one document per follow: ID = <follower>_<followed> */
     match /follows/{followId} {
-      /* Public read is a deliberate choice, not an oversight: the profile page counts
-         followers and following by querying this collection (js/pages/profile.js), and
-         Firestore can only count documents the caller may read. The documents hold
-         nothing but a pair of opaque Firebase UIDs — no name, email or any other
-         personal field. To make the graph private instead, move the counts onto
-         users/{uid} and change the line below to a participant check. */
-      allow read: if true;
+      /* Privacy decision (2026-10-19): signed-in members only, not the whole internet. The
+         profile page counts followers and following by querying this collection, and Firestore
+         can only count documents the caller may read, so a member still sees the real numbers on
+         any profile; an anonymous visitor sees "—" there. The documents hold nothing but a pair
+         of opaque Firebase UIDs — no name, email or other personal field. */
+      allow read: if request.auth != null;
       /* The canonical ID is what stops one account writing many follow documents for the
          same pair under random IDs, which would inflate everybody's public follower
          counts. The target must exist so fake uids cannot be stored either. */
@@ -141,8 +129,16 @@ service cloud.firestore {
     /* friendship: ID = both uids sorted a-z; written by the recipient only after a
        request has really been accepted */
     match /friends/{fid} {
-      /* Public read for the same reason as /follows — the profile page counts friends. */
-      allow read: if true;
+      /* Privacy decision (2026-10-19): a friendship is a personal association, so only the two
+         people in it may read the document. Everything the site does with these documents keeps
+         working — the Follow/Friend/Chat buttons read one pair document that always contains the
+         viewer, and chat access is checked with get(), which ignores read rules. What changes: the
+         Friends number on somebody else's profile reads "—", because a visitor cannot count
+         documents they are not part of. To publish that number again it has to become a counter
+         field on users/{uid} kept up to date by a server-side job — a browser-written counter is
+         one any member could inflate. */
+      allow read: if request.auth != null
+                  && request.auth.uid in resource.data.participants;
       allow create: if request.auth != null
                     && request.resource.data.participants is list
                     && request.resource.data.participants.size() == 2

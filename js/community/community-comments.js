@@ -375,18 +375,16 @@ textEl.addEventListener('input',function(){
   charsEl.textContent=textEl.value.length+' / 600';
 });
 /* The rules only accept the name and photo that are already in the caller's own profile
-   document, so read that document immediately before posting instead of trusting the copy
-   held in memory — it can be a moment out of date after a settings save or on the first
-   load, which would make the comment bounce off the rules. */
+   document, so read that document immediately before posting and send its values verbatim.
+   The copy in memory can be a moment out of date after a settings save, which would make the
+   comment bounce; and if the document is gone (a sign-up whose write failed twice — a reload
+   rebuilds it) there is no identity to post under, so say that instead of a permission error. */
 function ownProfile(){
-  var fallback={name:user.name||'Traveller',photo:user.photo||''};
-  if(mode!=='firebase')return Promise.resolve(fallback);
   return KomAuth.db().collection('users').doc(user.uid).get().then(function(doc){
-    if(!doc.exists)return fallback;
+    if(!doc.exists){var e=new Error('no profile document');e.code='profile-missing';throw e}
     var v=doc.data()||{};
-    return {name:(typeof v.name==='string'&&v.name.length?v.name:fallback.name),
-            photo:typeof v.photo==='string'?v.photo:''};
-  }).catch(function(){return fallback});
+    return {name:typeof v.name==='string'?v.name:'',photo:typeof v.photo==='string'?v.photo:''};
+  });
 }
 compose.addEventListener('submit',function(ev){
   ev.preventDefault();
@@ -420,6 +418,10 @@ compose.addEventListener('submit',function(ev){
       });
     }).then(clear).catch(function(err){
       sendBtn.disabled=false;
+      if(err&&err.code==='profile-missing'){
+        alert('Your profile row is missing from the database, so a comment cannot carry your name. Reload this page — it is rebuilt automatically — and send the comment again.');
+        return;
+      }
       alert('The comment could not be saved ('+(err.code||'error')+'). See the Firestore rules in README-FIREBASE.md.');
     });
   }
