@@ -106,9 +106,15 @@ function buildThreads(){
   roots.sort(function(a,b){return b.ts-a.ts});
   return roots;
 }
+function realCount(){
+  var n=0;
+  items.forEach(function(c){if(!c.ctxOnly)n++});
+  return n;
+}
 function render(){
   items.sort(function(a,b){return b.ts-a.ts});
-  countEl.textContent=items.length?items.length+(items.length===1?' comment':' comments'):'';
+  var n=realCount();
+  countEl.textContent=n?n+(n===1?' comment':' comments'):'';
   if(!items.length){
     list.innerHTML='<div class="km-empty">No comments yet — be the first to share your travel story!</div>';
     renderBoard();paintNote();return;
@@ -143,6 +149,7 @@ function renderBoard(){
   if(!items.length){boardEl.hidden=true;return}
   var map={};
   items.forEach(function(c){
+    if(c.ctxOnly)return; /* a fetched ancestor is context, not activity */
     var k=c.uid||('n:'+c.name);
     if(!map[k])map[k]={name:c.name,photo:c.photo,n:0,hearts:0};
     map[k].n++;
@@ -158,22 +165,50 @@ function renderBoard(){
   boardEl.hidden=rows.length<2;
 }
 
-/* ---------- notifikasi balasan ---------- */
+/* ---------- reply note ---------- */
+/* The last-seen stamp used to be written the moment the note was painted, so the very next
+   re-render — a like, somebody else's comment — made the replies "old" again and the note
+   vanished before anyone read it. The stamp is only written when the member acts on the note. */
+var noteIds=[];
+function readSeen(){
+  try{return parseInt(localStorage.getItem('km-seen-reply')||'0',10)}catch(e){return 0}
+}
+function markSeen(){
+  try{localStorage.setItem('km-seen-reply',String(Date.now()))}catch(e){}
+  noteIds=[];
+  noteEl.hidden=true;
+}
 function paintNote(){
   if(!noteEl)return;
   noteEl.hidden=true;
+  noteIds=[];
   if(!user)return;
   var mine={};
   items.forEach(function(c){if(c.uid===user.uid)mine[c.id]=1});
-  var seen=0;
-  try{seen=parseInt(localStorage.getItem('km-seen-reply')||'0',10)}catch(e){}
-  var nw=items.filter(function(c){return c.replyTo&&mine[c.replyTo]&&c.ts>seen}).length;
-  if(!nw)return;
+  var seen=readSeen();
+  noteIds=items.filter(function(c){return !c.ctxOnly&&c.replyTo&&mine[c.replyTo]&&c.ts>seen}).map(function(c){return c.id});
+  if(!noteIds.length)return;
   noteEl.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>'+
-    '<b>'+nw+'</b> new '+(nw===1?'reply':'replies')+' to '+(nw===1?'your comment':'your comments')+'.';
+    '<b>'+noteIds.length+'</b> new '+(noteIds.length===1?'reply':'replies')+' to '+(noteIds.length===1?'your comment':'your comments')+'.'+
+    '<button class="km-note-act" type="button" data-act="open">Show me</button>'+
+    '<button class="km-note-act" type="button" data-act="close" aria-label="Dismiss the reply notice">✕</button>';
   noteEl.hidden=false;
-  try{localStorage.setItem('km-seen-reply',String(Date.now()))}catch(e){}
 }
+if(noteEl)noteEl.addEventListener('click',function(ev){
+  var b=ev.target.closest?ev.target.closest('button'):null;
+  if(!b||!noteIds.length)return;
+  if(b.getAttribute('data-act')==='open'){
+    var el=d.getElementById('komen-'+noteIds[0]);
+    if(el){
+      var box=el.closest('.km-replies');
+      if(box)openThread(box);
+      el.classList.add('flash');
+      try{el.scrollIntoView({behavior:'smooth',block:'center'})}catch(e){el.scrollIntoView()}
+      setTimeout(function(){el.classList.remove('flash')},2200);
+    }
+  }
+  markSeen();
+});
 
 /* ---------- like state ---------- */
 function demoLikeInfo(){
@@ -220,15 +255,80 @@ function demoLoad(){
 }
 
 /* ---------- storan firebase ---------- */
+/* The live list holds the 50 newest comments. A reply to something older than that window
+   would lose its parent and be promoted to a top-level post, so the missing ancestors are
+   fetched on demand and kept in ctxCache. They are marked ctxOnly: they exist to hold a
+   thread together, not to be counted as comments or put on the leaderboard. */
+var ctxCache={};
+var ctxMiss={};   /* ancestors already looked for and not found — never ask twice */
+var fbSeq=0;
+function docItem(id,v){
+  return {id:id,uid:v.uid||'',name:v.name||'Traveller',photo:v.photo||'',text:v.text||'',
+    replyTo:v.replyTo||'',replyName:v.replyName||'',ts:v.createdAt&&v.createdAt.toMillis?v.createdAt.toMillis():null};
+}
+function missingAncestors(list){
+  var ids={},out=[];
+  list.forEach(function(c){ids[c.id]=1});
+  list.forEach(function(c){
+    var r=c.replyTo,guard=0;
+    while(r&&!ids[r]&&guard<20){
+      if(out.indexOf(r)<0)out.push(r);
+      var p=ctxCache[r];
+      r=p?p.replyTo:'';
+      guard++;
+    }
+  });
+  return out;
+}
+function fetchAncestors(base,depth){
+  if(depth>3)return Promise.resolve();
+  var need=missingAncestors(base).filter(function(id){return !ctxCache[id]&&!ctxMiss[id]});
+  if(!need.length)return Promise.resolve();
+  var db=KomAuth.db();
+  return Promise.all(chunkIds(need).map(function(chunk){
+    return db.collection('comments')
+      .where(firebase.firestore.FieldPath.documentId(),'in',chunk).get();
+  })).then(function(res){
+    res.forEach(function(snap){snap.docs.forEach(function(doc){ctxCache[doc.id]=docItem(doc.id,doc.data())})});
+    /* a reply can point at a comment that was deleted: remember the gap instead of
+       asking for it again on every re-render */
+    need.forEach(function(id){if(!ctxCache[id])ctxMiss[id]=1});
+    return fetchAncestors(base,depth+1);
+  }).catch(function(){/* read-only nicety: the list works without the ancestors */});
+}
+function withAncestors(base){
+  var out=base.slice(),ids={},round=0;
+  base.forEach(function(c){ids[c.id]=1});
+  while(round++<5){
+    var added=false;
+    out.forEach(function(c){
+      var r=c.replyTo,guard=0;
+      while(r&&!ids[r]&&ctxCache[r]&&guard++<20){
+        ids[r]=1;
+        /* the cached copy stands for a comment outside the live window — flag it so the
+           count and the leaderboard leave it out */
+        ctxCache[r].ctxOnly=true;
+        out.push(ctxCache[r]);
+        added=true;
+        r=ctxCache[r].replyTo;
+      }
+    });
+    if(!added)break;
+  }
+  return out;
+}
 function fbLoad(){
   var db=KomAuth.db();
   unsubs=db.collection('comments').orderBy('createdAt','desc').limit(50).onSnapshot(function(snap){
-    items=snap.docs.map(function(doc){
-      var v=doc.data();
-      return {id:doc.id,uid:v.uid||'',name:v.name||'Traveller',photo:v.photo||'',text:v.text||'',
-        replyTo:v.replyTo||'',replyName:v.replyName||'',ts:v.createdAt&&v.createdAt.toMillis?v.createdAt.toMillis():null};
-    });
-    refreshLikes();
+    var base=snap.docs.map(function(doc){return docItem(doc.id,doc.data())});
+    var seq=++fbSeq;
+    var paint=function(){
+      if(seq!==fbSeq)return;
+      items=withAncestors(base);
+      refreshLikes();
+    };
+    paint();
+    fetchAncestors(base,0).then(paint);
   },function(err){
     list.innerHTML='<div class="km-empty">The comments could not be loaded ('+esc(err.code||'error')+'). See the Firestore rules in README-FIREBASE.md.</div>';
   });
@@ -274,6 +374,20 @@ if(replyCancel)replyCancel.addEventListener('click',cancelReply);
 textEl.addEventListener('input',function(){
   charsEl.textContent=textEl.value.length+' / 600';
 });
+/* The rules only accept the name and photo that are already in the caller's own profile
+   document, so read that document immediately before posting instead of trusting the copy
+   held in memory — it can be a moment out of date after a settings save or on the first
+   load, which would make the comment bounce off the rules. */
+function ownProfile(){
+  var fallback={name:user.name||'Traveller',photo:user.photo||''};
+  if(mode!=='firebase')return Promise.resolve(fallback);
+  return KomAuth.db().collection('users').doc(user.uid).get().then(function(doc){
+    if(!doc.exists)return fallback;
+    var v=doc.data()||{};
+    return {name:(typeof v.name==='string'&&v.name.length?v.name:fallback.name),
+            photo:typeof v.photo==='string'?v.photo:''};
+  }).catch(function(){return fallback});
+}
 compose.addEventListener('submit',function(ev){
   ev.preventDefault();
   if(!user)return;
@@ -294,14 +408,16 @@ compose.addEventListener('submit',function(ev){
     demoLoad();
     clear();
   }else{
-    KomAuth.db().collection('comments').add({
-      uid:user.uid,
-      name:user.name,
-      photo:user.photo||'',
-      text:text,
-      replyTo:rt?rt.id:'',
-      replyName:rt?rt.name.slice(0,60):'',
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    ownProfile().then(function(prof){
+      return KomAuth.db().collection('comments').add({
+        uid:user.uid,
+        name:prof.name,
+        photo:prof.photo,
+        text:text,
+        replyTo:rt?rt.id:'',
+        replyName:rt?rt.name.slice(0,40):'',
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
     }).then(clear).catch(function(err){
       sendBtn.disabled=false;
       alert('The comment could not be saved ('+(err.code||'error')+'). See the Firestore rules in README-FIREBASE.md.');
@@ -402,7 +518,13 @@ list.addEventListener('click',function(ev){
     demoWrite(demoRead().filter(function(c){return c.id!==id2}));
     demoLoad();
   }else{
-    KomAuth.db().collection('comments').doc(id2).delete().catch(function(e){
+    KomAuth.db().collection('comments').doc(id2).delete().then(function(){
+      /* if the deleted comment was only on screen as a fetched ancestor, drop it now —
+         the snapshot will never mention it again */
+      delete ctxCache[id2];
+      items=items.filter(function(c){return c.id!==id2});
+      render();
+    }).catch(function(e){
       alert('The comment could not be deleted ('+(e.code||'error')+'). Check the Firestore rules — README-FIREBASE.md.');
     });
   }

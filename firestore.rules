@@ -3,21 +3,51 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    /* the signed-in member's own public profile document */
+    function hasProfile() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+    function myProfile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
     match /comments/{commentId} {
       allow read: if true;
+      /* The list shows the name and avatar exactly as the browser sent them, so both are
+         checked against the caller's own profile document — otherwise a modified client could
+         post as somebody else. A member whose profile document is still missing (a sign-up
+         whose write failed, rebuilt automatically on the next load) falls back to the plain
+         size checks, so nobody is locked out of the community by that. */
       allow create: if request.auth != null
                     && request.resource.data.uid == request.auth.uid
-                    && request.resource.data.name is string
-                    && request.resource.data.name.size() <= 40
-                    && request.resource.data.photo is string
-                    && request.resource.data.photo.size() <= 120000
                     && request.resource.data.text is string
                     && request.resource.data.text.size() > 0
                     && request.resource.data.text.size() <= 600
                     && request.resource.data.replyTo is string
                     && request.resource.data.replyTo.size() <= 40
                     && request.resource.data.replyName is string
-                    && request.resource.data.replyName.size() <= 40;
+                    && request.resource.data.replyName.size() <= 40
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() <= 40
+                    && request.resource.data.photo is string
+                    && request.resource.data.photo.size() <= 120000
+                    && (
+                      !hasProfile()
+                      ? true
+                      : (
+                          /* Reading a field the document does not have would fail the whole
+                             rule, so both comparisons are guarded. A profile that has no name
+                             yet (sign-up before the settings page) may post any short display
+                             name — there is no stored name to steal; once a name exists it has
+                             to be used exactly as stored. */
+                          (!('name' in myProfile())
+                            || myProfile().name == ''
+                            || request.resource.data.name == myProfile().name)
+                          && (!('photo' in myProfile())
+                              ? request.resource.data.photo == ''
+                              : request.resource.data.photo == myProfile().photo)
+                        )
+                    );
       /* No update allowed on purpose: the site has no comment editing, and an owner-only
          update rule would let a member rewrite `uid` and hand their comment to someone
          else. Editing, if it ever ships, must keep uid and name immutable. */
@@ -41,8 +71,12 @@ service cloud.firestore {
       allow read: if true;
       allow delete: if request.auth != null
                     && request.auth.uid == userId;
+      /* Profile documents are public, so only the fields the site actually shows may be
+         written. Without this a member could quietly park extra personal data in their own
+         document and have every visitor read it. The application writes exactly these six. */
       allow create, update: if request.auth != null
                     && request.auth.uid == userId
+                    && request.resource.data.keys().hasOnly(['uid','name','photo','about','username','createdAt'])
                     && request.resource.data.uid == request.auth.uid
                     && request.resource.data.name is string
                     && request.resource.data.name.size() <= 40

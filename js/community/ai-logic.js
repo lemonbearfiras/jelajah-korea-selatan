@@ -63,7 +63,7 @@ function buildModel(name) {
     return getGenerativeModel(ai, {
       model: name,
       systemInstruction: { parts: [{ text: SYSTEM }] },
-      generationConfig: { maxOutputTokens: 900, temperature: 0.4 },
+      generationConfig: { maxOutputTokens: 900 },
     });
   });
   return modelCache[name];
@@ -77,18 +77,20 @@ function readAnswer(res) {
     : (res?.response?.text ? res.response.text() : ''));
 }
 
-/* Google retires model names regularly — walk the MODELS list when one is refused. */
+/* Google retires model names regularly — walk the MODELS list when one is refused.
+   Only a model-name problem is worth retrying; a quota or auth error is the same on the
+   next name, so it is raised and index.html hands over to the lower tiers. */
 function attempt(i, q) {
   if (i >= MODELS.length) return Promise.reject(new Error('no Gemini model available'));
   return buildModel(MODELS[i]).then(function (model) {
     return model.generateContent([{ text: q }]);
   }).then(function (res) {
     var text = readAnswer(res);
-    if (text.length < 3) throw new Error('jawapan kosong');
+    if (text.length < 3) throw new Error('empty answer');
     return text.slice(0, 1200);
   }).catch(function (e) {
     var msg = String(e && e.message || e);
-    if (/no longer available|not found|\[404/.test(msg)) return attempt(i + 1, q);
+    if (/no longer available|not found|not supported|unsupported|invalid model name|\[404/.test(msg)) return attempt(i + 1, q);
     throw e;
   });
 }

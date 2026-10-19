@@ -195,7 +195,7 @@ async function askGemini(env, question, deadlineAt) {
       JSON.stringify({
         systemInstruction: { parts: [{ text: SYSTEM }] },
         contents: [{ parts: [{ text: question }] }],
-        generationConfig: { maxOutputTokens: 900, temperature: 0.4 },
+        generationConfig: { maxOutputTokens: 900 },
       }),
       Math.min(remaining, PER_TRY_MS));
     if (!res.ok) {

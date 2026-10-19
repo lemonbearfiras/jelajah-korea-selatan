@@ -146,7 +146,7 @@ async function askViaGemini(key, question, deadline) {
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: AGENT_SYSTEM }] },
       contents: [{ role: 'user', parts: [{ text: question }] }],
-      generationConfig: { maxOutputTokens: 900, temperature: 0.4 },
+      generationConfig: { maxOutputTokens: 900 },
     }),
   }, Math.max(2000, Math.min(PROVIDER_TIMEOUT_MS, deadline - Date.now())));
   const parts = res?.candidates?.[0]?.content?.parts;
