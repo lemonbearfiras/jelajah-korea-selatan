@@ -7,7 +7,7 @@
 /* The sub-pages load this sheet instead of css/base.css, so the shared token list is repeated
    here — keep both blocks in sync or every var() below resolves to nothing. */
 :root{
-  --bg:#faf9f6; --bg-soft:#f2f0ea; --ink:#0a0a0a; --muted:#8a8a8a;
+  --bg:#faf9f6; --bg-soft:#f2f0ea; --ink:#0a0a0a; --muted:#6b6b6b;
   --line:rgba(10,10,10,.14); --red:#CD2E3A; --blue:#0047A0;
   --red-soft:rgba(205,46,58,.08); --blue-soft:rgba(0,71,160,.08);
   --radius:20px; --radius-lg:26px; --radius-sm:12px; --pill:999px;
@@ -63,7 +63,7 @@ body::after{content:"";position:fixed;inset:-50%;z-index:9998;pointer-events:non
 .page-intro{margin-bottom:26px}
 .page-intro h1{font-size:var(--fs-h3);font-weight:800;letter-spacing:-.032em;line-height:1.12}
 .page-intro h1 .hangul{font-family:'Noto Sans KR',sans-serif;font-size:.4em;font-weight:700;letter-spacing:.16em;color:var(--muted);vertical-align:.3em;margin-left:11px;white-space:nowrap}
-.page-intro p{max-width:620px;margin-top:10px;font-size:var(--fs-body);line-height:1.75;color:var(--muted)}
+.page-intro p:not(.sec-label){max-width:620px;margin-top:10px;font-size:var(--fs-body);line-height:1.75;color:var(--muted)}
 
 /* ---- page body ---- */
 .wrap{position:relative;z-index:1;width:min(880px,92%);margin:34px auto 76px;flex:1}

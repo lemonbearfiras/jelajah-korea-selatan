@@ -42,13 +42,13 @@ var PLANS={
     {l:'Day 2',h:'Modern Seoul',items:['Myeongdong &amp; street food','Cafes &amp; galleries in Seongsu-dong','Picnic at Han River Park, Yeouido','Late-night shopping in Dongdaemun']},
     {l:'Day 3',h:'One-Day Trip Options',items:['DMZ (book early) or Everland','Gwangjang Market for lunch','Last-minute shopping before the airport']}
   ]},
-  p2:{note:'<strong>Tip:</strong> Book KTX tickets early for cheaper fares; Seoul–Busan takes roughly 2 hours 30 minutes. Carry a small backpack for trips like this.',days:[
+  p2:{note:'<strong>Tip:</strong> Compare current KTX fares and timetables before booking. Allow time for station transfers and check whether each day is practical.',days:[
     {l:'Day 1–2',h:'Seoul',items:['Royal palaces &amp; Bukchon Hanok','Myeongdong, Hongdae &amp; Han River','Gwangjang Market &amp; Namsan Tower']},
     {l:'Day 3',h:'Gyeongju',items:['KTX to Sin-gyeongju','Bulguksa Temple &amp; Seokguram','Daereungwon Tombs &amp; Anapji at night']},
     {l:'Day 4',h:'Busan',items:['Haedong Yonggungsa in the morning','Haeundae &amp; Gwangalli Beach','Jagalchi Market &amp; Gamcheon Village']},
     {l:'Day 5',h:'Departure',items:['Free morning at Nampo or Songdo','KTX back to Seoul','Duty-free shopping &amp; departure']}
   ]},
-  p3:{note:'<strong>Tip:</strong> The 7-day route saves the most with the Korea Rail Pass (KR Pass) — one pass for all your KTX journeys.',days:[
+  p3:{note:'<strong>Tip:</strong> Compare a Korea Rail Pass with individual tickets for the journeys you actually plan. Check current eligibility, covered trains and reservation requirements.',days:[
     {l:'Day 1',h:'Seoul',items:['Gyeongbokgung, Bukchon &amp; Insadong','Ikseon-dong in the evening']},
     {l:'Day 2',h:'Seoul',items:['Namsan Tower &amp; Myeongdong','Hongdae &amp; Han River at night']},
     {l:'Day 3',h:'Jeonju',items:['KTX to Jeonju','Hanok Village &amp; original bibimbap','Dinner around Gyeonggijeon']},
@@ -322,12 +322,12 @@ window.addEventListener('pointerup',function(){if(!dragging)return;dragging=fals
 rail.addEventListener('click',function(e){if(moved){e.preventDefault();e.stopPropagation();moved=false}},true);
 /* map */
 var PINS={
-  seoul:{t:'Seoul 서울 — Capital · Metro',d:'The capital metropolis with 9 metro lines, Joseon dynasty palaces and the most popular starting point for travellers.'},
-  busan:{t:'Busan 부산 — Coastal City',d:'Beaches, the Jagalchi fish market and Gamcheon art village — 2 hours 30 minutes from Seoul by KTX.'},
-  jeju:{t:'Jeju 제주 — Volcanic Island',d:'A 1-hour flight from Seoul; UNESCO landscapes, lava cliffs and the unique haenyeo culture.'},
-  gyeongju:{t:'Gyeongju 경주 — Ancient Silla Capital',d:'Ancient tombs, Bulguksa Temple and Wolji Lake — 2 hours by KTX to Sin-gyeongju.'},
-  seoraksan:{t:'Seoraksan 설악산 — National Park',d:'Ulsanbawi Peak and Sinheungsa Temple; 2 hours 40 minutes by KTX and bus from Seoul.'},
-  jeonju:{t:'Jeonju 전주 — Hanok Village',d:'Over 800 hanok houses, the birthplace of bibimbap and pansori — 1 hour 40 minutes by KTX.'}
+  seoul:{t:'Seoul 서울 — Capital · Metro',d:'Joseon dynasty palaces, neighbourhood markets and an extensive metro network. Check current routes and transfers for your starting point.'},
+  busan:{t:'Busan 부산 — Coastal City',d:'Beaches, the Jagalchi fish market and Gamcheon art village. Plan the intercity train and local transfers separately.'},
+  jeju:{t:'Jeju 제주 — Volcanic Island',d:'UNESCO landscapes, lava cliffs and the unique haenyeo culture. Check current flight or ferry routes; there is no mainland rail connection.'},
+  gyeongju:{t:'Gyeongju 경주 — Ancient Silla Capital',d:'Ancient tombs, Bulguksa Temple and Wolji Lake. Check the current intercity service and onward transport to each attraction.'},
+  seoraksan:{t:'Seoraksan 설악산 — National Park',d:'Ulsanbawi Peak and Sinheungsa Temple. Check transport connections, trail conditions and seasonal restrictions before travelling.'},
+  jeonju:{t:'Jeonju 전주 — Hanok Village',d:'Traditional hanok streets, bibimbap and pansori. Check current train services and local connections before choosing your visit day.'}
 };
 var mapInfo=$('#map-info');
 function activatePin(id){
@@ -524,7 +524,11 @@ function dbAct(x){
   var e=dbMatch(x);
   return e?'<li>'+x+' <button type="button" class="pl-info" data-n="'+e.n+'" aria-label="Describe '+DB_DEC(e.n)+'">i</button></li>':'<li>'+x+'</li>';
 }
-var plCur='krw';
+var PL_KEY='jelajah.planner.v1',plStored=null;
+try{plStored=JSON.parse(localStorage.getItem(PL_KEY))}catch(err){}
+var plCur=plStored&&plStored.cur==='myr'?'myr':'krw';
+$$('.planner input[type="radio"]').forEach(function(el){if(plStored&&plStored[el.name]===el.value)el.checked=true});
+$$('.pr-currency button').forEach(function(b){b.classList.toggle('on',b.dataset.cur===plCur)});
 function plVal(name){var el=document.querySelector('input[name='+name+']:checked');return el?el.value:null}
 function plFmt(n){return plCur==='krw'?('₩'+n.toLocaleString('en-US')):('RM '+(n/PL_RATE).toLocaleString('en-US',{maximumFractionDigits:0}))}
 function plCompute(){
@@ -546,7 +550,9 @@ function plCompute(){
   return{lines:lines,total:total,dur:dur,kadar:kadar,musim:s,tema:t,tkey:tema};
 }
 function renderPlanner(){
-  var p=plCompute();
+  var p=plCompute(),prefs={cur:plCur};
+  ['pl-kadar','pl-musim','pl-tema','pl-tempoh'].forEach(function(name){prefs[name]=plVal(name)});
+  try{localStorage.setItem(PL_KEY,JSON.stringify(prefs))}catch(err){}
   $('#pr-total').textContent=plFmt(p.total);
   $('#pr-alt').innerHTML=plCur==='krw'
     ?'≈ <b>RM '+(p.total/PL_RATE).toLocaleString('en-US',{maximumFractionDigits:0})+'</b> per traveller'
@@ -561,7 +567,7 @@ function renderPlanner(){
   var days=plItinDays(p.tkey,p.dur),lim=PL_LIM[p.kadar];
   /* Short plans stay based in Seoul, so the tip must not advertise the KTX route they skip. */
   var route=p.dur>PL_KTX[2]?p.tema.c:'Seoul city break';
-  $('#pr-tip').innerHTML='<strong>'+p.tema.l+' suggestion:</strong> '+p.tema.d+' Ideal route: '+route+' · '+p.dur+' days · '+PL_PACE[p.kadar]+' · '+p.musim.l+'.';
+  $('#pr-tip').innerHTML='<strong>'+p.tema.l+' suggestion:</strong> '+(p.dur>PL_KTX[2]?p.tema.d:'Start with the daily suggestions below. Check opening days and transfers before booking.')+' Suggested base: '+route+' · '+p.dur+' days · '+PL_PACE[p.kadar]+' · '+p.musim.l+'.';
   $('#pl-itin-meta').textContent='— '+PL_THEME[p.tkey].l+' · '+p.dur+' days';
   $('#pl-itin-sub').textContent='Pace: '+PL_PACE_SHORT[p.kadar]+' — '+lim+' activities shown each day.';
   var itin=$('#pl-itin');
@@ -604,10 +610,19 @@ function tpLoad(){
   try{
     var o=JSON.parse(localStorage.getItem(TP_KEY));
     if(!o||typeof o!=='object')return null;
-    var strs=function(v){return (Array.isArray(v)?v:[]).filter(function(x){return typeof x==='string'&&x})};
-    var days=(Array.isArray(o.days)?o.days:[]).map(function(d){return strs(d)});
-    return {saved:strs(o.saved),food:strs(o.food),days:days.length?days:[[]],
-      pack:(Array.isArray(o.pack)?o.pack:[]).filter(function(x){return x&&typeof x.t==='string'}).map(function(x){return {t:x.t.slice(0,40),on:!!x.on}})};
+    var strs=function(v){
+      var out=[];
+      (Array.isArray(v)?v:[]).forEach(function(x){if(typeof x==='string'&&x.trim()&&x.length<=160&&out.indexOf(x)<0)out.push(x)});
+      return out;
+    };
+    var days=(Array.isArray(o.days)?o.days:[]).filter(Array.isArray).map(function(d){return strs(d)}),pack=[];
+    (Array.isArray(o.pack)?o.pack:[]).forEach(function(x){
+      if(!x||typeof x.t!=='string')return;
+      var t=x.t.trim().slice(0,40);if(!t)return;
+      var found=pack.find(function(p){return p.t.toLowerCase()===t.toLowerCase()});
+      if(found)found.on=found.on||!!x.on;else pack.push({t:t,on:!!x.on});
+    });
+    return {saved:strs(o.saved),food:strs(o.food),days:days.length?days:[[]],pack:pack};
   }catch(err){return null}
 }
 function tpSave(){try{localStorage.setItem(TP_KEY,JSON.stringify(trip))}catch(err){}}
@@ -617,7 +632,7 @@ function tpRepaint(kind,name,idx){
     if(b.getAttribute('data-tp')!==key)return;
     b.classList.toggle('on',on);
     b.setAttribute('aria-pressed',on?'true':'false');
-    b.setAttribute('aria-label',(on?'Remove ':'Save ')+tpEsc(tpLbl(kind,name))+(on?' from My Trip':' to My Trip'));
+    b.setAttribute('aria-label',(on?'Remove ':'Save ')+tpLbl(kind,name)+(on?' from My Trip':' to My Trip'));
     var s=$('span',b);if(s)s.textContent=on?'Saved':'Save';
   });
 }
@@ -726,9 +741,34 @@ function tpRenderReco(s){
         '<em>'+DB_DEC(e.c)+' · '+(e.fee?'₩'+e.fee.toLocaleString('en-US'):'Free')+'</em></button>';
     }).join('');
 }
+var TP_FOCUS_ATTRS=['data-add','data-dishrm','data-pick','data-delday','data-up','data-down','data-rm','data-tg','data-packrm','data-sug','data-reco'];
+function tpFocusKey(){
+  var a=document.activeElement;
+  if(!a||a.tagName!=='BUTTON'||!tripEl.contains(a))return null;
+  var box=a.closest('[id]'),day=a.closest('.tp-day');
+  for(var i=0;i<TP_FOCUS_ATTRS.length;i++){
+    var attr=TP_FOCUS_ATTRS[i];
+    if(!a.hasAttribute(attr))continue;
+    var val=a.getAttribute(attr),k=parseInt(val,10);
+    if(attr==='data-up'&&k>0)val=String(k-1);
+    if(attr==='data-down')val=String(k+1);
+    return {box:box&&box.id,day:day?Array.prototype.indexOf.call(day.parentNode.children,day):-1,attr:attr,val:val};
+  }
+  return null;
+}
+function tpRestoreFocus(key){
+  if(!key||!key.box)return;
+  var box=document.getElementById(key.box);if(!box)return;
+  var scope=key.day>-1?box.children[key.day]||box:box;
+  var el=$$('['+key.attr+']',scope).filter(function(b){return b.getAttribute(key.attr)===key.val})[0];
+  if(!el&&(key.attr==='data-up'||key.attr==='data-down'))el=$('['+key.attr+']',scope);
+  if(!el)el=$('button',scope)||$('button',box);
+  if(el)el.focus();
+}
 function renderTrip(){
   /* renderPlanner runs once at load, before the saved trip is read back from storage. */
   if(!trip||!tripEl)return;
+  var focusKey=tpFocusKey();
   var savedBox=$('#tp-saved'),foodBox=$('#tp-food'),daysBox=$('#tp-days'),packBox=$('#tp-pack'),sugBox=$('#tp-sug');
   var cur=trip.days[tpActive]||[];
   var kadar=plVal('pl-kadar')||'sederhana',musim=plVal('pl-musim')||'sakura',nd=trip.days.length;
@@ -741,10 +781,10 @@ function renderTrip(){
     var e=dbFind(n),inDay=cur.indexOf(n)>-1;
     return '<button type="button" class="tp-chip'+(inDay?' in':'')+'" data-add="'+i+'" aria-label="'+
       (inDay?tpEsc(tpLbl('place',n))+' is already on this day':'Add '+tpEsc(tpLbl('place',n))+' to Day '+(tpActive+1))+'">'+
-      tpLbl('place',n)+(e?'<i>'+(e.fee?'₩'+e.fee.toLocaleString('en-US'):'Free'):'')+'</i></button>';
+      tpEsc(tpLbl('place',n))+(e?'<i>'+(e.fee?'₩'+e.fee.toLocaleString('en-US'):'Free'):'')+'</i></button>';
   }).join(''):'<p class="tp-hint">Nothing saved yet — star a place in the database and it waits here.</p>';
   foodBox.innerHTML=trip.food.length?trip.food.map(function(n,i){
-    return '<button type="button" class="tp-chip dish" data-dishrm="'+i+'" aria-label="Remove '+tpEsc(n)+' from the food list">'+n+'<i>✕</i></button>';
+    return '<button type="button" class="tp-chip dish" data-dishrm="'+i+'" aria-label="Remove '+tpEsc(n)+' from the food list">'+tpEsc(n)+'<i>✕</i></button>';
   }).join(''):'<p class="tp-hint">No dishes yet — star a card in the food section to build a must-eat list.</p>';
   daysBox.innerHTML=trip.days.map(function(d,i){
     var regions=[],dayTickets=0;
@@ -763,7 +803,7 @@ function renderTrip(){
       '<button type="button" class="tp-x" data-delday="'+i+'" aria-label="Remove Day '+(i+1)+'">✕</button></div>'+
       (d.length?'<ul class="tp-list">'+d.map(function(n,k){
         var e=dbFind(n);
-        return '<li><span class="tp-li-n">'+tpLbl('place',n)+'</span>'+
+        return '<li><span class="tp-li-n">'+tpEsc(tpLbl('place',n))+'</span>'+
           '<i class="tp-li-fee">'+(e?(e.fee?'₩'+e.fee.toLocaleString('en-US'):'Free'):'no fee listed')+'</i>'+
           '<span class="tp-acts">'+
           '<button type="button" data-up="'+k+'" aria-label="Move '+tpEsc(tpLbl('place',n))+' earlier">↑</button>'+
@@ -793,7 +833,7 @@ function renderTrip(){
       '" aria-label="Mark '+tpEsc(x.t)+' as packed">✓</button><span'+(x.on?' class="done"':'')+'>'+tpEsc(x.t)+'</span>'+
       '<button type="button" class="tp-x" data-packrm="'+k+'" aria-label="Remove '+tpEsc(x.t)+'">✕</button></li>';
   }).join(''):'<li class="tp-hint">Nothing on the list yet — type your own or tap a suggestion.</li>';
-  sugBox.innerHTML=TP_SUG.filter(function(t){return !trip.pack.some(function(x){return x.t===t})}).map(function(t){
+  sugBox.innerHTML=TP_SUG.filter(function(t){return !trip.pack.some(function(x){return x.t.toLowerCase()===t.toLowerCase()})}).map(function(t){
     return '<button type="button" class="tp-chip sug" data-sug="'+tpEsc(t)+'" aria-label="Add '+tpEsc(t)+' to the packing list">+ '+tpEsc(t)+'</button>';
   }).join('');
   var st=tpStats();
@@ -801,6 +841,7 @@ function renderTrip(){
   tpFirstPaint=false;
   tpRenderProgress(st);
   tpRenderReco(st);
+  tpRestoreFocus(focusKey);
 }
 document.addEventListener('click',function(ev){
   var b=ev.target.closest('.tp-save');
@@ -872,7 +913,7 @@ if(tripEl){
     var s=ev.target.closest('[data-sug]');
     if(!s)return;
     var t=s.getAttribute('data-sug');
-    if(!trip.pack.some(function(x){return x.t===t}))trip.pack.push({t:t,on:false});
+    if(!trip.pack.some(function(x){return x.t.toLowerCase()===t.toLowerCase()}))trip.pack.push({t:t,on:false});
     tpSave();renderTrip();
   });
   var tpRecoBox=$('#tp-reco');
@@ -992,6 +1033,7 @@ function buildLB(){
     m.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});
   });
 }
+function mRestore(el){if(el&&document.contains(el)){try{el.focus()}catch(err){}}}
 function openLB(i){lbPrevFocus=document.activeElement;lbShow(i);lbEl.classList.add('open');document.body.classList.add('locked');var c=$('#lb-close');if(c)c.focus();}
 function closeLB(){lbEl.classList.remove('open');document.body.classList.remove('locked');mRestore(lbPrevFocus);lbPrevFocus=null;}
 function lbShow(i){
@@ -1099,7 +1141,6 @@ function mTrap(ev){
   if(ev.shiftKey&&(document.activeElement===first||!box.contains(document.activeElement))){ev.preventDefault();last.focus();}
   else if(!ev.shiftKey&&(document.activeElement===last||!box.contains(document.activeElement))){ev.preventDefault();first.focus();}
 }
-function mRestore(el){if(el&&document.contains(el)){try{el.focus()}catch(err){}}}
 var lbPrevFocus=null;
 if(lbEl)lbEl.addEventListener('keydown',mTrap);
 /* --- modal --- */
@@ -1116,6 +1157,8 @@ function dbOpenModal(e){
     '<a class="dbm-map" href="https://www.google.com/maps/search/?api=1&amp;query='+encodeURIComponent(DB_DEC(e.n)+' '+e.c+' South Korea')+'" target="_blank" rel="noopener noreferrer" aria-label="'+tpEsc('Find '+DB_DEC(e.n)+' in Google Maps (opens a new tab)')+'">Find in Google Maps <span aria-hidden="true">↗</span></a>'+
     '<span class="dbm-label">Entrance fee</span><p class="dbm-fee">'+dbFee(e)+(e.fn?' <em>— '+e.fn+'</em>':'')+'</p>'+
     '<p class="dbm-note">Fees are planning estimates, not live prices. RM uses the planner exchange rate. Check current admission, ticket options and opening hours with the attraction before travelling.</p>'+
+    (e.u?'<a class="dbm-map" href="'+tpEsc(e.u)+'" target="_blank" rel="noopener noreferrer">Official visitor information ↗</a><p class="dbm-note">Reference checked '+tpEsc(e.checked)+'. Confirm updates before travelling.</p>':'')+
+    (e.tr?'<a class="dbm-map" href="'+tpEsc(e.tr)+'" target="_blank" rel="noopener noreferrer">Official transport information ↗</a>':'')+
     '<span class="dbm-label">Best season</span><p class="dbm-desc">'+e.s+'</p>'+
     '<span class="dbm-label">About this place</span><p class="dbm-desc">'+e.d+'</p>'+
     (e.t?'<div class="dbm-tip"><b>Traveller tip:</b> '+e.t+'</div>':'');

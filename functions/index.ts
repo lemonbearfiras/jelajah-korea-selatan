@@ -18,8 +18,7 @@ const AGENT_SYSTEM = 'You are "Jelajah AI", a South Korea travel assistant for M
 const CTX_MAX = 2600;
 const CTX_NOTE = "\n\nMatching entries from this site's own places database — use these for names, entry fees, best seasons and tips instead of guessing:\n";
 function flat(s) {
-  // \p{C} = control + format characters (needs the u flag)
-  return s.replace(/\p{C}/g, ' ').replace(/\s+/g, ' ').trim();
+  return s.replace(/\p{C}/gu, ' ').replace(/\s+/g, ' ').trim();
 }
 
 function withCtx(q, ctx) {
@@ -305,10 +304,7 @@ function json(payload, status) {
   });
 }
 
-// Per-client request budget. The endpoint is callable by anyone who can load the page, and every
-// ask spends the owner's provider quota, so a forged Origin or a direct script must not be able to
-// drain it. Counts live in this instance's memory in fixed windows — a firm ceiling, not a
-// distributed counter; a new instance starts clean, which is why the limits are generous.
+// Instance-local throttling does not establish a distributed provider-quota ceiling.
 const RL_PER_MIN = 6;
 const RL_PER_DAY = 120;
 // When the platform does not hand over a client address the bucket is shared by every visitor,
@@ -329,12 +325,10 @@ function allow(key, spanMs, max) {
   const id = key + ':' + spanMs;
   const hit = rlBuckets.get(id);
   if (!hit || hit.bucket !== bucket) {
-    rlBuckets.set(id, { bucket: bucket, n: 1 });
+    const now = Date.now();
+    rlBuckets.set(id, { bucket: bucket, n: 1, expiresAt: (bucket + 1) * spanMs });
     if (rlBuckets.size > 5000) {
-      // Drop stale windows so long-lived instances cannot grow the map forever.
-      const stale = [];
-      rlBuckets.forEach(function (v, k) { if (v.bucket !== bucket) stale.push(k); });
-      stale.forEach(function (k) { rlBuckets.delete(k); });
+      rlBuckets.forEach(function (v, k) { if (v.expiresAt <= now) rlBuckets.delete(k); });
     }
     return true;
   }
@@ -351,22 +345,46 @@ function withinBudget(req) {
   return okMin && okDay;
 }
 
+async function readBody(req) {
+  if (Number(req.headers.get('content-length')) > 8192) throw new Error('too_large');
+  if (!req.body) return '';
+  const reader = req.body.getReader(), decoder = new TextDecoder('utf-8', { fatal: true });
+  let timer, bytes = 0, text = '', done = false;
+  const timeout = new Promise(function (_, reject) {
+    timer = setTimeout(function () { reject(new Error('body_timeout')); }, 5000);
+  });
+  try {
+    while (true) {
+      const chunk = await Promise.race([reader.read(), timeout]);
+      if (chunk.done) { done = true; break; }
+      bytes += chunk.value.byteLength;
+      if (bytes > 8192) throw new Error('too_large');
+      text += decoder.decode(chunk.value, { stream: true });
+    }
+    return text + decoder.decode();
+  } finally {
+    clearTimeout(timer);
+    if (!done) reader.cancel().catch(function () {});
+    reader.releaseLock();
+  }
+}
+
 async function handler(req) {
   const url = new URL(req.url);
   const action = url.searchParams.get('action');
   if (req.method === 'GET' && action === 'health') return json({ ok: true });
   if (req.method !== 'POST' || action !== 'ask') return json({ ok: false, error: 'not_found' }, 404);
   const contentType = req.headers.get('content-type') || '';
-  if (!contentType.toLowerCase().includes('application/json')) {
+  if (contentType.split(';')[0].trim().toLowerCase() !== 'application/json') {
     return json({ ok: false, error: 'bad_request' }, 415);
   }
   let raw;
   try {
-    raw = await req.text();
-  } catch {
-    return json({ ok: false, error: 'bad_request' }, 400);
+    raw = await readBody(req);
+  } catch (error) {
+    const code = error.message === 'too_large' ? 'too_large' : error.message === 'body_timeout' ? 'body_timeout' : 'bad_request';
+    return json({ ok: false, error: code }, code === 'too_large' ? 413 : code === 'body_timeout' ? 408 : 400);
   }
-  if (raw.length > 8192) return json({ ok: false, error: 'too_large' }, 413);
   let q = '';
   let ctx = '';
   try {

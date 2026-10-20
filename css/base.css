@@ -6,7 +6,7 @@
 /* 1 — tokens & reset */
 :root{
   /* colour — three values only: ink on paper, the flag's red, the flag's blue */
-  --bg:#faf9f6; --bg-soft:#f2f0ea; --ink:#0a0a0a; --muted:#8a8a8a;
+  --bg:#faf9f6; --bg-soft:#f2f0ea; --ink:#0a0a0a; --muted:#6b6b6b;
   --line:rgba(10,10,10,.14); --red:#CD2E3A; --blue:#0047A0;
   --red-soft:rgba(205,46,58,.08); --blue-soft:rgba(0,71,160,.08);
   /* radius — cards, controls, pills; nothing else */

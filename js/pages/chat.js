@@ -30,7 +30,10 @@ function fmtTime(ts){
 /* The realtime listener keeps working after sign-out only until the next rules check, but the
    messages already painted stay in the DOM, so logging out would leave a private conversation on
    screen for the next person to use this browser. Everything room-related is dropped here. */
+function blockSubmit(ev){ev.preventDefault()}
 function teardown(){
+  initGen++; /* invalidates every pending read, listener callback and send completion */
+  $('#chat-form').onsubmit=blockSubmit;
   if(unsub){try{unsub()}catch(e){}unsub=null}
   me=null;chatId=null;
   $('#msgs').innerHTML='';
@@ -48,7 +51,17 @@ if(typeof FIREBASE_CONFIG==='undefined'||!FIREBASE_CONFIG.apiKey||FIREBASE_CONFI
 
 firebase.initializeApp(FIREBASE_CONFIG);
 var db=firebase.firestore(), auth=firebase.auth();
-var me=null, chatId=null, unsub=null;
+var me=null, chatId=null, unsub=null, initGen=0;
+var form=$('#chat-form'), inputEl=$('#chat-input'), sendBtn=$('#chat-send');
+/* Registered once; sending is only possible after startChat installs a room-specific handler. */
+form.onsubmit=blockSubmit;
+inputEl.addEventListener('keydown',function(ev){
+  if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();form.requestSubmit()}
+});
+inputEl.addEventListener('input',function(){
+  inputEl.style.height='auto';
+  inputEl.style.height=Math.min(inputEl.scrollHeight,120)+'px';
+});
 
 function errState(e){
   var msg='Error: '+esc(e.code||e.message||e);
@@ -80,9 +93,12 @@ function renderMsgs(snap){
   if(atBottom||lastFrom===me)box.scrollTop=box.scrollHeight;
 }
 
-function startChat(){
-  chatId=[me,other].sort().join('_');
-  db.collection('friends').doc(chatId).get().then(function(f){
+function startChat(uid,gen){
+  var pairId=[uid,other].sort().join('_');
+  function live(){return gen===initGen&&me===uid&&chatId===pairId}
+  chatId=pairId;
+  db.collection('friends').doc(pairId).get().then(function(f){
+    if(!live())return;
     if(!f.exists){
       show('#st-notfriend');
       $('#act-toprofile').href='profile.html?v='+encodeURIComponent(other);
@@ -90,8 +106,9 @@ function startChat(){
     }
     return Promise.all([
       db.collection('users').doc(other).get().catch(function(){return {exists:false,data:function(){return {}}}}),
-      db.collection('users').doc(me).get().catch(function(){return {exists:false,data:function(){return {}}}})
+      db.collection('users').doc(uid).get().catch(function(){return {exists:false,data:function(){return {}}}})
     ]).then(function(res){
+      if(!live())return;
       var ov=res[0].exists?res[0].data():{};
       var name=ov.name||'Friend';
       paintAva($('#c-ava'),{name:name,photo:ov.photo||''});
@@ -102,42 +119,40 @@ function startChat(){
       $('#room').classList.add('show');
       show(null);
 
-      unsub=db.collection('chats').doc(chatId).collection('messages')
+      /* send the message — only from this authorized, still-current room */
+      function send(ev){
+        ev.preventDefault();
+        var text=inputEl.value.trim();
+        if(!text||sendBtn.disabled||!live()||form.onsubmit!==send)return;
+        sendBtn.disabled=true;
+        db.collection('chats').doc(pairId).collection('messages').add({
+          from:uid,to:other,text:text,createdAt:firebase.firestore.FieldValue.serverTimestamp()
+        }).then(function(){if(live()){inputEl.value='';inputEl.focus()}})
+          .catch(function(e){
+            if(live())alert('Message could not be sent: '+(e.code||e.message));
+          }).then(function(){if(live()&&form.onsubmit===send)sendBtn.disabled=false});
+      }
+      sendBtn.disabled=false;
+      form.onsubmit=send;
+      unsub=db.collection('chats').doc(pairId).collection('messages')
         .orderBy('createdAt','asc').limitToLast(100)
-        .onSnapshot(renderMsgs, errState);
+        .onSnapshot(function(snap){if(live())renderMsgs(snap)}, function(e){
+          if(!live())return;
+          form.onsubmit=blockSubmit;
+          errState(e);
+        });
     });
-  }).catch(errState);
-
-  /* send the message */
-  var inputEl=$('#chat-input'), sendBtn=$('#chat-send');
-  $('#chat-form').onsubmit=function(ev){
-    ev.preventDefault();
-    var text=inputEl.value.trim();
-    if(!text||sendBtn.disabled||!me||!chatId)return;
-    sendBtn.disabled=true;
-    db.collection('chats').doc(chatId).collection('messages').add({
-      from:me,to:other,text:text,createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    }).then(function(){inputEl.value='';inputEl.focus()})
-      .catch(function(e){
-        alert('Message could not be sent: '+(e.code||e.message));
-      }).then(function(){sendBtn.disabled=false});
-  };
-  inputEl.addEventListener('keydown',function(ev){
-    if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();$('#chat-form').requestSubmit()}
-  });
-  inputEl.addEventListener('input',function(){
-    inputEl.style.height='auto';
-    inputEl.style.height=Math.min(inputEl.scrollHeight,120)+'px';
-  });
+  }).catch(function(e){if(live())errState(e)});
 }
 
 auth.onAuthStateChanged(function(u){
+  if(u&&me===u.uid)return; /* same account re-notified: keep the existing room/initialization */
   var switched=!!me&&!!u&&me!==u.uid;
   if(!u||switched)teardown();
   if(!u){show('#st-login');return}
   me=u.uid;
   if(me===other){show('#st-param');return}
   show(null);
-  startChat();
+  startChat(me,++initGen);
 });
 })();

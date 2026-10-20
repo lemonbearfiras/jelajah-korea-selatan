@@ -39,12 +39,7 @@ const MIN_TRY_MS = 4000;
 
 const THINK = /<think\b[^>]*>[\s\S]*?<\/think>/gi;
 
-/* Per-client request budget. The Origin list above is a CSRF guard, not authentication: a
-   non-browser client can send any Origin header it likes, and this Worker answers from the
-   owner's free-tier quota, which is counted per day. So every client also gets a hard
-   minute/day allowance, counted in the edge cache and keyed on a hash of the IP.
-   Cache writes are not atomic, so this is a firm ceiling rather than an exact counter —
-   which is all that is needed to stop one script draining the day's quota. */
+// Edge-cache throttling is non-atomic and cannot guarantee a distributed quota ceiling.
 const RL_PER_MIN = 6;
 const RL_PER_DAY = 120;
 const MIN_SPAN_S = 60;
@@ -67,13 +62,12 @@ function bump(name, ipHash, max, spanS) {
   return caches.default.match(key)
     .then(function (hit) { return hit ? hit.text() : ''; })
     .then(function (text) { n = parseInt(text, 10) || 0; })
-    .catch(function () { /* no cache entry yet */ })
     .then(function () {
       if (n >= max) return false;
       return caches.default.put(key, new Response(String(n + 1), {
         headers: { 'cache-control': 'public, max-age=' + spanS },
-      })).then(function () { return true; }, function () { return true; });
-    });
+      })).then(function () { return true; });
+    }).catch(function () { return false; });
 }
 
 function withinBudget(request) {
@@ -126,11 +120,42 @@ function json(body, status, origin, extra) {
   });
 }
 
-async function send(method, url, headers, payload, timeoutMs) {
-  const ctrl = new AbortController();
-  const timer = setTimeout(function () { ctrl.abort(); }, timeoutMs || ASK_BUDGET_MS);
+async function readBody(req, maxBytes, timeoutMs) {
+  if (Number(req.headers.get('content-length')) > maxBytes) throw new Error('too_large');
+  if (!req.body) return '';
+  const reader = req.body.getReader(), decoder = new TextDecoder('utf-8', { fatal: true });
+  let timer, bytes = 0, text = '', done = false;
+  const timeout = new Promise(function (_, reject) {
+    timer = setTimeout(function () { reject(new Error('body_timeout')); }, timeoutMs);
+  });
   try {
-    return await fetch(url, { method: method, headers: headers, body: payload, signal: ctrl.signal });
+    while (true) {
+      const chunk = await Promise.race([reader.read(), timeout]);
+      if (chunk.done) { done = true; break; }
+      bytes += chunk.value.byteLength;
+      if (bytes > maxBytes) throw new Error('too_large');
+      text += decoder.decode(chunk.value, { stream: true });
+    }
+    return text + decoder.decode();
+  } finally {
+    clearTimeout(timer);
+    if (!done) reader.cancel().catch(function () {});
+    reader.releaseLock();
+  }
+}
+
+async function send(method, url, headers, payload, timeoutMs) {
+  const ctrl = new AbortController(), budget = timeoutMs || ASK_BUDGET_MS;
+  const deadline = Date.now() + budget;
+  const timer = setTimeout(function () { ctrl.abort(); }, budget);
+  try {
+    const res = await fetch(url, { method: method, headers: headers, body: payload, signal: ctrl.signal, redirect: 'error' });
+    if (!res.ok) {
+      if (res.body) res.body.cancel().catch(function () {});
+      return { ok: false, status: res.status };
+    }
+    const data = JSON.parse(await readBody(res, 262144, Math.max(1, deadline - Date.now())));
+    return { ok: true, status: res.status, json: async function () { return data; } };
   } finally {
     clearTimeout(timer);
   }
@@ -144,16 +169,8 @@ function left(deadlineAt) {
   return Math.max(0, deadlineAt - Date.now());
 }
 
-/* A wrong model id and an exhausted daily quota both arrive as a non-200, so the
-   provider's own reason is kept in the error to make them tellable apart. */
-async function failWith(prefix, res, secret) {
-  let reason = '';
-  try {
-    const data = await res.json();
-    reason = clean(data && data.error && data.error.message);
-  } catch (e) { /* body is not JSON — the status alone is enough */ }
-  if (secret) reason = reason.split(secret).join('');
-  return new Error(prefix + '_' + res.status + (reason ? ' ' + reason.slice(0, 90) : ''));
+function failWith(prefix, res) {
+  return new Error(prefix + '_' + res.status);
 }
 
 /* Free-tier Gemini through an API key. Quota is counted per model, so one 429 does not
@@ -199,7 +216,7 @@ async function askGemini(env, question, deadlineAt) {
       }),
       Math.min(remaining, PER_TRY_MS));
     if (!res.ok) {
-      last = await failWith('gemini', res, env.GEMINI_API_KEY);
+      last = failWith('gemini', res);
       if (res.status === 401 || res.status === 403) break; /* key rejected, not spent */
       continue;
     }
@@ -255,7 +272,7 @@ async function askGateway(env, question, deadlineAt) {
       }),
       Math.min(remaining, PER_TRY_MS));
     if (!res.ok) {
-      last = await failWith('gateway', res, env.A2AGENT_API_KEY);
+      last = failWith('gateway', res);
       if (res.status === 401 || res.status === 403) break;
       continue;
     }
@@ -281,14 +298,18 @@ export default {
     if (request.method !== 'POST' || new URL(request.url).pathname !== '/ask') {
       return json({ ok: false, error: 'not_found' }, 404, origin);
     }
+    if ((request.headers.get('content-type') || '').split(';')[0].trim().toLowerCase() !== 'application/json') {
+      return json({ ok: false, error: 'bad_request' }, 415, origin);
+    }
     let q = '';
     let ctx = '';
     try {
-      const body = await request.json();
-      q = typeof body.q === 'string' ? body.q.trim() : '';
+      const body = JSON.parse(await readBody(request, 8192, 5000));
+      q = typeof body.q === 'string' ? ctxText(body.q) : '';
       ctx = typeof body.ctx === 'string' ? ctxText(body.ctx) : '';
     } catch (e) {
-      return json({ ok: false, error: 'bad_json' }, 400, origin);
+      const code = e.message === 'too_large' ? 'too_large' : e.message === 'body_timeout' ? 'body_timeout' : 'bad_json';
+      return json({ ok: false, error: code }, code === 'too_large' ? 413 : code === 'body_timeout' ? 408 : 400, origin);
     }
     if (q.length < 2 || q.length > 300) return json({ ok: false, error: 'bad_question' }, 400, origin);
     if (!(await withinBudget(request))) {
@@ -311,6 +332,6 @@ export default {
         last = e;
       }
     }
-    return json({ ok: false, error: String(last.message || last).slice(0, 120) }, 502, origin);
+    return json({ ok: false, error: 'ai_service_unavailable' }, 502, origin);
   },
 };
