@@ -570,6 +570,7 @@ function renderPlanner(){
   requestAnimationFrame(function(){requestAnimationFrame(function(){
     Array.prototype.forEach.call(itin.children,function(el,i){el.style.transitionDelay=(i*50)+'ms';el.classList.add('in')});
   })});
+  renderTrip();
 }
 document.querySelector('.planner').addEventListener('change',renderPlanner);
 $$('.pr-currency button').forEach(function(b){
@@ -581,6 +582,202 @@ $$('.pr-currency button').forEach(function(b){
 });
 renderPlanner();
 window.__setLiveRate=function(r){if(r>0){PL_RATE=r;renderPlanner();var pr=$('#pr-rate');if(pr)pr.textContent='₩'+Math.round(r);var ps=$('#pr-rate-src');if(ps)ps.textContent=' (live)';}};
+/* --- My Trip -----------------------------------------------------------------
+   The personal half of the planner: places starred in the database and dishes starred in the food
+   section collect here, get arranged into days by hand, and price themselves from the same
+   KOREA_DB fees. Everything lives in one localStorage key, so the trip survives a reload on the
+   same device and never leaves the browser. */
+var TP_KEY='jelajah.trip.v1';
+var TP_SUG=['Passport','eSIM or pocket WiFi','Type C/F plug adapter','Comfortable walking shoes','Portable power bank','Light rain jacket','Warm layers for winter'];
+var tripEl=$('#trip'),tpBlank=function(){return {saved:[],food:[],days:[[]],pack:[]}},trip=null,tpActive=0,TP_FOOD=[];
+function tpEsc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function tpLbl(kind,name){return kind==='place'?DB_DEC(name):name}
+function tpHas(kind,name){return (kind==='place'?trip.saved:trip.food).indexOf(name)>-1}
+function tpBtn(kind,name,idx){
+  var on=!!trip&&tpHas(kind,name);
+  return '<button type="button" class="tp-save'+(on?' on':'')+'" data-tp="'+(kind==='place'?'p':'d')+idx+
+    '" aria-pressed="'+(on?'true':'false')+'" aria-label="'+(on?'Remove ':'Save ')+tpEsc(tpLbl(kind,name))+(on?' from My Trip':' to My Trip')+'">★<span>'+(on?'Saved':'Save')+'</span></button>';
+}
+function tpLoad(){
+  try{
+    var o=JSON.parse(localStorage.getItem(TP_KEY));
+    if(!o||typeof o!=='object')return null;
+    var strs=function(v){return (Array.isArray(v)?v:[]).filter(function(x){return typeof x==='string'&&x})};
+    var days=(Array.isArray(o.days)?o.days:[]).map(function(d){return strs(d)});
+    return {saved:strs(o.saved),food:strs(o.food),days:days.length?days:[[]],
+      pack:(Array.isArray(o.pack)?o.pack:[]).filter(function(x){return x&&typeof x.t==='string'}).map(function(x){return {t:x.t.slice(0,40),on:!!x.on}})};
+  }catch(err){return null}
+}
+function tpSave(){try{localStorage.setItem(TP_KEY,JSON.stringify(trip))}catch(err){}}
+function tpRepaint(kind,name,idx){
+  var key=(kind==='place'?'p':'d')+idx,on=tpHas(kind,name);
+  $$('.tp-save').forEach(function(b){
+    if(b.getAttribute('data-tp')!==key)return;
+    b.classList.toggle('on',on);
+    b.setAttribute('aria-pressed',on?'true':'false');
+    b.setAttribute('aria-label',(on?'Remove ':'Save ')+tpEsc(tpLbl(kind,name))+(on?' from My Trip':' to My Trip'));
+    var s=$('span',b);if(s)s.textContent=on?'Saved':'Save';
+  });
+}
+function tpToggleSave(kind,name,idx){
+  var l=kind==='place'?trip.saved:trip.food,i=l.indexOf(name);
+  if(i>-1)l.splice(i,1);else l.push(name);
+  tpSave();tpRepaint(kind,name,idx);renderTrip();
+}
+function renderTrip(){
+  /* renderPlanner runs once at load, before the saved trip is read back from storage. */
+  if(!trip||!tripEl)return;
+  var savedBox=$('#tp-saved'),foodBox=$('#tp-food'),daysBox=$('#tp-days'),packBox=$('#tp-pack'),sugBox=$('#tp-sug');
+  var cur=trip.days[tpActive]||[];
+  $('#tp-n-place').textContent=trip.saved.length;
+  $('#tp-n-food').textContent=trip.food.length;
+  $('#tp-n-day').textContent=trip.days.length;
+  savedBox.innerHTML=trip.saved.length?trip.saved.map(function(n,i){
+    var e=dbFind(n),inDay=cur.indexOf(n)>-1;
+    return '<button type="button" class="tp-chip'+(inDay?' in':'')+'" data-add="'+i+'" aria-label="'+
+      (inDay?tpEsc(tpLbl('place',n))+' is already on this day':'Add '+tpEsc(tpLbl('place',n))+' to Day '+(tpActive+1))+'">'+
+      tpLbl('place',n)+(e?'<i>'+(e.fee?'₩'+e.fee.toLocaleString('en-US'):'Free'):'')+'</i></button>';
+  }).join(''):'<p class="tp-hint">Nothing saved yet — star a place in the database and it waits here.</p>';
+  foodBox.innerHTML=trip.food.length?trip.food.map(function(n,i){
+    return '<button type="button" class="tp-chip dish" data-dishrm="'+i+'" aria-label="Remove '+tpEsc(n)+' from the food list">'+n+'<i>✕</i></button>';
+  }).join(''):'<p class="tp-hint">No dishes yet — star a card in the food section to build a must-eat list.</p>';
+  daysBox.innerHTML=trip.days.map(function(d,i){
+    return '<div class="tp-day'+(i===tpActive?' on':'')+'">'+
+      '<div class="tp-day-head"><button type="button" class="tp-day-pick" data-pick="'+i+'" aria-label="Plan in Day '+(i+1)+'">'+
+      '<i aria-hidden="true">'+(i===tpActive?'●':'○')+'</i>Day '+(i+1)+'</button>'+
+      '<span class="tp-day-n">'+d.length+(d.length===1?' stop':' stops')+'</span>'+
+      '<button type="button" class="tp-x" data-delday="'+i+'" aria-label="Remove Day '+(i+1)+'">✕</button></div>'+
+      (d.length?'<ul class="tp-list">'+d.map(function(n,k){
+        var e=dbFind(n);
+        return '<li><span class="tp-li-n">'+tpLbl('place',n)+'</span>'+
+          '<i class="tp-li-fee">'+(e?(e.fee?'₩'+e.fee.toLocaleString('en-US'):'Free'):'no fee listed')+'</i>'+
+          '<span class="tp-acts">'+
+          '<button type="button" data-up="'+k+'" aria-label="Move '+tpEsc(tpLbl('place',n))+' earlier">↑</button>'+
+          '<button type="button" data-down="'+k+'" aria-label="Move '+tpEsc(tpLbl('place',n))+' later">↓</button>'+
+          '<button type="button" class="tp-x" data-rm="'+k+'" aria-label="Remove '+tpEsc(tpLbl('place',n))+' from Day '+(i+1)+'">✕</button></span></li>';
+      }).join('')+'</ul>':'<p class="tp-hint">Empty day — tap a saved place to put it here.</p>')+
+      '</div>';
+  }).join('');
+  var stops=[],seen={};
+  trip.days.forEach(function(d){d.forEach(function(n){if(!seen[n]){seen[n]=1;stops.push(n)}})});
+  var tickets=0,free=0,unknown=0;
+  stops.forEach(function(n){var e=dbFind(n);if(!e){unknown++;return}if(e.fee)tickets+=e.fee;else free++});
+  var kadar=plVal('pl-kadar')||'sederhana',musim=plVal('pl-musim')||'sakura',nd=trip.days.length;
+  var r=PL_RATES[kadar],s=PL_SEASON[musim];
+  var perDay=Math.round(r.penginapan*s.m/1000)*1000+r.makanan+r.pengangkutan+r.lain;
+  var stay=perDay*nd,total=stay+tickets;
+  $('#tp-total').textContent=plFmt(total);
+  $('#tp-alt').innerHTML=plCur==='krw'
+    ?'≈ <b>RM '+Math.round(total/PL_RATE).toLocaleString('en-US')+'</b> for one traveller'
+    :'≈ <b>₩'+total.toLocaleString('en-US')+'</b> for one traveller';
+  $('#tp-rows').innerHTML=
+    '<div class="tp-line"><span>Stay, meals &amp; local transport × '+nd+' day'+(nd===1?'':'s')+'</span><b>'+plFmt(stay)+'</b></div>'+
+    '<div class="tp-line"><span>Tickets for '+stops.length+' place'+(stops.length===1?'':'s')+(free?' · '+free+' free':'')+'</span><b>'+plFmt(tickets)+'</b></div>';
+  $('#tp-note').textContent='Daily costs follow the '+PL_PACE_SHORT[kadar]+' pace and the '+s.l+
+    ' season chosen above'+(unknown?' · '+unknown+' saved stop'+(unknown===1?' has':'s have')+' no fee in the database':'')+'. Flights not included.';
+  packBox.innerHTML=trip.pack.length?trip.pack.map(function(x,k){
+    return '<li><button type="button" class="tp-check'+(x.on?' on':'')+'" data-tg="'+k+'" aria-pressed="'+(x.on?'true':'false')+
+      '" aria-label="Mark '+tpEsc(x.t)+' as packed">✓</button><span'+(x.on?' class="done"':'')+'>'+tpEsc(x.t)+'</span>'+
+      '<button type="button" class="tp-x" data-packrm="'+k+'" aria-label="Remove '+tpEsc(x.t)+'">✕</button></li>';
+  }).join(''):'<li class="tp-hint">Nothing on the list yet — type your own or tap a suggestion.</li>';
+  sugBox.innerHTML=TP_SUG.filter(function(t){return !trip.pack.some(function(x){return x.t===t})}).map(function(t){
+    return '<button type="button" class="tp-chip sug" data-sug="'+tpEsc(t)+'" aria-label="Add '+tpEsc(t)+' to the packing list">+ '+tpEsc(t)+'</button>';
+  }).join('');
+}
+document.addEventListener('click',function(ev){
+  var b=ev.target.closest('.tp-save');
+  if(!b)return;
+  var raw=b.getAttribute('data-tp'),i=parseInt(raw.slice(1),10);
+  var name=raw.charAt(0)==='p'?(KOREA_DB[i]&&KOREA_DB[i].n):TP_FOOD[i];
+  if(name)tpToggleSave(raw.charAt(0)==='p'?'place':'dish',name,i);
+});
+if(tripEl){
+  /* Read storage before painting any star, so a returning traveller sees their own saved state. */
+  trip=tpLoad()||tpBlank();
+  var tpSavedBox=$('#tp-saved'),tpFoodBox=$('#tp-food'),tpDaysBox=$('#tp-days'),tpPackBox=$('#tp-pack'),tpSugBox=$('#tp-sug');
+  foodCards.forEach(function(card,i){
+    var h=$('.food-body h4',card),fig=$('.food-fig',card);
+    if(!h||!fig||!h.firstChild)return;
+    var name=(h.firstChild.textContent||'').trim();
+    if(!name)return;
+    TP_FOOD[i]=name;
+    fig.insertAdjacentHTML('beforeend',tpBtn('dish',name,i));
+  });
+  tpSavedBox.addEventListener('click',function(ev){
+    var c=ev.target.closest('[data-add]');
+    if(!c)return;
+    var n=trip.saved[parseInt(c.getAttribute('data-add'),10)];
+    if(!n)return;
+    if(trip.days[tpActive].indexOf(n)<0)trip.days[tpActive].push(n);
+    tpSave();renderTrip();
+  });
+  tpFoodBox.addEventListener('click',function(ev){
+    var c=ev.target.closest('[data-dishrm]');
+    if(!c)return;
+    var name=trip.food.splice(parseInt(c.getAttribute('data-dishrm'),10),1)[0];
+    if(name)tpRepaint('dish',name,TP_FOOD.indexOf(name));
+    tpSave();renderTrip();
+  });
+  tpDaysBox.addEventListener('click',function(ev){
+    var dayEl=ev.target.closest('.tp-day');
+    if(!dayEl)return;
+    var di=Array.prototype.indexOf.call(tpDaysBox.children,dayEl),d=trip.days[di];
+    if(ev.target.closest('[data-pick]')){tpActive=di;renderTrip();return}
+    var del=ev.target.closest('[data-delday]');
+    if(del){
+      if(d.length&&!window.confirm('Remove Day '+(di+1)+' and its '+d.length+' stop'+(d.length===1?'':'s')+'?'))return;
+      trip.days.splice(di,1);
+      if(!trip.days.length)trip.days=[[]];
+      tpActive=Math.min(tpActive,trip.days.length-1);
+      tpSave();renderTrip();return;
+    }
+    var mv=ev.target.closest('[data-rm],[data-up],[data-down]');
+    if(!mv)return;
+    var k=parseInt(mv.getAttribute(mv.hasAttribute('data-rm')?'data-rm':(mv.hasAttribute('data-up')?'data-up':'data-down')),10);
+    if(mv.hasAttribute('data-rm'))d.splice(k,1);
+    else if(mv.hasAttribute('data-up')&&k>0)d.splice(k-1,0,d.splice(k,1)[0]);
+    else if(mv.hasAttribute('data-down')&&k<d.length-1)d.splice(k+1,0,d.splice(k,1)[0]);
+    tpSave();renderTrip();
+  });
+  $('#tp-addday').addEventListener('click',function(){
+    trip.days.push([]);
+    tpActive=trip.days.length-1;
+    tpSave();renderTrip();
+  });
+  tpPackBox.addEventListener('click',function(ev){
+    var tg=ev.target.closest('[data-tg]');
+    if(tg){var x=trip.pack[parseInt(tg.getAttribute('data-tg'),10)];if(x)x.on=!x.on;tpSave();renderTrip();return}
+    var rm=ev.target.closest('[data-packrm]');
+    if(rm){trip.pack.splice(parseInt(rm.getAttribute('data-packrm'),10),1);tpSave();renderTrip()}
+  });
+  tpSugBox.addEventListener('click',function(ev){
+    var s=ev.target.closest('[data-sug]');
+    if(!s)return;
+    var t=s.getAttribute('data-sug');
+    if(!trip.pack.some(function(x){return x.t===t}))trip.pack.push({t:t,on:false});
+    tpSave();renderTrip();
+  });
+  $('#tp-pack-form').addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var el=$('#tp-pack-input'),v=el.value.trim().slice(0,40);
+    if(!v)return;
+    if(!trip.pack.some(function(x){return x.t.toLowerCase()===v.toLowerCase()}))trip.pack.push({t:v,on:false});
+    el.value='';
+    tpSave();renderTrip();el.focus();
+  });
+  $('#tp-clear').addEventListener('click',function(){
+    if(!window.confirm('Clear every saved place, day and list on this device?'))return;
+    trip=tpBlank();tpActive=0;
+    tpSave();
+    $$('.tp-save').forEach(function(b){
+      var raw=b.getAttribute('data-tp'),i=parseInt(raw.slice(1),10);
+      var name=raw.charAt(0)==='p'?(KOREA_DB[i]&&KOREA_DB[i].n):TP_FOOD[i];
+      if(name)tpRepaint(raw.charAt(0)==='p'?'place':'dish',name,i);
+    });
+    renderTrip();
+  });
+  renderTrip();
+}
 /* carousel */
 var carIdx=[6,7,8,9,10,2,3,0];
 var carTrack=$('#car-track'),carCount=$('#car-count'),carBar=$('#car-bar'),carEl=$('.carousel');
@@ -684,12 +881,12 @@ function dbRender(){
     dbCount.textContent='';
     return;
   }
-  var html=KOREA_DB.map(function(e){
+  var html=KOREA_DB.map(function(e,ei){
     var hay=DB_UP(e.n+' '+e.h+' '+e.c+' '+e.r+' '+e.d+' '+e.cat.map(function(c){return DB_CATL[c]}).join(' '));
     if(hay.indexOf(q)<0)return '';
     n++;
     return '<article class="db-card" tabindex="0" role="button" data-n="'+e.n+'" aria-label="Details for '+DB_DEC(e.n)+'">'+
-      '<div class="db-card-top"><div class="db-badges">'+dbBadges(e)+'</div><span class="db-fee">'+dbFee(e)+'</span></div>'+
+      '<div class="db-card-top"><div class="db-badges">'+dbBadges(e)+'</div><div class="db-card-side">'+tpBtn('place',e.n,ei)+'<span class="db-fee">'+dbFee(e)+'</span></div></div>'+
       '<h3>'+DB_DEC(e.n)+'<small>'+e.h+'</small></h3>'+
       '<p class="db-loc">'+e.c+' — '+e.r+'</p>'+
       '<p class="db-desc">'+e.d+'</p>'+
@@ -703,8 +900,13 @@ function dbRender(){
     cards.forEach(function(c,i){c.style.transitionDelay=Math.min(i*35,700)+'ms';c.classList.add('in')});
   })});
 }
-dbGrid.addEventListener('click',function(ev){var c=ev.target.closest('.db-card');if(c)dbOpenModal(dbFind(c.getAttribute('data-n')))});
+dbGrid.addEventListener('click',function(ev){
+  /* The star lives inside the card, so it must not also open the detail modal. */
+  if(ev.target.closest('.tp-save'))return;
+  var c=ev.target.closest('.db-card');if(c)dbOpenModal(dbFind(c.getAttribute('data-n')));
+});
 dbGrid.addEventListener('keydown',function(ev){
+  if(ev.target.closest('.tp-save'))return;
   if(ev.key==='Enter'||ev.key===' '){var c=ev.target.closest('.db-card');if(c){ev.preventDefault();dbOpenModal(dbFind(c.getAttribute('data-n')))}}
 });
 dbQ.addEventListener('input',dbRender);
@@ -730,6 +932,7 @@ function dbOpenModal(e){
   dbPrevFocus=document.activeElement;
   dbBody.innerHTML=
     '<div class="dbm-badges">'+dbBadges(e)+'</div>'+
+    '<div class="dbm-save">'+tpBtn('place',e.n,KOREA_DB.indexOf(e))+'</div>'+
     '<h3 style="margin-top:12px">'+e.n+'<small>'+e.h+'</small></h3>'+
     '<p class="dbm-loc">'+e.c+' · '+e.r+'</p>'+
     '<span class="dbm-label">Entrance fee</span><p class="dbm-fee">'+dbFee(e)+(e.fn?' <em>— '+e.fn+'</em>':'')+'</p>'+

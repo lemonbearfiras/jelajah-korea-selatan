@@ -69,6 +69,10 @@
   .km-acts button,.km-toggle{min-height:40px;padding-top:9px;padding-bottom:9px}
   .km-del{min-height:40px;padding:8px 12px}
   .pl-info{width:24px;height:24px;font-size:12px}
+  .tp-acts button,.tp-x{width:40px;height:40px}
+  .tp-check{width:34px;height:34px}
+  .tp-day-pick,.tp-mini,.tp-clear{min-height:40px}
+  .tp-chip{padding:12px 16px}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}

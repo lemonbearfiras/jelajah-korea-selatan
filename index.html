@@ -728,6 +728,46 @@
         <div class="pl-itin" id="pl-itin"></div>
       </div>
     </div>
+
+    <div class="trip" id="trip" data-reveal>
+      <div class="trip-head">
+        <span class="sec-label">My Trip</span>
+        <h3>Star it here, plan it there.</h3>
+        <p>Save any place in the database or any dish in the food section and it waits for you here. Tap a saved place to drop it into the highlighted day, reorder the stops, and the ticket budget rebuilds itself in Won and Ringgit. Everything is stored on this device only.</p>
+      </div>
+      <div class="trip-grid">
+        <div class="trip-col">
+          <h4 class="trip-h">Saved places <span id="tp-n-place">0</span></h4>
+          <div class="tp-chips" id="tp-saved"></div>
+          <h4 class="trip-h" style="margin-top:26px">Food to try <span id="tp-n-food">0</span></h4>
+          <div class="tp-chips" id="tp-food"></div>
+        </div>
+        <div class="trip-col">
+          <div class="trip-row-head">
+            <h4 class="trip-h">Itinerary <span id="tp-n-day">1</span></h4>
+            <button type="button" id="tp-addday" class="tp-mini">+ Add day</button>
+          </div>
+          <div id="tp-days"></div>
+        </div>
+        <div class="trip-col">
+          <div class="tp-cost">
+            <span class="tp-cost-label">My trip estimate</span>
+            <div class="tp-cost-total" id="tp-total">&#8361;0</div>
+            <p class="tp-cost-alt" id="tp-alt"></p>
+            <div class="tp-cost-rows" id="tp-rows"></div>
+            <p class="tp-cost-note" id="tp-note"></p>
+          </div>
+          <h4 class="trip-h" style="margin-top:26px">Packing list</h4>
+          <form class="tp-add" id="tp-pack-form">
+            <input id="tp-pack-input" type="text" maxlength="40" placeholder="Add something to pack…" autocomplete="off" aria-label="Item to add to the packing list">
+            <button type="submit" aria-label="Add to packing list">+</button>
+          </form>
+          <ul class="tp-pack" id="tp-pack"></ul>
+          <div class="tp-chips" id="tp-sug"></div>
+          <button type="button" id="tp-clear" class="tp-clear">Clear my trip</button>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
