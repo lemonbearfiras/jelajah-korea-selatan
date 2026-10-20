@@ -408,6 +408,7 @@ $$('.plan-tab').forEach(function(b){
 });
 /* budget planner */
 var PL_RATE=300;
+function dbRM(fee){return '≈RM '+(fee/PL_RATE).toFixed(2)}
 var PL_RATES={
   santai:{penginapan:110000,makanan:40000,aktiviti:10000,pengangkutan:10000,lain:8000},
   sederhana:{penginapan:90000,makanan:35000,aktiviti:22000,pengangkutan:12000,lain:10000},
@@ -581,7 +582,7 @@ $$('.pr-currency button').forEach(function(b){
   });
 });
 renderPlanner();
-window.__setLiveRate=function(r){if(r>0){PL_RATE=r;renderPlanner();var pr=$('#pr-rate');if(pr)pr.textContent='₩'+Math.round(r);var ps=$('#pr-rate-src');if(ps)ps.textContent=' (live)';}};
+window.__setLiveRate=function(r){if(r>0){PL_RATE=r;renderPlanner();$$('.db-fee-rm').forEach(function(el){el.textContent=dbRM(Number(el.getAttribute('data-fee')))});var pr=$('#pr-rate');if(pr)pr.textContent='₩'+Math.round(r);var ps=$('#pr-rate-src');if(ps)ps.textContent=' (live)';}};
 /* --- My Trip -----------------------------------------------------------------
    The personal half of the planner: places starred in the database and dishes starred in the food
    section collect here, get arranged into days by hand, and price themselves from the same
@@ -646,6 +647,17 @@ var TP_CHECK=[
   {t:'Add 2 dishes to try',ok:function(s){return s.foodN>=2}},
   {t:'Tick 5 packing items',ok:function(s){return s.packedN>=5}}
 ];
+var TP_STAMP_ICONS=[
+  '<path d="M12 2v4M8 6h8l-1 5H9zM10 11l-2 11m6-11 2 11M7 18h10"/>',
+  '<path d="M2 9c3-5 7 5 10 0s7 5 10 0M2 15c3-5 7 5 10 0s7 5 10 0M2 21c3-5 7 5 10 0s7 5 10 0"/>',
+  '<path d="m2 21 7-14h6l7 14zM9 7l3 4 3-4M10 3l1-1m3 2 1-2"/>',
+  '<path d="M6 2 2 22m16-20 4 20M12 2v4m0 4v4m0 4v4"/>',
+  '<path d="M3 12h18a9 9 0 0 1-18 0ZM7 22h10M8 2v6m4-6v6m4-6v6"/>',
+  '<path d="M2 11c4-1 7-4 10-8 3 4 6 7 10 8H2Zm3 0v10h14V11M9 21v-6h6v6"/>',
+  '<path d="m2 21 8-16 5 9 3-5 4 12H2Zm5-10 3 3 3-3"/>',
+  '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 2v6m10-6v6M3 11h18m-14 5 3 2 5-4"/>',
+  '<rect x="4" y="6" width="16" height="15" rx="2"/><path d="M9 6V3h6v3M8 10v7m8-7v7M7 21v1m10-1v1"/>'
+];
 var tpEarned={},tpFirstPaint=true;
 function tpStats(){
   var s={savedN:trip.saved.length,foodN:trip.food.length,daysN:trip.days.length,emptyDays:0,
@@ -668,12 +680,12 @@ function tpStats(){
 function tpRenderStamps(s,seed){
   var box=$('#tp-stamps');if(!box)return;
   var n=0;
-  box.innerHTML=TP_STAMPS.map(function(b){
+  box.innerHTML=TP_STAMPS.map(function(b,i){
     var on=b.ok(s),fresh=on&&!tpEarned[b.t];
     if(on){n++;tpEarned[b.t]=1}
     return '<div class="stamp'+(on?' on':'')+(fresh&&!seed?' fresh':'')+'" role="listitem" aria-label="'+
       b.t+' — '+(on?'earned':'not yet')+'">'+
-      '<span class="stamp-seal" aria-hidden="true">'+(on?'✓':'·')+'</span>'+
+      '<span class="stamp-seal" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+TP_STAMP_ICONS[i]+'</svg></span>'+
       '<span class="stamp-t">'+b.t+'</span><span class="stamp-r">'+b.r+'</span>'+
       '<span class="stamp-s">'+(on?'Earned':'Locked')+'</span></div>';
   }).join('');
@@ -719,6 +731,9 @@ function renderTrip(){
   if(!trip||!tripEl)return;
   var savedBox=$('#tp-saved'),foodBox=$('#tp-food'),daysBox=$('#tp-days'),packBox=$('#tp-pack'),sugBox=$('#tp-sug');
   var cur=trip.days[tpActive]||[];
+  var kadar=plVal('pl-kadar')||'sederhana',musim=plVal('pl-musim')||'sakura',nd=trip.days.length;
+  var r=PL_RATES[kadar],s=PL_SEASON[musim];
+  var perDay=Math.round(r.penginapan*s.m/1000)*1000+r.makanan+r.pengangkutan+r.lain;
   $('#tp-n-place').textContent=trip.saved.length;
   $('#tp-n-food').textContent=trip.food.length;
   $('#tp-n-day').textContent=trip.days.length;
@@ -732,6 +747,15 @@ function renderTrip(){
     return '<button type="button" class="tp-chip dish" data-dishrm="'+i+'" aria-label="Remove '+tpEsc(n)+' from the food list">'+n+'<i>✕</i></button>';
   }).join(''):'<p class="tp-hint">No dishes yet — star a card in the food section to build a must-eat list.</p>';
   daysBox.innerHTML=trip.days.map(function(d,i){
+    var regions=[],dayTickets=0;
+    d.forEach(function(n){
+      var e=dbFind(n);if(!e)return;
+      dayTickets+=e.fee||0;
+      var region=DB_DEC(e.r);if(regions.indexOf(region)<0)regions.push(region);
+    });
+    var warnings=[];
+    if(d.length>=5)warnings.push('Busy day: '+d.length+' stops. Check visit lengths and leave room for breaks and travel.');
+    if(regions.length>1)warnings.push('Cross-region day: '+regions.join(' + ')+'. Check transfers; you may need a separate travel day.');
     return '<div class="tp-day'+(i===tpActive?' on':'')+'">'+
       '<div class="tp-day-head"><button type="button" class="tp-day-pick" data-pick="'+i+'" aria-label="Plan in Day '+(i+1)+'">'+
       '<i aria-hidden="true">'+(i===tpActive?'●':'○')+'</i>Day '+(i+1)+'</button>'+
@@ -746,15 +770,14 @@ function renderTrip(){
           '<button type="button" data-down="'+k+'" aria-label="Move '+tpEsc(tpLbl('place',n))+' later">↓</button>'+
           '<button type="button" class="tp-x" data-rm="'+k+'" aria-label="Remove '+tpEsc(tpLbl('place',n))+' from Day '+(i+1)+'">✕</button></span></li>';
       }).join('')+'</ul>':'<p class="tp-hint">Empty day — tap a saved place to put it here.</p>')+
+      '<p class="tp-day-budget">Day estimate <b>≈RM '+Math.round((perDay+dayTickets)/PL_RATE).toLocaleString('en-US')+'</b><small>Stay, meals, local transport &amp; listed tickets</small></p>'+
+      warnings.map(function(w){return '<p class="tp-day-warning">'+tpEsc(w)+'</p>'}).join('')+
       '</div>';
   }).join('');
-  var stops=[],seen={};
-  trip.days.forEach(function(d){d.forEach(function(n){if(!seen[n]){seen[n]=1;stops.push(n)}})});
+  var stops=[];
+  trip.days.forEach(function(d){d.forEach(function(n){stops.push(n)})});
   var tickets=0,free=0,unknown=0;
   stops.forEach(function(n){var e=dbFind(n);if(!e){unknown++;return}if(e.fee)tickets+=e.fee;else free++});
-  var kadar=plVal('pl-kadar')||'sederhana',musim=plVal('pl-musim')||'sakura',nd=trip.days.length;
-  var r=PL_RATES[kadar],s=PL_SEASON[musim];
-  var perDay=Math.round(r.penginapan*s.m/1000)*1000+r.makanan+r.pengangkutan+r.lain;
   var stay=perDay*nd,total=stay+tickets;
   $('#tp-total').textContent=plFmt(total);
   $('#tp-alt').innerHTML=plCur==='krw'
@@ -762,9 +785,9 @@ function renderTrip(){
     :'≈ <b>₩'+total.toLocaleString('en-US')+'</b> for one traveller';
   $('#tp-rows').innerHTML=
     '<div class="tp-line"><span>Stay, meals &amp; local transport × '+nd+' day'+(nd===1?'':'s')+'</span><b>'+plFmt(stay)+'</b></div>'+
-    '<div class="tp-line"><span>Tickets for '+stops.length+' place'+(stops.length===1?'':'s')+(free?' · '+free+' free':'')+'</span><b>'+plFmt(tickets)+'</b></div>';
+    '<div class="tp-line"><span>Tickets for '+stops.length+' visit'+(stops.length===1?'':'s')+(free?' · '+free+' free':'')+'</span><b>'+plFmt(tickets)+'</b></div>';
   $('#tp-note').textContent='Daily costs follow the '+PL_PACE_SHORT[kadar]+' pace and the '+s.l+
-    ' season chosen above'+(unknown?' · '+unknown+' saved stop'+(unknown===1?' has':'s have')+' no fee in the database':'')+'. Flights not included.';
+    ' season chosen above'+(unknown?' · '+unknown+' saved stop'+(unknown===1?' has':'s have')+' no fee in the database':'')+'. Ticket estimates count each visit, including repeat stops. Flights and intercity transfers not included.';
   packBox.innerHTML=trip.pack.length?trip.pack.map(function(x,k){
     return '<li><button type="button" class="tp-check'+(x.on?' on':'')+'" data-tg="'+k+'" aria-pressed="'+(x.on?'true':'false')+
       '" aria-label="Mark '+tpEsc(x.t)+' as packed">✓</button><span'+(x.on?' class="done"':'')+'>'+tpEsc(x.t)+'</span>'+
@@ -866,6 +889,27 @@ if(tripEl){
     if(!trip.pack.some(function(x){return x.t.toLowerCase()===v.toLowerCase()}))trip.pack.push({t:v,on:false});
     el.value='';
     tpSave();renderTrip();el.focus();
+  });
+  function tpPrintCleanup(){
+    var root=$('#print-root');if(root)root.remove();
+    document.body.classList.remove('print-trip');
+  }
+  window.addEventListener('afterprint',tpPrintCleanup);
+  $('#tp-print').addEventListener('click',function(){
+    tpPrintCleanup();
+    var root=document.createElement('div'),copy=tripEl.cloneNode(true);
+    root.id='print-root';
+    $$('.tp-acts,.tp-x,.tp-mini,.tp-clear,.tp-add,.tp-reco-head,#tp-reco,#tp-sug',copy).forEach(function(el){el.remove()});
+    $$('[id]',copy).forEach(function(el){el.removeAttribute('id')});
+    copy.removeAttribute('id');copy.removeAttribute('data-reveal');
+    $$('button',copy).forEach(function(b){
+      var span=document.createElement('span');span.className=b.className;span.innerHTML=b.innerHTML;
+      b.replaceWith(span);
+    });
+    $('.trip-head h3',copy).textContent='My Korea itinerary';
+    $('.trip-head p',copy).textContent='Personal plan · All costs are estimates for one traveller. Confirm admission and transfers before travelling.';
+    root.appendChild(copy);document.body.appendChild(root);
+    document.body.classList.add('print-trip');window.print();
   });
   $('#tp-clear').addEventListener('click',function(){
     if(!window.confirm('Clear every saved place, day and list on this device?'))return;
@@ -973,17 +1017,40 @@ if(dbTotalEl){
   KOREA_DB.forEach(function(e){dbCities[e.c]=1});
   dbTotalEl.textContent=KOREA_DB.length+' places across '+Object.keys(dbCities).length+' cities and regions';
 }
-function dbFee(e){return e.fee?'±&#8361;'+String(e.fee).replace(/\B(?=(\d{3})+(?!\d))/g,','):'Free'}
+function dbFee(e){return e.fee?'±&#8361;'+e.fee.toLocaleString('en-US')+'<small class="db-fee-rm" data-fee="'+e.fee+'">'+dbRM(e.fee)+'</small>':'Free'}
 function dbBadges(e){return e.cat.map(function(c){return '<span class="db-badge '+c+'">'+DB_CATL[c]+'</span>'}).join('')}
-var dbGrid=$('#db-grid'),dbCount=$('#db-count'),dbQ=$('#db-q');
+var dbGrid=$('#db-grid'),dbCount=$('#db-count'),dbQ=$('#db-q'),dbFilters=$('#db-filters');
+var dbSelected={region:'all',interest:'all',budget:'all'},dbBrowse=false;
+function dbRegion(e){return ['Seoul','Busan','Jeju'].indexOf(e.c)>-1?e.c:'elsewhere'}
+var dbGroups=[
+  {key:'region',label:'Region',options:[['all','All places'],['Seoul','Seoul'],['Busan','Busan'],['Jeju','Jeju'],['elsewhere','Elsewhere']]},
+  {key:'interest',label:'Interest',options:[['all','Any interest']].concat(Object.keys(DB_CATL).map(function(c){return [c,DB_CATL[c]]}))},
+  {key:'budget',label:'Entrance fee',options:[['all','Any budget'],['free','Free'],['low','Under ₩10,000'],['high','₩10,000+']]}
+];
+function dbMatches(e,key,value){
+  if(value==='all')return true;
+  if(key==='region')return dbRegion(e)===value;
+  if(key==='interest')return e.cat.indexOf(value)>-1;
+  return value==='free'?!e.fee:value==='low'?e.fee>0&&e.fee<10000:e.fee>=10000;
+}
+dbFilters.innerHTML=dbGroups.map(function(g){
+  return '<div class="db-filter-group" role="group" aria-label="Filter by '+g.label.toLowerCase()+'"><span class="db-filter-label">'+g.label+'</span><div class="db-filter-options">'+g.options.map(function(o){
+    var count=KOREA_DB.filter(function(e){return dbMatches(e,g.key,o[0])}).length;
+    return '<button type="button" class="db-fchip" data-filter="'+g.key+'" data-value="'+o[0]+'" aria-pressed="'+(o[0]==='all')+'">'+o[1]+' <span>'+count+'</span></button>';
+  }).join('')+'</div></div>';
+}).join('');
+function dbFilterState(){
+  $$('.db-fchip',dbFilters).forEach(function(b){b.setAttribute('aria-pressed',dbSelected[b.getAttribute('data-filter')]===b.getAttribute('data-value')?'true':'false')});
+}
 function dbRender(){
   var q=DB_UP(dbQ.value.trim()),n=0;
-  if(!q){
-    dbGrid.innerHTML='<div class="db-empty idle">Type above to search places — e.g. "palace", "jeju", "market" or "food".</div>';
+  if(!q&&!dbBrowse){
+    dbGrid.innerHTML='<div class="db-empty idle">Search above or choose a filter to explore places. Tap All places to browse the full database.</div>';
     dbCount.textContent='';
     return;
   }
   var html=KOREA_DB.map(function(e,ei){
+    if(!Object.keys(dbSelected).every(function(key){return dbMatches(e,key,dbSelected[key])}))return '';
     var hay=DB_UP(e.n+' '+e.h+' '+e.c+' '+e.r+' '+e.d+' '+e.cat.map(function(c){return DB_CATL[c]}).join(' '));
     if(hay.indexOf(q)<0)return '';
     n++;
@@ -995,8 +1062,8 @@ function dbRender(){
       (e.t?'<p class="db-tip">Tip: '+e.t+'</p>':'')+
     '</article>';
   }).join('');
-  dbGrid.innerHTML=html||'<div class="db-empty">No places found — try another keyword.</div>';
-  dbCount.textContent=n+' places found';
+  dbGrid.innerHTML=html||'<div class="db-empty">No places match — try another keyword or reset the filters.</div>';
+  dbCount.textContent=n+(n===1?' place found':' places found');
   var cards=$$('.db-card',dbGrid);
   requestAnimationFrame(function(){requestAnimationFrame(function(){
     cards.forEach(function(c,i){c.style.transitionDelay=Math.min(i*35,700)+'ms';c.classList.add('in')});
@@ -1012,6 +1079,15 @@ dbGrid.addEventListener('keydown',function(ev){
   if(ev.key==='Enter'||ev.key===' '){var c=ev.target.closest('.db-card');if(c){ev.preventDefault();dbOpenModal(dbFind(c.getAttribute('data-n')))}}
 });
 dbQ.addEventListener('input',dbRender);
+dbFilters.addEventListener('click',function(ev){
+  var b=ev.target.closest('[data-filter]');if(!b)return;
+  dbSelected[b.getAttribute('data-filter')]=b.getAttribute('data-value');dbBrowse=true;
+  dbFilterState();dbRender();
+});
+$('#db-reset').addEventListener('click',function(){
+  dbQ.value='';dbSelected={region:'all',interest:'all',budget:'all'};dbBrowse=false;
+  dbFilterState();dbRender();dbQ.focus();
+});
 /* --- modal focus trap (keyboard) --- */
 var MFOCUS='button:not([disabled]),a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])';
 function mTrap(ev){
@@ -1037,7 +1113,9 @@ function dbOpenModal(e){
     '<div class="dbm-save">'+tpBtn('place',e.n,KOREA_DB.indexOf(e))+'</div>'+
     '<h3 style="margin-top:12px">'+e.n+'<small>'+e.h+'</small></h3>'+
     '<p class="dbm-loc">'+e.c+' · '+e.r+'</p>'+
+    '<a class="dbm-map" href="https://www.google.com/maps/search/?api=1&amp;query='+encodeURIComponent(DB_DEC(e.n)+' '+e.c+' South Korea')+'" target="_blank" rel="noopener noreferrer" aria-label="'+tpEsc('Find '+DB_DEC(e.n)+' in Google Maps (opens a new tab)')+'">Find in Google Maps <span aria-hidden="true">↗</span></a>'+
     '<span class="dbm-label">Entrance fee</span><p class="dbm-fee">'+dbFee(e)+(e.fn?' <em>— '+e.fn+'</em>':'')+'</p>'+
+    '<p class="dbm-note">Fees are planning estimates, not live prices. RM uses the planner exchange rate. Check current admission, ticket options and opening hours with the attraction before travelling.</p>'+
     '<span class="dbm-label">Best season</span><p class="dbm-desc">'+e.s+'</p>'+
     '<span class="dbm-label">About this place</span><p class="dbm-desc">'+e.d+'</p>'+
     (e.t?'<div class="dbm-tip"><b>Traveller tip:</b> '+e.t+'</div>':'');

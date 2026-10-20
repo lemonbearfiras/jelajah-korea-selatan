@@ -764,7 +764,10 @@
           </form>
           <ul class="tp-pack" id="tp-pack"></ul>
           <div class="tp-chips" id="tp-sug"></div>
-          <button type="button" id="tp-clear" class="tp-clear">Clear my trip</button>
+          <div class="tp-tools">
+            <button type="button" id="tp-print" class="tp-mini">Print / save as PDF</button>
+            <button type="button" id="tp-clear" class="tp-clear">Clear my trip</button>
+          </div>
         </div>
       </div>
       <div class="trip-lower">
@@ -798,10 +801,12 @@
     <div class="db-tools" data-reveal>
       <label class="db-search">
         <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.8-4.8"/></svg>
-        <input id="db-q" type="text" placeholder="Search places… try 'palace', 'jeju' or 'market'" autocomplete="off">
+        <input id="db-q" type="search" placeholder="Search places… try 'palace', 'jeju' or 'market'" autocomplete="off" aria-label="Search the place database">
       </label>
+      <button type="button" class="db-reset" id="db-reset">Reset search &amp; filters</button>
+      <div class="db-filters" id="db-filters"></div>
     </div>
-    <p class="db-count" id="db-count"></p>
+    <p class="db-count" id="db-count" role="status"></p>
     <div class="db-grid" id="db-grid"></div>
     <div class="db-ask" data-reveal>
       <div class="db-ask-head">
