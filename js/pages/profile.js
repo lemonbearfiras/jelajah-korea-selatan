@@ -122,7 +122,8 @@ function makeFriends(rid,otherUid){
 }
 function acceptReq(rid,otherUid){
   function done(){
-    if(otherUid===uid){incomingReqId=null;isFriend=true;paintFriendBtn();loadStats();}
+    if(otherUid===uid){incomingReqId=null;isFriend=true;paintFriendBtn();}
+    loadStats();
     reqRows=reqRows.filter(function(x){return x.id!==rid});
     return renderRequests();
   }
@@ -177,7 +178,50 @@ function loadStats(){
   }
   count(db.collection('follows').where('following','==',uid),'#st-followers');
   count(db.collection('follows').where('follower','==',uid),'#st-following');
-  count(db.collection('friends').where('participants','array-contains',uid),'#st-friends');
+  loadFriends();
+}
+
+var friendsLoad=0;
+auth.onAuthStateChanged(function(){if(prof)loadFriends()});
+function loadFriends(){
+  var version=++friendsLoad,list=$('#friends-list'),status=$('#friends-status'),count=$('#friends-count'),retry=$('#friends-retry');
+  list.hidden=true;list.innerHTML='';count.hidden=true;retry.hidden=true;
+  $('#st-friends').textContent='—';
+  if(!auth.currentUser||auth.currentUser.uid!==uid){
+    $('#friends-note').textContent='Friend lists are private. You can see your friends on your own profile.';
+    status.textContent='';return;
+  }
+  $('#friends-note').textContent='Your accepted friends. This list is visible only to you.';
+  status.textContent='Loading your friends…';
+  retry.onclick=loadFriends;
+  return db.collection('friends').where('participants','array-contains',uid).get().then(function(snap){
+    var ids=snap.docs.map(function(doc){return doc.data().participants.filter(function(id){return id!==uid})[0]});
+    return Promise.all(ids.map(function(id){
+      return db.collection('users').doc(id).get().then(function(s){
+        var p=s.exists?s.data():{};
+        return {uid:id,name:p.name||'Community Member',username:p.username||'',photo:p.photo||''};
+      });
+    }));
+  }).then(function(friends){
+    if(version!==friendsLoad)return;
+    count.textContent=friends.length;count.hidden=false;
+    $('#st-friends').textContent=friends.length;
+    if(!friends.length){status.textContent='No friends yet. Open a member’s profile to send a friend request.';return}
+    friends.sort(function(a,b){return a.name.localeCompare(b.name)});
+    friends.forEach(function(p){
+      var row=document.createElement('li');row.className='friend-card';
+      row.innerHTML='<a class="friend-profile" href="profile.html?v='+encodeURIComponent(p.uid)+'" aria-label="'+esc('View '+p.name+'’s profile')+'">'+
+        '<span class="ava-sm" aria-hidden="true"></span><span class="friend-identity"><span class="friend-name">'+esc(p.name)+'</span>'+
+        (p.username?'<span class="friend-handle">@'+esc(p.username)+'</span>':'')+'</span></a>'+
+        '<a class="pill friend-chat" href="chat.html?v='+encodeURIComponent(p.uid)+'" aria-label="'+esc('Chat with '+p.name)+'">Chat</a>';
+      paintAva(row.querySelector('.ava-sm'),p);list.appendChild(row);
+    });
+    status.textContent='';list.hidden=false;
+  }).catch(function(){
+    if(version!==friendsLoad)return;
+    status.textContent='Your friends could not be loaded. Check your connection and try again.';
+    retry.hidden=false;
+  });
 }
 
 /* ---------- friend requests (own profile) ---------- */

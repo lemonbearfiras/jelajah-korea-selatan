@@ -58,6 +58,20 @@
 .req-item .nm{display:block;font-weight:800;font-size:14.5px}
 .req-item .sub{display:block;font-size:12px;color:var(--muted)}
 .req-empty{color:var(--muted);font-size:14px}
+.friend-count{padding:3px 9px;border-radius:var(--pill);background:var(--red-soft);font-size:12px;letter-spacing:normal}
+.friends-note,.friends-status{font-size:var(--fs-sm);line-height:1.65;color:#666}
+.friends-status:empty{display:none}
+.friends-status:not(:empty){margin-top:12px}
+.friends-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;list-style:none;margin-top:18px}
+.friend-card{display:flex;align-items:center;gap:12px;min-width:0;padding:15px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg)}
+.friend-profile{display:flex;align-items:center;gap:12px;flex:1;min-width:0;min-height:44px}
+.friend-profile:hover .friend-name{color:var(--blue)}
+.friend-identity{flex:1;min-width:0}
+.friend-name{display:block;font-size:var(--fs-sm);font-weight:800;overflow-wrap:anywhere}
+.friend-handle{display:block;font-size:var(--fs-meta);color:#666;overflow-wrap:anywhere}
+.friend-chat{min-height:44px;padding:9px 14px;font-size:var(--fs-meta);color:var(--blue)}
+#friends-retry{margin-top:14px}
+@media (max-width:640px){.friends-list{grid-template-columns:1fr}.friend-card{padding:13px}}
 
 /* ---- member comments ---- */
 .c-item{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:10px}
