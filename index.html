@@ -767,6 +767,22 @@
           <button type="button" id="tp-clear" class="tp-clear">Clear my trip</button>
         </div>
       </div>
+      <div class="trip-lower">
+        <div class="trip-col">
+          <h4 class="trip-h">Travel stamps <span id="tp-n-stamp">0</span></h4>
+          <div class="stamp-grid" id="tp-stamps" role="list"></div>
+        </div>
+        <div class="trip-col">
+          <h4 class="trip-h">Plan progress</h4>
+          <div class="prog">
+            <div class="prog-bar" id="tp-prog" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" aria-label="How complete this plan is"><i id="tp-prog-fill"></i></div>
+            <p class="prog-note" id="tp-prog-note"></p>
+            <ul class="prog-list" id="tp-prog-list"></ul>
+          </div>
+          <h4 class="trip-h tp-reco-head">Suggested next</h4>
+          <div id="tp-reco"></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>

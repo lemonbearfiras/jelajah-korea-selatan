@@ -587,6 +587,7 @@ window.__setLiveRate=function(r){if(r>0){PL_RATE=r;renderPlanner();var pr=$('#pr
    section collect here, get arranged into days by hand, and price themselves from the same
    KOREA_DB fees. Everything lives in one localStorage key, so the trip survives a reload on the
    same device and never leaves the browser. */
+var DB_CATL={sejarah:'History',budaya:'Culture',bandar:'City',makanan:'Food',keluarga:'Family',alam:'Nature'};
 var TP_KEY='jelajah.trip.v1';
 var TP_SUG=['Passport','eSIM or pocket WiFi','Type C/F plug adapter','Comfortable walking shoes','Portable power bank','Light rain jacket','Warm layers for winter'];
 var tripEl=$('#trip'),tpBlank=function(){return {saved:[],food:[],days:[[]],pack:[]}},trip=null,tpActive=0,TP_FOOD=[];
@@ -623,6 +624,95 @@ function tpToggleSave(kind,name,idx){
   var l=kind==='place'?trip.saved:trip.food,i=l.indexOf(name);
   if(i>-1)l.splice(i,1);else l.push(name);
   tpSave();tpRepaint(kind,name,idx);renderTrip();
+}
+/* Every stamp, progress check and suggestion below is counted from what the traveller has actually
+   saved — the database city, the category tags, the days they filled — so nothing on screen is a
+   number the site made up. */
+var TP_STAMPS=[
+  {t:'Seoul Explorer',r:'Save 3 places in Seoul',ok:function(s){return s.seoul>=3}},
+  {t:'Busan Coastal',r:'Save 3 places in Busan',ok:function(s){return s.busan>=3}},
+  {t:'Jeju Dreamer',r:'Save 2 places on Jeju',ok:function(s){return s.jeju>=2}},
+  {t:'Beyond The Cities',r:'Save 2 places outside Seoul, Busan and Jeju',ok:function(s){return s.beyond>=2}},
+  {t:'Foodie In Korea',r:'Save 3 dishes to try',ok:function(s){return s.foodN>=3}},
+  {t:'Heritage Hunter',r:'Save 3 history or culture places',ok:function(s){return s.heritage>=3}},
+  {t:'Nature Trail',r:'Save 3 mountain, sea or park places',ok:function(s){return s.nature>=3}},
+  {t:'Two Days Planned',r:'Put stops in two different days',ok:function(s){return s.filledDays>=2}},
+  {t:'Ready To Pack',r:'Tick 5 items on the packing list',ok:function(s){return s.packedN>=5}}
+];
+var TP_CHECK=[
+  {t:'Save 3 places',ok:function(s){return s.savedN>=3}},
+  {t:'Put a stop in every day',ok:function(s){return s.filledDays>=1&&s.emptyDays===0}},
+  {t:'Plan at least 2 days',ok:function(s){return s.daysN>=2}},
+  {t:'Add 2 dishes to try',ok:function(s){return s.foodN>=2}},
+  {t:'Tick 5 packing items',ok:function(s){return s.packedN>=5}}
+];
+var tpEarned={},tpFirstPaint=true;
+function tpStats(){
+  var s={savedN:trip.saved.length,foodN:trip.food.length,daysN:trip.days.length,emptyDays:0,
+    seoul:0,busan:0,jeju:0,beyond:0,heritage:0,nature:0,packedN:0,city:{},cat:{}};
+  trip.days.forEach(function(d){if(!d.length)s.emptyDays++});
+  trip.pack.forEach(function(x){if(x.on)s.packedN++});
+  trip.saved.forEach(function(n){
+    var e=dbFind(n);if(!e)return;
+    if(e.c==='Seoul')s.seoul++;
+    else if(e.c==='Busan')s.busan++;
+    else if(e.c==='Jeju')s.jeju++;
+    else s.beyond++;
+    s.city[e.c]=1;
+    if(e.cat.indexOf('sejarah')>-1||e.cat.indexOf('budaya')>-1)s.heritage++;
+    e.cat.forEach(function(c){s.cat[c]=(s.cat[c]||0)+1;if(c==='alam')s.nature++});
+  });
+  s.filledDays=s.daysN-s.emptyDays;
+  return s;
+}
+function tpRenderStamps(s,seed){
+  var box=$('#tp-stamps');if(!box)return;
+  var n=0;
+  box.innerHTML=TP_STAMPS.map(function(b){
+    var on=b.ok(s),fresh=on&&!tpEarned[b.t];
+    if(on){n++;tpEarned[b.t]=1}
+    return '<div class="stamp'+(on?' on':'')+(fresh&&!seed?' fresh':'')+'" role="listitem" aria-label="'+
+      b.t+' — '+(on?'earned':'not yet')+'">'+
+      '<span class="stamp-seal" aria-hidden="true">'+(on?'✓':'·')+'</span>'+
+      '<span class="stamp-t">'+b.t+'</span><span class="stamp-r">'+b.r+'</span>'+
+      '<span class="stamp-s">'+(on?'Earned':'Locked')+'</span></div>';
+  }).join('');
+  $('#tp-n-stamp').textContent=n+' / '+TP_STAMPS.length;
+}
+function tpRenderProgress(s){
+  var done=0,next=null;
+  TP_CHECK.forEach(function(c){if(c.ok(s))done++;else if(!next)next=c});
+  var pct=Math.round(done/TP_CHECK.length*100);
+  $('#tp-prog-fill').style.width=pct+'%';
+  var bar=$('#tp-prog');
+  bar.setAttribute('aria-valuenow',done);
+  bar.setAttribute('aria-valuetext',done+' of '+TP_CHECK.length+' checks done');
+  $('#tp-prog-note').textContent=next?'Plan '+pct+'% ready — next, '+next.t.charAt(0).toLowerCase()+next.t.slice(1).toLowerCase()+'.':'Plan 100% ready — every check is ticked.';
+  $('#tp-prog-list').innerHTML=TP_CHECK.map(function(c){
+    var ok=c.ok(s);
+    return '<li'+(ok?' class="ok"':'')+'><span aria-hidden="true">'+(ok?'✓':'○')+'</span>'+c.t+'</li>';
+  }).join('');
+}
+function tpRenderReco(s){
+  var box=$('#tp-reco');if(!box)return;
+  if(!s.savedN){box.innerHTML='<p class="tp-hint">Save a place and three more from the same kind of shelf appear here.</p>';return}
+  var top=null,best=0;
+  Object.keys(DB_CATL).forEach(function(c){var v=s.cat[c]||0;if(v>best){best=v;top=c}});
+  if(!top){box.innerHTML='<p class="tp-hint">Saved places are not in the database yet, so there is nothing to match.</p>';return}
+  var picks=KOREA_DB.filter(function(e){return trip.saved.indexOf(e.n)<0&&e.cat.indexOf(top)>-1});
+  /* A trip already covering Seoul should be shown Jeju or Busan first, so suggestions that would
+     double up on a city the traveller has planned sink to the back. */
+  picks.sort(function(a,b){return (s.city[a.c]?1:0)-(s.city[b.c]?1:0)});
+  picks=picks.slice(0,3);
+  if(!picks.length){box.innerHTML='<p class="tp-hint">You have saved every '+DB_CATL[top].toLowerCase()+
+    ' place in the database — try a different kind.</p>';return}
+  box.innerHTML='<p class="tp-reco-why">Your saved places lean '+DB_CATL[top].toLowerCase()+
+    '. Three more from the same shelf:</p>'+
+    picks.map(function(e){
+      return '<button type="button" class="tp-reco" data-reco="'+KOREA_DB.indexOf(e)+'">'+
+        '<i aria-hidden="true">+</i><span>'+tpLbl('place',e.n)+'</span>'+
+        '<em>'+DB_DEC(e.c)+' · '+(e.fee?'₩'+e.fee.toLocaleString('en-US'):'Free')+'</em></button>';
+    }).join('');
 }
 function renderTrip(){
   /* renderPlanner runs once at load, before the saved trip is read back from storage. */
@@ -683,6 +773,11 @@ function renderTrip(){
   sugBox.innerHTML=TP_SUG.filter(function(t){return !trip.pack.some(function(x){return x.t===t})}).map(function(t){
     return '<button type="button" class="tp-chip sug" data-sug="'+tpEsc(t)+'" aria-label="Add '+tpEsc(t)+' to the packing list">+ '+tpEsc(t)+'</button>';
   }).join('');
+  var st=tpStats();
+  tpRenderStamps(st,tpFirstPaint);
+  tpFirstPaint=false;
+  tpRenderProgress(st);
+  tpRenderReco(st);
 }
 document.addEventListener('click',function(ev){
   var b=ev.target.closest('.tp-save');
@@ -757,6 +852,13 @@ if(tripEl){
     if(!trip.pack.some(function(x){return x.t===t}))trip.pack.push({t:t,on:false});
     tpSave();renderTrip();
   });
+  var tpRecoBox=$('#tp-reco');
+  if(tpRecoBox)tpRecoBox.addEventListener('click',function(ev){
+    var b=ev.target.closest('[data-reco]');
+    if(!b)return;
+    var i=parseInt(b.getAttribute('data-reco'),10),e=KOREA_DB[i];
+    if(e)tpToggleSave('place',e.n,i);
+  });
   $('#tp-pack-form').addEventListener('submit',function(ev){
     ev.preventDefault();
     var el=$('#tp-pack-input'),v=el.value.trim().slice(0,40);
@@ -768,6 +870,7 @@ if(tripEl){
   $('#tp-clear').addEventListener('click',function(){
     if(!window.confirm('Clear every saved place, day and list on this device?'))return;
     trip=tpBlank();tpActive=0;
+    tpEarned={};
     tpSave();
     $$('.tp-save').forEach(function(b){
       var raw=b.getAttribute('data-tp'),i=parseInt(raw.slice(1),10);
@@ -862,7 +965,6 @@ function lbShow(i){
 buildLB();
 /* ===== PLACE DATABASE + ASK THE GUIDE ===== */
 if(typeof KOREA_DB!=='undefined'&&KOREA_DB.length){
-var DB_CATL={sejarah:'History',budaya:'Culture',bandar:'City',makanan:'Food',keluarga:'Family',alam:'Nature'};
 /* The intro count is read from the data, never typed by hand — the number went stale the
    last time the database grew. */
 var dbTotalEl=$('#db-total');
