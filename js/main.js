@@ -251,6 +251,46 @@ cards.forEach(function(_,i){
   dotsEl.appendChild(d);
 });
 var dotBtns=$$('button',dotsEl);
+/* Quick facts on every destination card, taken from the same KOREA_DB the planner and the guide
+   read: "best time" is the season the majority of that place's entries are tagged with, and
+   "tickets" is the cheapest paid entry in the database plus how many of its sights are free. */
+var DEST_DB={seoul:{r:'Seoul'},busan:{r:'Busan'},jeju:{r:'Jeju'},gyeongju:{c:'Gyeongju'},jeonju:{c:'Jeonju'},seoraksan:{n:'Seoraksan'}};
+function destEntries(key){
+  var f=DEST_DB[key];
+  if(!f||typeof KOREA_DB==='undefined')return [];
+  return KOREA_DB.filter(function(e){
+    if(f.r)return e.r===f.r;
+    if(f.c)return e.c===f.c;
+    return String(e.n).indexOf(f.n)>=0;
+  });
+}
+function destFacts(key){
+  var list=destEntries(key);
+  if(!list.length)return null;
+  var paid=list.filter(function(e){return e.fee>0});
+  var free=list.length-paid.length;
+  var seen={},best='',bn=0;
+  list.forEach(function(e){
+    if(!e.s||e.s==='Year-round')return;
+    seen[e.s]=(seen[e.s]||0)+1;
+    if(seen[e.s]>bn){bn=seen[e.s];best=e.s}
+  });
+  return {
+    season:best.replace(/\s*\(.*\)/,'')||'Year-round',
+    ticket:paid.length?'from ₩'+Math.min.apply(null,paid.map(function(e){return e.fee})).toLocaleString('en-US'):'All free',
+    free:free
+  };
+}
+cards.forEach(function(card){
+  var f=destFacts(card.dataset.target);
+  var body=$('.dest-body',card),link=$('.dest-map-link',card);
+  if(!f||!body||!link)return;
+  var box=document.createElement('div');
+  box.className='dest-facts';
+  box.innerHTML='<div><em>Best time</em><b>'+f.season+'</b></div>'+
+    '<div><em>Tickets</em><b>'+f.ticket+(f.free?' · '+f.free+' free':'')+'</b></div>';
+  body.insertBefore(box,link);
+});
 function step(){var c=cards[0];return c?c.getBoundingClientRect().width+24:354}
 function railTo(i){rail.scrollTo({left:i*step(),behavior:reducedMotion?'auto':'smooth'})}
 function railBy(dir){rail.scrollBy({left:dir*step(),behavior:reducedMotion?'auto':'smooth'})}
@@ -292,12 +332,27 @@ var PINS={
 var mapInfo=$('#map-info');
 function activatePin(id){
   $$('.map-pin').forEach(function(p){p.classList.toggle('active',p.dataset.pin===id)});
+  $$('.map-cities button').forEach(function(b){b.classList.toggle('on',b.dataset.pin===id)});
   var pin=PINS[id];
   if(!pin||!mapInfo)return;
   mapInfo.classList.add('swap');
   setTimeout(function(){mapInfo.innerHTML='<strong>'+pin.t+'</strong>'+pin.d;mapInfo.classList.remove('swap')},180);
 }
 $$('.map-pin').forEach(function(p){p.addEventListener('click',function(){activatePin(p.dataset.pin)})});
+/* The map shrinks to a phone width, where a pin's hit area is only a few pixels — the same six
+   destinations are offered as buttons, and both routes drive the one activatePin function. */
+var cityRow=$('.map-cities');
+if(cityRow){
+  cityRow.innerHTML=Object.keys(PINS).map(function(id){
+    return '<button type="button" data-pin="'+id+'">'+PINS[id].t.split(' ')[0]+'</button>';
+  }).join('');
+  cityRow.addEventListener('click',function(e){
+    var b=e.target.closest('button');
+    if(b)activatePin(b.dataset.pin);
+  });
+  /* The info panel opens on Seoul's text, so the chip row starts with the same selection. */
+  if(cityRow.firstElementChild)cityRow.firstElementChild.classList.add('on');
+}
 $$('.dest-map-link').forEach(function(a){
   a.addEventListener('click',function(){var id=a.dataset.map;setTimeout(function(){activatePin(id)},reducedMotion?0:400)});
 });

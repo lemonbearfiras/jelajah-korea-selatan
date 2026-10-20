@@ -31,7 +31,6 @@
   .nav-login{padding:7px;border-color:transparent}
   .nav-login:hover{border-color:var(--red)}
   .nav-login .nl-name{display:none}
-  .sec{padding:84px 0}
   #utama{padding-top:calc(var(--nav-h) + 40px)}
   .glance{grid-template-columns:1fr 1fr}
   .glance-item{padding:18px 16px}
@@ -56,6 +55,20 @@
      checkboxes inside .p-chip labels keep their own sizes. */
   input[type=text],input[type=number],input[type=search],input[type=email],input[type=tel],textarea,
   .km-compose textarea,.km-field input{font-size:16px}
+  /* Thumb-sized targets. Every control below 40px tall at this width was sized for a mouse, so
+     only the vertical padding changes — the visual size of the pill stays the same. */
+  #search-toggle,#search-close{width:44px;height:44px}
+  #note-clear{min-height:40px}
+  .nav-login{min-height:44px}
+  #rail-dots button{height:40px;padding:16px 8px}
+  .nav-login{min-width:44px;justify-content:center}
+  .dest-map-link{min-height:44px;padding-top:13px}
+  .pr-currency button{min-height:40px;padding-top:10px;padding-bottom:10px}
+  .fbtn{min-height:44px;display:inline-flex;align-items:center}
+  .p-chip span{padding:12px 17px}
+  .km-acts button,.km-toggle{min-height:40px;padding-top:9px;padding-bottom:9px}
+  .km-del{min-height:40px;padding:8px 12px}
+  .pl-info{width:24px;height:24px;font-size:12px}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
